@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2C03A7C3-E5B3-4F04-9B71-EE4E023C21D8}") = "Suidoken_Fix", "Suidoken_Fix.csproj", "{8B2B1505-555C-43AF-8252-4CC2D29026D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B2B1505-555C-43AF-8252-4CC2D29026D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B2B1505-555C-43AF-8252-4CC2D29026D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B2B1505-555C-43AF-8252-4CC2D29026D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B2B1505-555C-43AF-8252-4CC2D29026D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34A1BC1F-B91C-4EFB-993B-599F1F25170D}
+	EndGlobalSection
+EndGlobal
