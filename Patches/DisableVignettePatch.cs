@@ -23,6 +23,9 @@ public class DisableVignettePatch
     [HarmonyPrefix]
     static void SetParameter(ref float _wipe, Texture _maskTex, Vector4 _maskOffset, float _rate, Color _effectColor, float _effectSky)
     {
-        _wipe = 0f;
+        if (_effectColor.r == 0f && _effectColor.g == 0f && _effectColor.b == 0f && _maskTex == null)
+        {
+            _wipe = 0f;
+        }
     }
 }
