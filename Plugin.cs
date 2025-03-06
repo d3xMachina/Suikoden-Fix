@@ -38,6 +38,10 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableVignettePatch));
         }
 
+        if (Config.DisableFootStepSound.Value)
+        {
+            ApplyPatch(typeof(DisableFootStepSoundPatch));
+        }
         Log.LogInfo("Patches applied!");
     }
 

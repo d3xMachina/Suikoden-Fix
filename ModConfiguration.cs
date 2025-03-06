@@ -35,5 +35,12 @@ public sealed class ModConfiguration
              false,
              "Disable the vignette effect that is displayed in some scenes."
         );
+
+        DisableFootStepSound = _config.Bind(
+             "Audio",
+             "DisableFootStepSound",
+             false,
+             "Disable the sound of foot steps."
+        );
     }
 }
