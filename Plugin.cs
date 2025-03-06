@@ -29,6 +29,10 @@ public partial class Plugin : BasePlugin
 
     private void ApplyPatches()
     {
+        if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0)
+        {
+            ApplyPatch(typeof(FrameratePatch));
+        }
         if (Config.DisableVignette.Value)
         {
             ApplyPatch(typeof(DisableVignettePatch));

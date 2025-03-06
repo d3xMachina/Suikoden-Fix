@@ -52,6 +52,14 @@
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>$(GamePath)\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="GSD1">
+      <HintPath>$(GamePath)\BepInEx\interop\GSD1.dll</HintPath>
+      <Aliases>GSD1</Aliases>
+    </Reference>
+    <Reference Include="GSD2">
+      <HintPath>$(GamePath)\BepInEx\interop\GSD2.dll</HintPath>
+      <Aliases>GSD2</Aliases>
+    </Reference>
     <Reference Include="GSDShare">
       <HintPath>$(GamePath)\BepInEx\interop\GSDShare.dll</HintPath>
     </Reference>
