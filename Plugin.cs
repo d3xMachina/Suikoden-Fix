@@ -53,6 +53,12 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(DisableFootStepSoundPatch));
         }
+
+        if (Config.ZoneTransitionFactor.Value >= 0f)
+        {
+            ApplyPatch(typeof(FastTransitionPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

@@ -17,6 +17,8 @@ public sealed class ModComponent : MonoBehaviour
     public uint LastPadData = 0;
     public uint LastPadDataSanitized = 0;
 
+    public Patches.TransitionState transition = Patches.TransitionState.None;
+
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
     public static bool Inject()

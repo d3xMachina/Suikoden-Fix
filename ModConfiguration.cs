@@ -8,6 +8,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> SkipSplashscreens;
+    public ConfigEntry<float> ZoneTransitionFactor;
     public ConfigEntry<bool> DisableVignette;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
@@ -40,6 +41,14 @@ public sealed class ModConfiguration
              true,
              "Skip the intro splashscreens."
         );
+
+        ZoneTransitionFactor = _config.Bind(
+             "Skip",
+             "ZoneTransitionFactor",
+             -1f,
+             "Only works on Suikoden I. Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+        );
+
         DisableVignette = _config.Bind(
              "Visual",
              "DisableVignette",
