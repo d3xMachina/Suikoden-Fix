@@ -8,6 +8,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> DisableVignette;
+    public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
 
     public ModConfiguration(ConfigFile config)
@@ -35,6 +36,14 @@ public sealed class ModConfiguration
              "DisableVignette",
              false,
              "Disable the vignette effect that is displayed in some scenes."
+        );
+
+
+        ToggleDash = _config.Bind(
+             "Movement",
+             "ToggleDash",
+             false,
+             "Make the dash command a toggle instead of having to hold it."
         );
 
         DisableFootStepSound = _config.Bind(

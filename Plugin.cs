@@ -38,6 +38,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableVignettePatch));
         }
 
+        if (Config.ToggleDash.Value)
+        {
+            ApplyPatch(typeof(ToggleDashPatch));
+        }
+
         if (Config.DisableFootStepSound.Value)
         {
             ApplyPatch(typeof(DisableFootStepSoundPatch));
