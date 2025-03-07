@@ -5,6 +5,12 @@ A BepInEx plugin containing a bunch of tweaks for Suidoken I & II HD Remaster.
 ## Features
 
 - Disable vignette
+- Skip splashscreen
+- Fast transitions on zone changes, loading and title menu (Suidoken I only)
+- Dash as a toggle
+- Disable diagonal movements
+- Disable footstep sounds
+- Adjust framerate and vsync
 
 ## Installation
 
