@@ -7,7 +7,7 @@ using System;
 
 namespace Suikoden_Fix;
 
-[BepInPlugin("d3xMachina.suikoden_fix", "Suikoden Fix", "1.0.0")]
+[BepInPlugin("d3xMachina.suikoden_fix", "Suikoden Fix", "1.1.0")]
 public partial class Plugin : BasePlugin
 {
     public static new ManualLogSource Log;
