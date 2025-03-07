@@ -38,9 +38,9 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableVignettePatch));
         }
 
-        if (Config.ToggleDash.Value)
+        if (Config.ToggleDash.Value || Config.DisableDiagonalMovements.Value)
         {
-            ApplyPatch(typeof(ToggleDashPatch));
+            ApplyPatch(typeof(InputMovementsPatch));
         }
 
         if (Config.DisableFootStepSound.Value)

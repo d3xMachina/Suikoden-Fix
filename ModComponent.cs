@@ -10,6 +10,13 @@ public sealed class ModComponent : MonoBehaviour
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
 
+
+    public bool InvertDash = false;
+    public bool LastDash = false;
+
+    public uint LastPadData = 0;
+    public uint LastPadDataSanitized = 0;
+
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
     public static bool Inject()

@@ -8,6 +8,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> DisableVignette;
+    public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
 
@@ -38,6 +39,13 @@ public sealed class ModConfiguration
              "Disable the vignette effect that is displayed in some scenes."
         );
 
+
+        DisableDiagonalMovements = _config.Bind(
+             "Movement",
+             "DisableDiagonalMovements",
+             false,
+             "Restrict the movements to 4 directions instead of 8, except on the worldmap."
+        );
 
         ToggleDash = _config.Bind(
              "Movement",
