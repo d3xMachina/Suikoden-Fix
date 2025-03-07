@@ -41,7 +41,7 @@ public sealed class ModConfiguration
              "Skip the intro splashscreens."
         );
         DisableVignette = _config.Bind(
-             "Disable vignette",
+             "Visual",
              "DisableVignette",
              false,
              "Disable the vignette effect that is displayed in some scenes."
