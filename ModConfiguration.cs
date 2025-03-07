@@ -7,6 +7,7 @@ public sealed class ModConfiguration
     private ConfigFile _config;
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
+    public ConfigEntry<bool> SkipSplashscreens;
     public ConfigEntry<bool> DisableVignette;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
@@ -31,6 +32,13 @@ public sealed class ModConfiguration
              "Vsync",
              -1,
              "Set to 0 to disable VSync, 1 to enable VSync or -1 to use the default behavior. When on, the framerate will match your monitor refresh rate."
+        );
+
+        SkipSplashscreens = _config.Bind(
+             "Skip",
+             "SkipSplashscreens",
+             true,
+             "Skip the intro splashscreens."
         );
         DisableVignette = _config.Bind(
              "Disable vignette",

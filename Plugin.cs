@@ -33,6 +33,12 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(FrameratePatch));
         }
+
+        if (Config.SkipSplashscreens.Value)
+        {
+            ApplyPatch(typeof(SkipIntroPatch));
+        }
+
         if (Config.DisableVignette.Value)
         {
             ApplyPatch(typeof(DisableVignettePatch));
