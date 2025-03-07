@@ -54,7 +54,27 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableFootStepSoundPatch));
         }
 
+        bool fastTransition = false;
+
         if (Config.ZoneTransitionFactor.Value >= 0f)
+        {
+            ApplyPatch(typeof(FastZoneTransitionPatch));
+            fastTransition = true;
+        }
+
+        if (Config.LoadingTransitionFactor.Value >= 0f)
+        {
+            ApplyPatch(typeof(FastLoadingTransitionPatch));
+            fastTransition = true;
+        }
+
+        if (Config.TitleMenuTransitionFactor.Value >= 0f)
+        {
+            ApplyPatch(typeof(FastTitleMenuTransitionPatch));
+            fastTransition = true;
+        }
+
+        if (fastTransition)
         {
             ApplyPatch(typeof(FastTransitionPatch));
         }

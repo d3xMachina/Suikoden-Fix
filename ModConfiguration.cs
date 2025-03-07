@@ -8,6 +8,8 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> SkipSplashscreens;
+    public ConfigEntry<float> LoadingTransitionFactor;
+    public ConfigEntry<float> TitleMenuTransitionFactor;
     public ConfigEntry<float> ZoneTransitionFactor;
     public ConfigEntry<bool> DisableVignette;
     public ConfigEntry<bool> DisableDiagonalMovements;
@@ -40,6 +42,21 @@ public sealed class ModConfiguration
              "SkipSplashscreens",
              true,
              "Skip the intro splashscreens."
+        );
+
+
+        LoadingTransitionFactor = _config.Bind(
+             "Skip",
+             "LoadingTransitionFactor",
+             -1f,
+             "Only works on Suikoden I. Change the speed of fade in/out on the loading screen. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+        );
+
+        TitleMenuTransitionFactor = _config.Bind(
+             "Skip",
+             "TitleMenuTransitionFactor",
+             -1f,
+             "Only works on Suikoden I. Change the speed of fade in/out in the main menu. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         ZoneTransitionFactor = _config.Bind(
