@@ -8,6 +8,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> DisableVignette;
+    public ConfigEntry<bool> DisableFootStepSound;
 
     public ModConfiguration(ConfigFile config)
     {

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using static FootSoundPlayer;
 
-namespace Suidoken_Fix.Patches;
+namespace Suikoden_Fix.Patches;
 
 public class DisableFootStepSoundPatch
 {
