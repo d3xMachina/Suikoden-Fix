@@ -15,6 +15,7 @@ public sealed class ModComponent : MonoBehaviour
     private bool _isDisabled;
     private bool _isGamepadSelectPressed = false;
     private bool _isGamepadSelectDown = false;
+    private string _sceneName = "";
 
     public bool InvertDash = false;
     public bool LastDash = false;
@@ -23,6 +24,7 @@ public sealed class ModComponent : MonoBehaviour
     public uint LastPadDataSanitized = 0;
 
     public Patches.TransitionState transition = Patches.TransitionState.None;
+    public bool FrameSkip = true;
 
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
@@ -74,8 +76,13 @@ public sealed class ModComponent : MonoBehaviour
                 return;
             }
 
+            var scene = SceneManager.GetActiveScene();
+            _sceneName = scene.name;
+
             UpdateInputs();
             UpdateSaveAnywhere();
+            UpdateFrameSkip();
+            UpdateSpeedHack();
         }
         catch (Exception e)
         {
@@ -119,10 +126,9 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_isGamepadSelectDown || GRInputManager.IsKeyDown(Key.F1))
         {
-            var scene = SceneManager.GetActiveScene();
             var success = false;
 
-            if (scene.name == "GSD1")
+            if (_sceneName == "GSD1")
             {
                 var partyData = GSD1.GlobalWork.Instance?.game_work?.party_data;
 
@@ -138,7 +144,7 @@ public sealed class ModComponent : MonoBehaviour
                 }
                 
             }
-            else if (scene.name == "GSD2")
+            else if (_sceneName == "GSD2")
             {
                 var machicon = GSD2.GAME_WORK.Instance?.sys_work?.mcon;
 
@@ -158,6 +164,138 @@ public sealed class ModComponent : MonoBehaviour
             {
                 SoundManager.PlaySE("SD_WOP");
                 Plugin.Log.LogInfo("Game saved!");
+            }
+        }
+    }
+
+    private void SetFrameSkip(int factor)
+    {
+        if (Plugin.Config.SpeedHackFactor.Value <= 1)
+        {
+            return;
+        }
+
+        if (_sceneName == "GSD1")
+        {
+            var gr1Instance = GSD1.ChapterManager.GR1Instance;
+            if (gr1Instance != null)
+            {
+                gr1Instance.frameSkip = factor;
+            }
+        }
+        else if (_sceneName == "GSD2")
+        {
+            var grInstance = GSD2.GRChapterManager.GRInstance;
+            if (grInstance != null)
+            {
+                grInstance.BattleFrameSkip = factor;
+            }
+        }
+    }
+
+    private void UpdateSpeedHack()
+    {
+        if (Plugin.Config.SpeedHackFactor.Value <= 1)
+        {
+            return;
+        }
+
+        int factor = 1;
+
+        if (FrameSkip)
+        {
+            if (GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T))
+            {
+                //SystemObject.SystemFrameSkipCount = 4;
+                //SystemObject.force60FPS = true;
+                //Shader.SetGlobalFloat("_CustomTime", 4f);
+                factor = 4;
+            }
+        }
+
+        SetFrameSkip(factor);
+
+        // Show speed icon in bottom right
+        if (_sceneName == "GSD1")
+        {
+            var uiBattleManager = GSD1.UIBattleManager.Instance;
+            if (uiBattleManager != null)
+            {
+                if (factor > 1)
+                {
+                    uiBattleManager.ShowSpeedIconUI(1);
+                }
+                else
+                {
+                    uiBattleManager.HideSpeedIconUI();
+                }
+            }
+        }
+        else if (_sceneName == "GSD2")
+        {
+            var uiBattleManager = GSD2.UIBattleManager.Instance;
+            if (uiBattleManager != null)
+            {
+                if (factor > 1)
+                {
+                    uiBattleManager.ShowSpeedIconUI(1);
+                }
+                else
+                {
+                    uiBattleManager.HideSpeedIconUI();
+                }
+            }
+        }
+    }
+
+    private void UpdateFrameSkip()
+    {
+        FrameSkip = true;
+
+        // Avoid skipping frames on menus to avoid skipped inputs
+
+        if (_sceneName == "GSD1")
+        {
+            var windowManager = GSD1.WindowManager.Instance;
+            if (windowManager != null)
+            {
+                var menuWindow = windowManager.GetMenuWindow();
+                if (menuWindow != null && menuWindow.IsOpen)
+                {
+                    FrameSkip = false;
+                }
+            }
+
+            var chapterManager = GSD1.ChapterManager.GR1Instance;
+            if (chapterManager != null)
+            {
+                var chapter = chapterManager.activeChapter;
+                if (chapter != null && (chapter is GSD1.TitleChapter))
+                {
+                    FrameSkip = false;
+                }
+            }
+        }
+        else if (_sceneName == "GSD2")
+        {
+            var windowManager = GSD2.WindowManager.Instance;
+            if (windowManager != null)
+            {
+                var menuWindow = windowManager.GetMenuWindow();
+                if (menuWindow != null && menuWindow.IsOpen)
+                {
+                    FrameSkip = false;
+                }
+            }
+
+            var chapterManager = GSD2.GRChapterManager.GRInstance;
+            if (chapterManager != null)
+            {
+                var chapter = chapterManager.activeChapter;
+                if (chapter != null && chapter.TryCast<GSD2.TitleChapter>() != null)
+                {
+                    FrameSkip = false;
+                }
             }
         }
     }

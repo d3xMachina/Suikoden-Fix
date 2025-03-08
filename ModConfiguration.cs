@@ -17,6 +17,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
     public ConfigEntry<bool> SaveAnywhere;
+    public ConfigEntry<int> SpeedHackFactor;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -107,6 +108,13 @@ public sealed class ModConfiguration
              "SaveAnywhere",
              false,
              "Allows you to save anywhere to the last save slot using the select button or the F1 key. Be careful to not softlock yourself!"
+        );
+
+        SpeedHackFactor = _config.Bind(
+             "Skip",
+             "SpeedHackFactor",
+             1,
+             "Increase the game speed by X when the R2 button or the T key is pressed. Minimum value of 1."
         );
     }
 }

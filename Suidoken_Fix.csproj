@@ -75,6 +75,9 @@
     <Reference Include="Il2CppSystem.Core">
       <HintPath>$(GamePath)\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
     </Reference>
+    <Reference Include="ShareUI">
+      <HintPath>$(GamePath)\BepInEx\interop\ShareUI.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Addressables">
       <HintPath>$(GamePath)\BepInEx\interop\Unity.Addressables.dll</HintPath>
     </Reference>
