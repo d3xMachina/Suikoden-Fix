@@ -83,6 +83,14 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(SpeedHackPatch));
         }
+
+        if (Config.NoHighPitchMusic.Value)
+        {
+            ApplyPatch(typeof(NoHighPitchMusicPatch));
+        }
+
+        ApplyPatch(typeof(DisableMessageBoxSoundPatch));
+
         Log.LogInfo("Patches applied!");
     }
 

@@ -18,6 +18,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableFootStepSound;
     public ConfigEntry<bool> SaveAnywhere;
     public ConfigEntry<int> SpeedHackFactor;
+    public ConfigEntry<bool> NoHighPitchMusic;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -115,6 +116,13 @@ public sealed class ModConfiguration
              "SpeedHackFactor",
              1,
              "Increase the game speed by X when the R2 button or the T key is pressed. Minimum value of 1."
+        );
+
+        NoHighPitchMusic = _config.Bind(
+             "Misc",
+             "NoHighPitchMusic",
+             false,
+             "Prevent the music from speeding up when you change the game speed."
         );
     }
 }
