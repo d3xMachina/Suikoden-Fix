@@ -81,7 +81,7 @@ public class InputMovementsPatch
                 }
                 // Up-Right and Up-Left
                 else if ((LastPadData & UpBit) != 0 && (LastPadData & RightBit) != 0 ||
-                            (LastPadData & UpBit) != 0 && (LastPadData & LeftBit) != 0)
+                        (LastPadData & UpBit) != 0 && (LastPadData & LeftBit) != 0)
                 {
                     if ((LastPadDataSanitized & UpBit) != 0)
                     {

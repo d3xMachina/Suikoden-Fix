@@ -32,7 +32,7 @@ public class SkipIntroPatch
             path == "GS1_OP_HD_ENG" || path == "GS1_OP_HD_JPN" ||
             path == "GS1_OP_CL" || path == "GS2_OP_CL"))
         {
-            Plugin.Log.LogWarning($"Skip movie.");
+            Plugin.Log.LogInfo($"Skip movie.");
             return false;
         }
 
