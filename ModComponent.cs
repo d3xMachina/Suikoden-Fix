@@ -174,11 +174,6 @@ public sealed class ModComponent : MonoBehaviour
 
     private void SetFrameSkip(int factor)
     {
-        if (Plugin.Config.SpeedHackFactor.Value <= 1)
-        {
-            return;
-        }
-
         if (_sceneName == "GSD1")
         {
             var gr1Instance = GSD1.ChapterManager.GR1Instance;
@@ -197,37 +192,15 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private void UpdateSpeedHack()
+    private void SetSpeedIcon(bool show)
     {
-        if (Plugin.Config.SpeedHackFactor.Value <= 1)
-        {
-            return;
-        }
-
-        int factor = 1;
-
-        if (FrameSkip)
-        {
-            bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
-
-            if (isPressed && !_wasSpeedHackPressed)
-            {
-                _speedHackToggle = !_speedHackToggle;
-            }
-
-            factor = _speedHackToggle ? Plugin.Config.SpeedHackFactor.Value : 1;
-            _wasSpeedHackPressed = isPressed;
-        }
-
-        SetFrameSkip(factor);
-
         // Show speed icon in bottom right
         if (_sceneName == "GSD1")
         {
             var uiBattleManager = GSD1.UIBattleManager.Instance;
             if (uiBattleManager != null)
             {
-                if (factor > 1)
+                if (show)
                 {
                     uiBattleManager.ShowSpeedIconUI(1);
                 }
@@ -242,7 +215,7 @@ public sealed class ModComponent : MonoBehaviour
             var uiBattleManager = GSD2.UIBattleManager.Instance;
             if (uiBattleManager != null)
             {
-                if (factor > 1)
+                if (show)
                 {
                     uiBattleManager.ShowSpeedIconUI(1);
                 }
@@ -251,6 +224,47 @@ public sealed class ModComponent : MonoBehaviour
                     uiBattleManager.HideSpeedIconUI();
                 }
             }
+        }
+    }
+
+    private void UpdateSpeedHack()
+    {
+        if (Plugin.Config.SpeedHackFactor.Value <= 1)
+        {
+            return;
+        }
+
+        int factor = 1;
+        var pitchType = SoundManager.PitchType.x1;
+
+        if (FrameSkip)
+        {
+            bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
+
+            if (isPressed && !_wasSpeedHackPressed)
+            {
+                _speedHackToggle = !_speedHackToggle;
+            }
+
+            if (_speedHackToggle)
+            {
+                factor = Plugin.Config.SpeedHackFactor.Value;
+                pitchType = SoundManager.PitchType.x3;
+            }
+            else
+            {
+                factor = 1;
+                pitchType = SoundManager.PitchType.x1;
+            }
+
+            _wasSpeedHackPressed = isPressed;
+        }
+
+        if (_sceneName == "GSD1" || _sceneName == "GSD2")
+        {
+            SetFrameSkip(factor);
+            SoundManager.SetPitchType(pitchType);
+            SetSpeedIcon(factor > 1);
         }
     }
 
