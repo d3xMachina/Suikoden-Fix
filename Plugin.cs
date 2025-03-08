@@ -34,7 +34,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(FrameratePatch));
         }
 
-        if (Config.SkipSplashscreens.Value)
+        if (Config.SkipSplashscreens.Value || Config.SkipMovies.Value)
         {
             ApplyPatch(typeof(SkipIntroPatch));
         }

@@ -8,6 +8,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<bool> SkipSplashscreens;
+    public ConfigEntry<bool> SkipMovies;
     public ConfigEntry<float> LoadingTransitionFactor;
     public ConfigEntry<float> TitleMenuTransitionFactor;
     public ConfigEntry<float> ZoneTransitionFactor;
@@ -43,6 +44,13 @@ public sealed class ModConfiguration
              "SkipSplashscreens",
              true,
              "Skip the intro splashscreens."
+        );
+
+        SkipMovies = _config.Bind(
+             "Skip",
+             "SkipMovies",
+             false,
+             "Skip the intro movie."
         );
 
         LoadingTransitionFactor = _config.Bind(
