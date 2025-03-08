@@ -29,7 +29,7 @@ public class SkipIntroPatch
     {
         if (Plugin.Config.SkipMovies.Value &&
             (path == "GS1_OP_HD_ENG" || path == "GS1_OP_HD_JPN" ||
-            path == "GS1_OP_HD_ENG" || path == "GS1_OP_HD_JPN" ||
+            path == "GS2_OP_HD_ENG" || path == "GS2_OP_HD_JPN" ||
             path == "GS1_OP_CL" || path == "GS2_OP_CL"))
         {
             Plugin.Log.LogInfo($"Skip movie.");
