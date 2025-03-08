@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2C03A7C3-E5B3-4F04-9B71-EE4E023C21D8}") = "Suidoken_Fix", "Suidoken_Fix.csproj", "{8B2B1505-555C-43AF-8252-4CC2D29026D1}"
+Project("{2C03A7C3-E5B3-4F04-9B71-EE4E023C21D8}") = "Suikoden_Fix", "Suikoden_Fix.csproj", "{8B2B1505-555C-43AF-8252-4CC2D29026D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
