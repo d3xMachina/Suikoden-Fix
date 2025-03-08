@@ -15,6 +15,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
+    public ConfigEntry<bool> SaveAnywhere;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -44,7 +45,6 @@ public sealed class ModConfiguration
              "Skip the intro splashscreens."
         );
 
-
         LoadingTransitionFactor = _config.Bind(
              "Skip",
              "LoadingTransitionFactor",
@@ -73,7 +73,6 @@ public sealed class ModConfiguration
              "Disable the vignette effect that is displayed in some scenes."
         );
 
-
         DisableDiagonalMovements = _config.Bind(
              "Movement",
              "DisableDiagonalMovements",
@@ -93,6 +92,13 @@ public sealed class ModConfiguration
              "DisableFootStepSound",
              false,
              "Disable the sound of foot steps."
+        );
+
+        SaveAnywhere = _config.Bind(
+             "Misc",
+             "SaveAnywhere",
+             false,
+             "Allows you to save anywhere to the last save slot using the select button or the F1 key. Be careful to not softlock yourself!"
         );
     }
 }

@@ -1,7 +1,11 @@
-﻿using System;
+﻿extern alias GSD1;
+extern alias GSD2;
+
+using System;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Suikoden_Fix;
 
@@ -9,7 +13,8 @@ public sealed class ModComponent : MonoBehaviour
 {
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
-
+    private bool _isGamepadSelectPressed = false;
+    private bool _isGamepadSelectDown = false;
 
     public bool InvertDash = false;
     public bool LastDash = false;
@@ -68,11 +73,92 @@ public sealed class ModComponent : MonoBehaviour
             {
                 return;
             }
+
+            UpdateInputs();
+            UpdateSaveAnywhere();
         }
         catch (Exception e)
         {
             _isDisabled = true;
             Plugin.Log.LogError($"[{nameof(ModComponent)}].{nameof(LateUpdate)}(): {e}");
+        }
+    }
+
+    private void UpdateInputs()
+    {
+        var gamepad = Gamepad.current;
+
+        if (gamepad == null || !gamepad.selectButton.isPressed)
+        {
+            _isGamepadSelectDown = false;
+            _isGamepadSelectPressed = false;
+        }
+        else
+        {
+            if (!_isGamepadSelectPressed)
+            {
+                _isGamepadSelectDown = true;
+                _isGamepadSelectPressed = true;
+            }
+            else
+            {
+                _isGamepadSelectDown = false;
+            }
+        }
+        
+    }
+
+    private void UpdateSaveAnywhere()
+    {
+        if (!Plugin.Config.SaveAnywhere.Value)
+        {
+            return;
+        }
+
+        const int slot = 16; // last slot
+
+        if (_isGamepadSelectDown || GRInputManager.IsKeyDown(Key.F1))
+        {
+            var scene = SceneManager.GetActiveScene();
+            var success = false;
+
+            if (scene.name == "GSD1")
+            {
+                var partyData = GSD1.GlobalWork.Instance?.game_work?.party_data;
+
+                if (partyData != null)
+                {
+                    var areaId = GSD1.VillageManager.GetAreaIndex(partyData.area_no, partyData.vil_no);
+
+                    if (areaId != 10) // Title screen
+                    {
+                        GSD1.UISaveLoad1.Save(slot, null);
+                        success = true;
+                    }
+                }
+                
+            }
+            else if (scene.name == "GSD2")
+            {
+                var machicon = GSD2.GAME_WORK.Instance?.sys_work?.mcon;
+
+                if (machicon != null)
+                {
+                    //var areaId = GSD2.MachiLoader.GetGlobalMapID(machicon.ano, machicon.vno, machicon.mno);
+                    GSD2.UISaveLoad2.Save(slot, null);
+                    success = true;
+                }
+            }
+            else
+            {
+                Plugin.Log.LogWarning("Cannot save in this scene!");
+            }
+
+            if (success)
+            {
+                SoundManager.PlaySE("SD_WOP");
+                Plugin.Log.LogInfo("Game saved!");
+            }
         }
     }
 }
