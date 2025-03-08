@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8B2B1505-555C-43AF-8252-4CC2D29026D1}</ProjectGuid>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Suidoken_Fix</RootNamespace>
-    <AssemblyName>Suidoken_Fix</AssemblyName>
+    <RootNamespace>Suikoden_Fix</RootNamespace>
+    <AssemblyName>Suikoden_Fix</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
