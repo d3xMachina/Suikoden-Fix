@@ -11,6 +11,7 @@ A BepInEx plugin containing a bunch of tweaks for Suikoden I & II HD Remaster.
 - Disable diagonal movements
 - Save anywhere in the last save slot (be careful to not softlock yourself)
 - Speed up the game (speedhack, experimental).
+- Disable the speed up of the music when the battle speed change
 - Disable footstep sounds
 - Adjust framerate and vsync
 
