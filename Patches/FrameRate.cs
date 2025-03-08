@@ -43,8 +43,6 @@ public class FrameratePatch
     [HarmonyPostfix]
     static void FrameChange(int srcFps)
     {
-        Plugin.Log.LogDebug($"FrameChange");
-
         SetVsyncCount(0); // parameter doesn't matter
         SetTargetFrameRate(0); // parameter doesn't matter
     }
@@ -53,8 +51,6 @@ public class FrameratePatch
     [HarmonyPrefix]
     static bool Force60FPS(bool isOn)
     {
-        Plugin.Log.LogDebug($"Force60FPS");
-
         return false;
     }
 }
