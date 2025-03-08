@@ -79,11 +79,6 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(FastTransitionPatch));
         }
 
-        if (Config.SpeedHackFactor.Value > 1)
-        {
-            ApplyPatch(typeof(SpeedHackPatch));
-        }
-
         if (Config.NoHighPitchMusic.Value)
         {
             ApplyPatch(typeof(NoHighPitchMusicPatch));

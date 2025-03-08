@@ -11,15 +11,24 @@ namespace Suikoden_Fix;
 
 public sealed class ModComponent : MonoBehaviour
 {
+    private enum Game
+    {
+        None,
+        GSD1,
+        GSD2
+    }
+
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
 
-    private bool _isGamepadSelectPressed = false;
-    private bool _isGamepadSelectDown = false;
+    private bool _isSaveAnywhere = false;
+    private bool _wasSelectPressed = false;
     private bool _wasSpeedHackPressed = false;
     private bool _speedHackToggle = false;
+    private bool _speedHackEnabled = true;
 
     private string _sceneName = "";
+    private Game _activeGame = Game.None;
 
     public bool InvertDash = false;
     public bool LastDash = false;
@@ -28,7 +37,6 @@ public sealed class ModComponent : MonoBehaviour
     public uint LastPadDataSanitized = 0;
 
     public Patches.TransitionState transition = Patches.TransitionState.None;
-    public bool FrameSkip = true;
 
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
@@ -71,7 +79,7 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    public void LateUpdate()
+    public void Update()
     {
         try
         {
@@ -83,9 +91,38 @@ public sealed class ModComponent : MonoBehaviour
             var scene = SceneManager.GetActiveScene();
             _sceneName = scene.name;
 
+            if (_sceneName == "GSD1")
+            {
+                _activeGame = Game.GSD1;
+            }
+            else if (_sceneName == "GSD2")
+            {
+                _activeGame = Game.GSD2;
+            }
+            else if (_sceneName == "Main")
+            {
+                _activeGame = Game.None;
+            }
+
             UpdateInputs();
+        }
+        catch (Exception e)
+        {
+            _isDisabled = true;
+            Plugin.Log.LogError($"[{nameof(ModComponent)}].{nameof(Update)}(): {e}");
+        }
+    }
+
+    public void LateUpdate()
+    {
+        try
+        {
+            if (_isDisabled)
+            {
+                return;
+            }
+
             UpdateSaveAnywhere();
-            UpdateFrameSkip();
             UpdateSpeedHack();
         }
         catch (Exception e)
@@ -99,82 +136,80 @@ public sealed class ModComponent : MonoBehaviour
     {
         var gamepad = Gamepad.current;
 
-        if (gamepad == null || !gamepad.selectButton.isPressed)
+        bool isSelectPressed = (gamepad?.selectButton.isPressed ?? false) || GRInputManager.IsKeyPress(Key.F1);
+        if (isSelectPressed && !_wasSelectPressed)
         {
-            _isGamepadSelectDown = false;
-            _isGamepadSelectPressed = false;
+            _isSaveAnywhere = true;
         }
         else
         {
-            if (!_isGamepadSelectPressed)
-            {
-                _isGamepadSelectDown = true;
-                _isGamepadSelectPressed = true;
-            }
-            else
-            {
-                _isGamepadSelectDown = false;
-            }
+            _isSaveAnywhere = false;
         }
+
+        _wasSelectPressed = isSelectPressed;
         
+        bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
+        if (isPressed && !_wasSpeedHackPressed)
+        {
+            _speedHackToggle = !_speedHackToggle;
+        }
+
+        _wasSpeedHackPressed = isPressed;
     }
 
     private void UpdateSaveAnywhere()
     {
-        if (!Plugin.Config.SaveAnywhere.Value)
+        if (!Plugin.Config.SaveAnywhere.Value || !_isSaveAnywhere)
         {
             return;
         }
 
         const int slot = 16; // last slot
+        var success = false;
 
-        if (_isGamepadSelectDown || GRInputManager.IsKeyDown(Key.F1))
+        if (_sceneName == "GSD1")
         {
-            var success = false;
+            var partyData = GSD1.GlobalWork.Instance?.game_work?.party_data;
 
-            if (_sceneName == "GSD1")
+            if (partyData != null)
             {
-                var partyData = GSD1.GlobalWork.Instance?.game_work?.party_data;
+                var areaId = GSD1.VillageManager.GetAreaIndex(partyData.area_no, partyData.vil_no);
 
-                if (partyData != null)
+                if (areaId != 10) // Title screen, TODO: change this, it is the starting area castle
                 {
-                    var areaId = GSD1.VillageManager.GetAreaIndex(partyData.area_no, partyData.vil_no);
-
-                    if (areaId != 10) // Title screen
-                    {
-                        GSD1.UISaveLoad1.Save(slot, null);
-                        success = true;
-                    }
-                }
-                
-            }
-            else if (_sceneName == "GSD2")
-            {
-                var machicon = GSD2.GAME_WORK.Instance?.sys_work?.mcon;
-
-                if (machicon != null)
-                {
-                    //var areaId = GSD2.MachiLoader.GetGlobalMapID(machicon.ano, machicon.vno, machicon.mno);
-                    GSD2.UISaveLoad2.Save(slot, null);
+                    GSD1.UISaveLoad1.Save(slot, null);
                     success = true;
                 }
             }
-            else
-            {
-                Plugin.Log.LogWarning("Cannot save in this scene!");
-            }
+                
+        }
+        else if (_sceneName == "GSD2")
+        {
+            var machicon = GSD2.GAME_WORK.Instance?.sys_work?.mcon;
 
-            if (success)
+            if (machicon != null)
             {
-                SoundManager.PlaySE("SD_WOP");
-                Plugin.Log.LogInfo("Game saved!");
+                //var areaId = GSD2.MachiLoader.GetGlobalMapID(machicon.ano, machicon.vno, machicon.mno);
+                GSD2.UISaveLoad2.Save(slot, null);
+                success = true;
             }
+        }
+        else
+        {
+            SoundManager.PlaySE("SD_BUZZER");
+            Plugin.Log.LogWarning("Cannot save in this scene!");
+        }
+
+        if (success)
+        {
+            SoundManager.PlaySE("SD_WOP");
+            Plugin.Log.LogInfo("Game saved!");
         }
     }
 
     private void SetFrameSkip(int factor)
     {
-        if (_sceneName == "GSD1")
+        if (_activeGame == Game.GSD1)
         {
             var gr1Instance = GSD1.ChapterManager.GR1Instance;
             if (gr1Instance != null)
@@ -182,7 +217,7 @@ public sealed class ModComponent : MonoBehaviour
                 gr1Instance.frameSkip = factor;
             }
         }
-        else if (_sceneName == "GSD2")
+        else if (_activeGame == Game.GSD2)
         {
             var grInstance = GSD2.GRChapterManager.GRInstance;
             if (grInstance != null)
@@ -195,7 +230,7 @@ public sealed class ModComponent : MonoBehaviour
     private void SetSpeedIcon(bool show)
     {
         // Show speed icon in bottom right
-        if (_sceneName == "GSD1")
+        if (_activeGame == Game.GSD1)
         {
             var uiBattleManager = GSD1.UIBattleManager.Instance;
             if (uiBattleManager != null)
@@ -210,7 +245,7 @@ public sealed class ModComponent : MonoBehaviour
                 }
             }
         }
-        else if (_sceneName == "GSD2")
+        else if (_activeGame == Game.GSD2)
         {
             var uiBattleManager = GSD2.UIBattleManager.Instance;
             if (uiBattleManager != null)
@@ -234,18 +269,13 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
+        UpdateSpeedHackState();
+
         int factor = 1;
         var pitchType = SoundManager.PitchType.x1;
 
-        if (FrameSkip)
+        if (_speedHackEnabled)
         {
-            bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
-
-            if (isPressed && !_wasSpeedHackPressed)
-            {
-                _speedHackToggle = !_speedHackToggle;
-            }
-
             if (_speedHackToggle)
             {
                 factor = Plugin.Config.SpeedHackFactor.Value;
@@ -256,11 +286,9 @@ public sealed class ModComponent : MonoBehaviour
                 factor = 1;
                 pitchType = SoundManager.PitchType.x1;
             }
-
-            _wasSpeedHackPressed = isPressed;
         }
 
-        if (_sceneName == "GSD1" || _sceneName == "GSD2")
+        if (_activeGame != Game.None)
         {
             SetFrameSkip(factor);
             SoundManager.SetPitchType(pitchType);
@@ -268,21 +296,25 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private void UpdateFrameSkip()
+    private void UpdateSpeedHackState()
     {
-        FrameSkip = true;
+        _speedHackEnabled = true;
 
         // Avoid skipping frames on menus to avoid skipped inputs
 
-        if (_sceneName == "GSD1")
+        if (_activeGame == Game.GSD1)
         {
             var windowManager = GSD1.WindowManager.Instance;
             if (windowManager != null)
             {
                 var menuWindow = windowManager.GetMenuWindow();
-                if (menuWindow != null && menuWindow.IsOpen)
+                var minimapPanel = windowManager.GetMiniMapPanel();
+
+                if (windowManager.GetIsOpen() ||
+                    (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
+                    (menuWindow != null && menuWindow.IsOpen))
                 {
-                    FrameSkip = false;
+                    _speedHackEnabled = false;
                 }
             }
 
@@ -292,19 +324,23 @@ public sealed class ModComponent : MonoBehaviour
                 var chapter = chapterManager.activeChapter;
                 if (chapter != null && (chapter is GSD1.TitleChapter))
                 {
-                    FrameSkip = false;
+                    _speedHackEnabled = false;
                 }
             }
         }
-        else if (_sceneName == "GSD2")
+        else if (_activeGame == Game.GSD2)
         {
             var windowManager = GSD2.WindowManager.Instance;
             if (windowManager != null)
             {
                 var menuWindow = windowManager.GetMenuWindow();
-                if (menuWindow != null && menuWindow.IsOpen)
+                var minimapPanel = windowManager.GetMiniMapPanel();
+
+                if (windowManager.isUseMessageWindow ||
+                    (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
+                    (menuWindow != null && menuWindow.IsOpen))
                 {
-                    FrameSkip = false;
+                    _speedHackEnabled = false;
                 }
             }
 
@@ -314,7 +350,7 @@ public sealed class ModComponent : MonoBehaviour
                 var chapter = chapterManager.activeChapter;
                 if (chapter != null && chapter.TryCast<GSD2.TitleChapter>() != null)
                 {
-                    FrameSkip = false;
+                    _speedHackEnabled = false;
                 }
             }
         }
