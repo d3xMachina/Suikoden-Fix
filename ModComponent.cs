@@ -13,8 +13,12 @@ public sealed class ModComponent : MonoBehaviour
 {
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
+
     private bool _isGamepadSelectPressed = false;
     private bool _isGamepadSelectDown = false;
+    private bool _wasSpeedHackPressed = false;
+    private bool _speedHackToggle = false;
+
     private string _sceneName = "";
 
     public bool InvertDash = false;
@@ -204,13 +208,15 @@ public sealed class ModComponent : MonoBehaviour
 
         if (FrameSkip)
         {
-            if (GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T))
+            bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
+
+            if (isPressed && !_wasSpeedHackPressed)
             {
-                //SystemObject.SystemFrameSkipCount = 4;
-                //SystemObject.force60FPS = true;
-                //Shader.SetGlobalFloat("_CustomTime", 4f);
-                factor = 4;
+                _speedHackToggle = !_speedHackToggle;
             }
+
+            factor = _speedHackToggle ? Plugin.Config.SpeedHackFactor.Value : 1;
+            _wasSpeedHackPressed = isPressed;
         }
 
         SetFrameSkip(factor);
