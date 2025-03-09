@@ -148,7 +148,7 @@ public sealed class ModComponent : MonoBehaviour
 
         _wasSelectPressed = isSelectPressed;
         
-        bool isPressed = GRInputManager.IsPress(GRInputManager.Type.R2) || GRInputManager.IsKeyPress(Key.T);
+        bool isPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
         if (isPressed && !_wasSpeedHackPressed)
         {
             _speedHackToggle = !_speedHackToggle;

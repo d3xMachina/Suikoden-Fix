@@ -84,6 +84,10 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(NoHighPitchMusicPatch));
         }
 
+        if (Config.SpeedHackFactor.Value > 1)
+        {
+            ApplyPatch(typeof(RemoveBindingPatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }
