@@ -86,7 +86,7 @@ public partial class Plugin : BasePlugin
 
         if (Config.SpeedHackFactor.Value > 1)
         {
-            ApplyPatch(typeof(RemoveBindingPatch));
+            ApplyPatch(typeof(SpeedHackPatch));
         }
 
         if (Config.DisableMessageWindowSound.Value)

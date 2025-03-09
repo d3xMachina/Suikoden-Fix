@@ -50,6 +50,7 @@ public sealed class ModComponent : MonoBehaviour
 
     public Patches.TransitionState transition = Patches.TransitionState.None;
     public bool IsEventMsgMWOpen = false;
+    public bool IsInShop = false;
 
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
@@ -375,7 +376,8 @@ public sealed class ModComponent : MonoBehaviour
 
         if ((Plugin.Config.NoSpeedHackInBattle.Value && _chapter == Chapter.Battle) ||
             _chapter == Chapter.Title ||
-            _chapter == Chapter.GameOver)
+            _chapter == Chapter.GameOver ||
+            IsInShop)
         {
             _speedHackEnabled = false;
         }
