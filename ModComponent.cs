@@ -247,43 +247,27 @@ public sealed class ModComponent : MonoBehaviour
         const int slot = 16; // last slot
         var success = false;
 
-        if (_sceneName == "GSD1")
+        if (_activeGame == Game.GSD1 && _chapter == Chapter.Map)
         {
-            var partyData = GSD1.GlobalWork.Instance?.game_work?.party_data;
-
-            if (partyData != null)
-            {
-                var areaId = GSD1.VillageManager.GetAreaIndex(partyData.area_no, partyData.vil_no);
-
-                if (areaId != 10) // Title screen, TODO: change this, it is the starting area castle
-                {
-                    GSD1.UISaveLoad1.Save(slot, null);
-                    success = true;
-                }
-            }
+            GSD1.UISaveLoad1.Save(slot, null);
+            success = true;
                 
         }
-        else if (_sceneName == "GSD2")
+        else if (_activeGame == Game.GSD2 && _chapter == Chapter.Map)
         {
-            var machicon = GSD2.GAME_WORK.Instance?.sys_work?.mcon;
-
-            if (machicon != null)
-            {
-                //var areaId = GSD2.MachiLoader.GetGlobalMapID(machicon.ano, machicon.vno, machicon.mno);
-                GSD2.UISaveLoad2.Save(slot, null);
-                success = true;
-            }
+            GSD2.UISaveLoad2.Save(slot, null);
+            success = true;
         }
-        else
-        {
-            SoundManager.PlaySE("SD_BUZZER");
-            Plugin.Log.LogWarning("Cannot save in this scene!");
-        }
-
+        
         if (success)
         {
             SoundManager.PlaySE("SD_WOP");
             Plugin.Log.LogInfo("Game saved!");
+        }
+        else
+        {
+            SoundManager.PlaySE("SD_BUZZER");
+            Plugin.Log.LogWarning("Cannot save here!");
         }
     }
 
