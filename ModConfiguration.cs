@@ -21,6 +21,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
+    public ConfigEntry<string> WindowBGColor;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -139,6 +140,13 @@ public sealed class ModConfiguration
              "DisableMessageWindowSound",
              false,
              "Don't play any sound when a message window appears."
+        );
+
+        WindowBGColor = _config.Bind(
+             "Visual",
+             "WindowBGColor",
+             "",
+             "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)"
         );
     }
 }

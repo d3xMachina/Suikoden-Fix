@@ -2,6 +2,7 @@
 extern alias GSD2;
 
 using System;
+using BepInEx;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -52,6 +53,8 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsEventMsgMWOpen = false;
     public bool IsInShop = false;
 
+    public Color? WindowBGColor = null;
+
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
     public static bool Inject()
@@ -83,6 +86,19 @@ public sealed class ModComponent : MonoBehaviour
         try
         {
             Instance = this;
+
+            var colorStr = Plugin.Config.WindowBGColor.Value;
+            if (!colorStr.IsNullOrWhiteSpace())
+            {
+                if (ColorUtility.TryParseHtmlString(colorStr, out var color))
+                {
+                    WindowBGColor = color;
+                }
+                else
+                {
+                    Plugin.Log.LogWarning($"Invalid color for WindowBGColor: {colorStr}");
+                }
+            }
 
             Plugin.Log.LogInfo($"[{nameof(ModComponent)}].{nameof(Awake)}: Processed successfully.");
         }

@@ -94,6 +94,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableMessageWindowSoundPatch));
         }
 
+        if (!Config.WindowBGColor.Value.IsNullOrWhiteSpace())
+        {
+            ApplyPatch(typeof(WindowColorPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
