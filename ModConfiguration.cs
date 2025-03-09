@@ -128,7 +128,7 @@ public sealed class ModConfiguration
         );
 
         NoHighPitchMusic = _config.Bind(
-             "Misc",
+             "Audio",
              "NoHighPitchMusic",
              false,
              "Prevent the music from speeding up when you change the game speed."
