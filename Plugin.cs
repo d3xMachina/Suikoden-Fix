@@ -89,6 +89,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(RemoveBindingPatch));
         }
 
+        if (Config.DisableMessageWindowSound.Value)
+        {
+            ApplyPatch(typeof(DisableMessageWindowSoundPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

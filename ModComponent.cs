@@ -49,6 +49,7 @@ public sealed class ModComponent : MonoBehaviour
     public uint LastPadDataSanitized = 0;
 
     public Patches.TransitionState transition = Patches.TransitionState.None;
+    public bool IsEventMsgMWOpen = false;
 
     public ModComponent(IntPtr ptr) : base(ptr) { }
 

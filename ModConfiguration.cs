@@ -20,6 +20,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> SpeedHackFactor;
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
+    public ConfigEntry<bool> DisableMessageWindowSound;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -131,6 +132,13 @@ public sealed class ModConfiguration
              "NoHighPitchMusic",
              false,
              "Prevent the music from speeding up when you change the game speed."
+        );
+
+        DisableMessageWindowSound = _config.Bind(
+             "Audio",
+             "DisableMessageWindowSound",
+             false,
+             "Don't play any sound when a message window appears."
         );
     }
 }
