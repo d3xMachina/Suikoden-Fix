@@ -5,9 +5,9 @@ namespace Suikoden_Fix.Patches;
 
 public class RemoveBindingPatch
 {
-    [HarmonyPatch(typeof(GRInputManager), nameof(GRInputManager.Mapping))]
+    [HarmonyPatch(typeof(GRInputManager), nameof(GRInputManager.Create))]
     [HarmonyPostfix]
-    static void Mapping(GRInputManager __instance)
+    static void Mapping(GRInputManager __instance, GRInputManager.Mode _mode)
     {
         if (__instance.currentMap == null || __instance.currentMap.Count == 0)
         {
