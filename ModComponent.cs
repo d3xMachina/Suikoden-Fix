@@ -18,6 +18,16 @@ public sealed class ModComponent : MonoBehaviour
         GSD2
     }
 
+    private enum Chapter
+    {
+        None,
+        Unknown,
+        Title,
+        Map,
+        Battle,
+        GameOver
+    }
+
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
 
@@ -29,6 +39,8 @@ public sealed class ModComponent : MonoBehaviour
 
     private string _sceneName = "";
     private Game _activeGame = Game.None;
+    private Chapter _chapter = Chapter.None;
+    private Chapter _prevChapter = Chapter.None;
 
     public bool InvertDash = false;
     public bool LastDash = false;
@@ -88,22 +100,7 @@ public sealed class ModComponent : MonoBehaviour
                 return;
             }
 
-            var scene = SceneManager.GetActiveScene();
-            _sceneName = scene.name;
-
-            if (_sceneName == "GSD1")
-            {
-                _activeGame = Game.GSD1;
-            }
-            else if (_sceneName == "GSD2")
-            {
-                _activeGame = Game.GSD2;
-            }
-            else if (_sceneName == "Main")
-            {
-                _activeGame = Game.None;
-            }
-
+            UpdateGameState();
             UpdateInputs();
         }
         catch (Exception e)
@@ -124,11 +121,91 @@ public sealed class ModComponent : MonoBehaviour
 
             UpdateSaveAnywhere();
             UpdateSpeedHack();
+
+            _prevChapter = _chapter;
         }
         catch (Exception e)
         {
             _isDisabled = true;
             Plugin.Log.LogError($"[{nameof(ModComponent)}].{nameof(LateUpdate)}(): {e}");
+        }
+    }
+
+    private void UpdateGameState()
+    {
+        var scene = SceneManager.GetActiveScene();
+        _sceneName = scene.name;
+
+        if (_sceneName == "GSD1")
+        {
+            _activeGame = Game.GSD1;
+        }
+        else if (_sceneName == "GSD2")
+        {
+            _activeGame = Game.GSD2;
+        }
+        else if (_sceneName == "Main")
+        {
+            _activeGame = Game.None;
+        }
+
+        if (_activeGame == Game.GSD1)
+        {
+            var chapter = GSD1.ChapterManager.GR1Instance?.activeChapter;
+            if (chapter != null)
+            {
+                if (chapter.TryCast<GSD1.TitleChapter>() != null)
+                {
+                    _chapter = Chapter.Title;
+                }
+                else if (chapter.TryCast<GSD1.BattleChapter>() != null || chapter.TryCast<GSD1.WarChapter>() != null)
+                {
+                    _chapter = Chapter.Battle;
+                }
+                else if (chapter.TryCast<GSD1.MapChapter>() != null || chapter.TryCast<GSD1.FieldChapter>() != null)
+                {
+                    _chapter = Chapter.Map;
+                }
+                else if (chapter.TryCast<GSD1.GameOverChapter>() != null)
+                {
+                    _chapter = Chapter.GameOver;
+                }
+                else
+                {
+                    _chapter = Chapter.Unknown;
+                }
+            }
+        }
+        else if (_activeGame == Game.GSD2)
+        {
+            var chapter = GSD2.GRChapterManager.GRInstance?.activeChapter;
+            if (chapter != null)
+            {
+                if (chapter.TryCast<GSD2.TitleChapter>() != null)
+                {
+                    _chapter = Chapter.Title;
+                }
+                else if (chapter.TryCast<GSD2.BattleChapter>() != null || chapter.TryCast<GSD2.WarChapter>() != null)
+                {
+                    _chapter = Chapter.Battle;
+                }
+                else if (chapter.TryCast<GSD2.MapChapter>() != null)
+                {
+                    _chapter = Chapter.Map;
+                }
+                else if (chapter.TryCast<GSD2.GameOverChapter>() != null)
+                {
+                    _chapter = Chapter.GameOver;
+                }
+                else
+                {
+                    _chapter = Chapter.Unknown;
+                }
+            }
+        }
+        else
+        {
+            _chapter = Chapter.None;
         }
     }
 
@@ -148,13 +225,16 @@ public sealed class ModComponent : MonoBehaviour
 
         _wasSelectPressed = isSelectPressed;
         
-        bool isPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
-        if (isPressed && !_wasSpeedHackPressed)
+        if (!Plugin.Config.NoSpeedHackInBattle.Value || _prevChapter != Chapter.Battle)
         {
-            _speedHackToggle = !_speedHackToggle;
-        }
+            bool isPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
+            if (isPressed && !_wasSpeedHackPressed)
+            {
+                _speedHackToggle = !_speedHackToggle;
+            }
 
-        _wasSpeedHackPressed = isPressed;
+            _wasSpeedHackPressed = isPressed;
+        }
     }
 
     private void UpdateSaveAnywhere()
@@ -290,9 +370,15 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_activeGame != Game.None)
         {
-            SetFrameSkip(factor);
-            SoundManager.SetPitchType(pitchType);
-            SetSpeedIcon(factor > 1);
+            // Reset to x1 when entering battle with NoSpeedHackInBattle
+            if (!Plugin.Config.NoSpeedHackInBattle.Value ||
+                _chapter != Chapter.Battle ||
+                _prevChapter != Chapter.Battle)
+            {
+                SetFrameSkip(factor);
+                SoundManager.SetPitchType(pitchType);
+                SetSpeedIcon(factor > 1);
+            }
         }
     }
 
@@ -302,7 +388,13 @@ public sealed class ModComponent : MonoBehaviour
 
         // Avoid skipping frames on menus to avoid skipped inputs
 
-        if (_activeGame == Game.GSD1)
+        if ((Plugin.Config.NoSpeedHackInBattle.Value && _chapter == Chapter.Battle) ||
+            _chapter == Chapter.Title ||
+            _chapter == Chapter.GameOver)
+        {
+            _speedHackEnabled = false;
+        }
+        else if (_activeGame == Game.GSD1)
         {
             var windowManager = GSD1.WindowManager.Instance;
             if (windowManager != null)
@@ -313,16 +405,6 @@ public sealed class ModComponent : MonoBehaviour
                 if (windowManager.GetIsOpen() ||
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
-                {
-                    _speedHackEnabled = false;
-                }
-            }
-
-            var chapterManager = GSD1.ChapterManager.GR1Instance;
-            if (chapterManager != null)
-            {
-                var chapter = chapterManager.activeChapter;
-                if (chapter != null && (chapter is GSD1.TitleChapter))
                 {
                     _speedHackEnabled = false;
                 }
@@ -339,16 +421,6 @@ public sealed class ModComponent : MonoBehaviour
                 if (windowManager.isUseMessageWindow ||
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
-                {
-                    _speedHackEnabled = false;
-                }
-            }
-
-            var chapterManager = GSD2.GRChapterManager.GRInstance;
-            if (chapterManager != null)
-            {
-                var chapter = chapterManager.activeChapter;
-                if (chapter != null && chapter.TryCast<GSD2.TitleChapter>() != null)
                 {
                     _speedHackEnabled = false;
                 }
