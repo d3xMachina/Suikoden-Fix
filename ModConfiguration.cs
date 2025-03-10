@@ -65,21 +65,21 @@ public sealed class ModConfiguration
              "Skip",
              "LoadingTransitionFactor",
              -1f,
-             "Only works on Suikoden I. Change the speed of fade in/out on the loading screen. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+             "Change the speed of fade in/out on the loading screen. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         TitleMenuTransitionFactor = _config.Bind(
              "Skip",
              "TitleMenuTransitionFactor",
              -1f,
-             "Only works on Suikoden I. Change the speed of fade in/out in the main menu. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+             "Change the speed of fade in/out in the main menu. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         ZoneTransitionFactor = _config.Bind(
              "Skip",
              "ZoneTransitionFactor",
              -1f,
-             "Only works on Suikoden I. Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+             "Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         DisableVignette = _config.Bind(
