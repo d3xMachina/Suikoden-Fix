@@ -116,6 +116,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(ClassicModePatch));
         }
 
+        if (Config.ExitApplication.Value)
+        {
+            ApplyPatch(typeof(ExitApplicationPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

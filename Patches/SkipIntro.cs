@@ -10,7 +10,7 @@ public class SkipIntroPatch
 {
     [HarmonyPatch(typeof(GSDTitleSelect), nameof(GSDTitleSelect.Main))]
     [HarmonyPrefix]
-    static void SkipSplashscreens(ref GSDTitleSelect __instance)
+    static void SkipSplashscreens(GSDTitleSelect __instance)
     {
         if (Plugin.Config.SkipSplashscreens.Value)
         {
@@ -32,7 +32,7 @@ public class SkipIntroPatch
             path == "GS2_OP_HD_ENG" || path == "GS2_OP_HD_JPN" ||
             path == "GS1_OP_CL" || path == "GS2_OP_CL"))
         {
-            Plugin.Log.LogInfo($"Skip movie.");
+            Plugin.Log.LogInfo("Skip movie.");
             return false;
         }
 

@@ -25,6 +25,7 @@ public sealed class ModConfiguration
     public ConfigEntry<string> WindowBGColor;
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
+    public ConfigEntry<bool> ExitApplication;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -171,6 +172,13 @@ public sealed class ModConfiguration
              "ClassicMode",
              false,
              "Active the classic mode (PS1 visuals). This is a proof of concept, it is unfinished and many assets are missings."
+        );
+
+        ExitApplication = _config.Bind(
+             "Misc",
+             "ExitApplication",
+             true,
+             "Allow you to exit the application by pressing the start button or the escape key on the title selection screen."
         );
     }
 }

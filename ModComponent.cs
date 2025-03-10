@@ -35,17 +35,20 @@ public sealed class ModComponent : MonoBehaviour
     private bool _wasSelectPressed = false;
     private bool _wasSpeedHackPressed = false;
     private bool _wasBattleSpeedPressed = false;
+    private bool _wasExitApplicationPressed = false;
 
     private bool _isSaveAnywhere = false;
     private bool _speedHackToggle = false;
     private bool _speedHackChange = false;
     private bool _battleSpeedChange = false;
     private int _battleSpeed = 0;
+    private bool _exitApplication = false;
 
     private string _sceneName = "";
     private Game _activeGame = Game.None;
     private Chapter _chapter = Chapter.None;
     private Chapter _prevChapter = Chapter.None;
+    public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
 
     public bool InvertDash = false;
     public bool LastDash = false;
@@ -140,6 +143,7 @@ public sealed class ModComponent : MonoBehaviour
                 return;
             }
 
+            UpdateExitApplication();
             UpdateSaveAnywhere();
             UpdateGameSpeed();
 
@@ -150,6 +154,16 @@ public sealed class ModComponent : MonoBehaviour
             _isDisabled = true;
             Plugin.Log.LogError($"[{nameof(ModComponent)}].{nameof(LateUpdate)}(): {e}");
         }
+    }
+
+    private void UpdateExitApplication()
+    {
+        if (!_exitApplication || TitleSelectStep != GSDTitleSelect.State.SelectContent)
+        {
+            return;
+        }
+
+        Application.Quit();
     }
 
     private void UpdateGameState()
@@ -245,6 +259,10 @@ public sealed class ModComponent : MonoBehaviour
         bool isBattleSpeedPressed = GRInputManager.IsPress(GRInputManager.Type.BattleSpeed);
         _battleSpeedChange = isBattleSpeedPressed && !_wasBattleSpeedPressed;
         _wasBattleSpeedPressed = isBattleSpeedPressed;
+
+        bool isExitApplicationPressed = (gamepad?.startButton.isPressed ?? false) || GRInputManager.IsKeyPress(Key.Escape);
+        _exitApplication = isExitApplicationPressed && !_wasExitApplicationPressed;
+        _wasExitApplicationPressed = isExitApplicationPressed;
     }
 
     private void UpdateSaveAnywhere()
