@@ -6,7 +6,7 @@ public class DisableVignettePatch
 {
     static bool DisableVignette(ScreenScript sc)
     {
-        if (sc.effectColor.r == 0f && sc.effectColor.r == 0f && sc.effectColor.r == 0f && sc.effectSky == 0f &&
+        if (sc.effectColor.r == 0f && sc.effectColor.g == 0f && sc.effectColor.b == 0f && sc.effectSky == 0f &&
             ((Plugin.Config.DisableVignette.Value && sc.maskTex == null) ||
              (Plugin.Config.DisableMaskedVignette.Value && sc.maskTex != null)))
         {
