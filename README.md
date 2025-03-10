@@ -15,6 +15,7 @@ A BepInEx plugin containing a bunch of tweaks for Suikoden I & II HD Remaster.
 - Disable footstep sounds
 - Disable the sound when a message window appears
 - Change the background color of some windows
+- Remember the battle speed between battles
 - Adjust framerate and vsync
 
 ## Installation
