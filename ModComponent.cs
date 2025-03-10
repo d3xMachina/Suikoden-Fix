@@ -359,7 +359,7 @@ public sealed class ModComponent : MonoBehaviour
             }
             else if (_battleSpeedChange)
             {
-                _battleSpeed = (_battleSpeed + 1) % 2;
+                _battleSpeed = (_battleSpeed + 1) % 3;
                 // TODO: check when you can use battle speed 2
             }
 
