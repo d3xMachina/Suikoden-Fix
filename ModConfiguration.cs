@@ -148,7 +148,7 @@ public sealed class ModConfiguration
              "Audio",
              "DisableMessageWindowSound",
              false,
-             "Don't play any sound when a message window appears."
+             "Don't play a sound effect when a message window appears."
         );
 
         WindowBGColor = _config.Bind(
