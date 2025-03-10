@@ -4,19 +4,19 @@ A BepInEx plugin containing a bunch of tweaks for Suikoden I & II HD Remaster.
 
 ## Features
 
-- Disable vignette
-- Skip splashscreen and intro movies
-- Fast transitions on zone changes, loading and title menu
-- Dash as a toggle
-- Disable diagonal movements
-- Save anywhere in the last save slot (be careful to not softlock yourself)
-- Speed up the game (speedhack, experimental).
-- Disable the speed up of the music when the battle speed change
-- Disable footstep sounds
-- Disable the sound when a message window appears
-- Change the background color of some windows
-- Remember the battle speed between battles
-- Adjust framerate and vsync
+- Disable vignette.
+- Skip splashscreen and intro movies.
+- Fast transitions on zone changes, loading and title menu.
+- Dash as a toggle.
+- Disable diagonal movements.
+- Save anywhere in the last save slot. (be careful to not softlock yourself)
+- Speed up the game. (speedhack, experimental)
+- Disable the speed up of the music when the battle speed change.
+- Disable footstep sounds.
+- Disable the sound when a message window appears.
+- Change the background color of some windows.
+- Remember the battle speed between battles.
+- Adjust framerate and vsync.
 
 ## Installation
 
