@@ -24,6 +24,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableMessageWindowSound;
     public ConfigEntry<string> WindowBGColor;
     public ConfigEntry<bool> RememberBattleSpeed;
+    public ConfigEntry<bool> ClassicMode;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -163,6 +164,13 @@ public sealed class ModConfiguration
              "RememberBattleSpeed",
              false,
              "Remember the battle speed between battles."
+        );
+
+        ClassicMode = _config.Bind(
+             "Misc",
+             "ClassicMode",
+             false,
+             "Active the classic mode (PS1 visuals). This is a proof of concept, it is unfinished and many assets are missings."
         );
     }
 }

@@ -111,6 +111,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(WindowColorPatch));
         }
 
+        if (Config.ClassicMode.Value)
+        {
+            ApplyPatch(typeof(ClassicModePatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
