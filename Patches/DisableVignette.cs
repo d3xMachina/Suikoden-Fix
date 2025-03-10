@@ -1,31 +1,49 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
 namespace Suikoden_Fix.Patches;
 
 public class DisableVignettePatch
 {
-    [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.EnableVignetteFilter))]
-    [HarmonyPrefix]
-    static void DisableCameraVignette(ref bool isEnabled)
+    static bool DisableVignette(ScreenScript sc)
     {
-        isEnabled = false;
+        if (sc.effectColor.r == 0f && sc.effectColor.r == 0f && sc.effectColor.r == 0f && sc.effectSky == 0f &&
+            ((Plugin.Config.DisableVignette.Value && sc.maskTex == null) ||
+             (Plugin.Config.DisableMaskedVignette.Value && sc.maskTex != null)))
+        {
+            sc.wipe = 0f;
+            return true;
+        }
+
+        return false;
     }
 
-    [HarmonyPatch(typeof(ScreenScript), nameof(ScreenScript.EnableVignetteFilter))]
-    [HarmonyPrefix]
-    static void DisableScreenScriptVignette(ref bool isEnabled)
+    [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.EnableVignetteFilter))]
+    [HarmonyPostfix]
+    static void DisableCameraVignette(ref bool isEnabled)
     {
-        isEnabled = false;
+        var camera = CameraManager.Instance?.ActiveCamera;
+        if (camera != null)
+        {
+            var sc = camera.GetComponent<ScreenScript>();
+            if (sc != null)
+            {
+                DisableVignette(sc);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ScreenScript), nameof(ScreenScript.OnEnable))]
+    [HarmonyPrefix]
+    static void DisableScreenScriptVignettePre(ScreenScript __instance)
+    {
+        DisableVignette(__instance);
     }
 
     [HarmonyPatch(typeof(ScreenScript), nameof(ScreenScript.SetParameter))]
-    [HarmonyPrefix]
-    static void SetParameter(ref float _wipe, Texture _maskTex, Vector4 _maskOffset, float _rate, Color _effectColor, float _effectSky)
+    [HarmonyPatch(typeof(ScreenScript), nameof(ScreenScript.EnableVignetteFilter))]
+    [HarmonyPostfix]
+    static void DisableScreenScriptVignettePost(ScreenScript __instance)
     {
-        if (_effectColor.r == 0f && _effectColor.g == 0f && _effectColor.b == 0f && _maskTex == null)
-        {
-            _wipe = 0f;
-        }
+        DisableVignette(__instance);
     }
 }

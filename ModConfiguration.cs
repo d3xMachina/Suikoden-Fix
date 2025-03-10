@@ -13,6 +13,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> TitleMenuTransitionFactor;
     public ConfigEntry<float> ZoneTransitionFactor;
     public ConfigEntry<bool> DisableVignette;
+    public ConfigEntry<bool> DisableMaskedVignette;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
@@ -84,7 +85,14 @@ public sealed class ModConfiguration
              "Visual",
              "DisableVignette",
              false,
-             "Disable the vignette effect that is displayed in some scenes."
+             "Disable the vignette effect (darkened corners) that is displayed in some scenes."
+        );
+
+        DisableMaskedVignette = _config.Bind(
+             "Visual",
+             "DisableMaskedVignette",
+             false,
+             "Disable the vignette effect (darkened corners) for vignette with a custom appearance that is displayed in some scenes (in the night time intro scene of Suikoden 2 for example)."
         );
 
         DisableDiagonalMovements = _config.Bind(

@@ -42,7 +42,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(SkipIntroPatch));
         }
 
-        if (Config.DisableVignette.Value)
+        if (Config.DisableVignette.Value || Config.DisableMaskedVignette.Value)
         {
             ApplyPatch(typeof(DisableVignettePatch));
         }
