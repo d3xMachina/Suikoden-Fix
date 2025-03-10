@@ -32,11 +32,15 @@ public sealed class ModComponent : MonoBehaviour
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
 
-    private bool _isSaveAnywhere = false;
     private bool _wasSelectPressed = false;
     private bool _wasSpeedHackPressed = false;
+    private bool _wasBattleSpeedPressed = false;
+
+    private bool _isSaveAnywhere = false;
     private bool _speedHackToggle = false;
-    private bool _speedHackEnabled = true;
+    private bool _speedHackChange = false;
+    private bool _battleSpeedChange = false;
+    private int _battleSpeed = 0;
 
     private string _sceneName = "";
     private Game _activeGame = Game.None;
@@ -45,7 +49,6 @@ public sealed class ModComponent : MonoBehaviour
 
     public bool InvertDash = false;
     public bool LastDash = false;
-
     public uint LastPadData = 0;
     public uint LastPadDataSanitized = 0;
 
@@ -138,7 +141,7 @@ public sealed class ModComponent : MonoBehaviour
             }
 
             UpdateSaveAnywhere();
-            UpdateSpeedHack();
+            UpdateGameSpeed();
 
             _prevChapter = _chapter;
         }
@@ -232,27 +235,16 @@ public sealed class ModComponent : MonoBehaviour
         var gamepad = Gamepad.current;
 
         bool isSelectPressed = (gamepad?.selectButton.isPressed ?? false) || GRInputManager.IsKeyPress(Key.F1);
-        if (isSelectPressed && !_wasSelectPressed)
-        {
-            _isSaveAnywhere = true;
-        }
-        else
-        {
-            _isSaveAnywhere = false;
-        }
-
+        _isSaveAnywhere = isSelectPressed && !_wasSelectPressed;
         _wasSelectPressed = isSelectPressed;
         
-        if (!Plugin.Config.NoSpeedHackInBattle.Value || _prevChapter != Chapter.Battle)
-        {
-            bool isPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
-            if (isPressed && !_wasSpeedHackPressed)
-            {
-                _speedHackToggle = !_speedHackToggle;
-            }
+        bool isSpeedHackPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
+        _speedHackChange = isSpeedHackPressed && !_wasSpeedHackPressed;
+        _wasSpeedHackPressed = isSpeedHackPressed;
 
-            _wasSpeedHackPressed = isPressed;
-        }
+        bool isBattleSpeedPressed = GRInputManager.IsPress(GRInputManager.Type.BattleSpeed);
+        _battleSpeedChange = isBattleSpeedPressed && !_wasBattleSpeedPressed;
+        _wasBattleSpeedPressed = isBattleSpeedPressed;
     }
 
     private void UpdateSaveAnywhere()
@@ -309,7 +301,7 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private void SetSpeedIcon(bool show)
+    private void SetSpeedIcon(int speed)
     {
         // Show speed icon in bottom right
         if (_activeGame == Game.GSD1)
@@ -317,9 +309,9 @@ public sealed class ModComponent : MonoBehaviour
             var uiBattleManager = GSD1.UIBattleManager.Instance;
             if (uiBattleManager != null)
             {
-                if (show)
+                if (speed > 0)
                 {
-                    uiBattleManager.ShowSpeedIconUI(1);
+                    uiBattleManager.ShowSpeedIconUI(speed);
                 }
                 else
                 {
@@ -332,9 +324,9 @@ public sealed class ModComponent : MonoBehaviour
             var uiBattleManager = GSD2.UIBattleManager.Instance;
             if (uiBattleManager != null)
             {
-                if (show)
+                if (speed > 0)
                 {
-                    uiBattleManager.ShowSpeedIconUI(1);
+                    uiBattleManager.ShowSpeedIconUI(speed);
                 }
                 else
                 {
@@ -344,58 +336,80 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private void UpdateSpeedHack()
+    private void UpdateGameSpeed()
     {
-        if (Plugin.Config.SpeedHackFactor.Value <= 1)
+        bool speedHackEnabled = Plugin.Config.SpeedHackFactor.Value > 1;
+
+        if ((!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value) ||
+            _activeGame == Game.None)
         {
             return;
         }
 
-        UpdateSpeedHackState();
-
         int factor = 1;
         var pitchType = SoundManager.PitchType.x1;
+        var speedIcon = 0;
 
-        if (_speedHackEnabled)
+        if (_chapter == Chapter.Battle &&
+            (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
         {
+            if (_chapter != _prevChapter && !Plugin.Config.RememberBattleSpeed.Value)
+            {
+                _battleSpeed = 0;
+            }
+            else if (_battleSpeedChange)
+            {
+                _battleSpeed = (_battleSpeed + 1) % 2;
+                // TODO: check when you can use battle speed 2
+            }
+
+            switch (_battleSpeed)
+            {
+                default:
+                    factor = 1;
+                    break;
+                case 1:
+                    factor = 2;
+                    break;
+                case 2:
+                    factor = 4;
+                    break;
+            }
+
+            pitchType = (SoundManager.PitchType)_battleSpeed;
+            speedIcon = _battleSpeed;
+        }
+        else if (speedHackEnabled && IsSpeedHackSafe())
+        {
+            if (_speedHackChange || (_chapter == Chapter.Battle && _battleSpeedChange))
+            {
+                _speedHackToggle = !_speedHackToggle;
+            }
+
             if (_speedHackToggle)
             {
                 factor = Plugin.Config.SpeedHackFactor.Value;
                 pitchType = SoundManager.PitchType.x3;
-            }
-            else
-            {
-                factor = 1;
-                pitchType = SoundManager.PitchType.x1;
+                speedIcon = 1;
             }
         }
 
-        if (_activeGame != Game.None)
-        {
-            // Reset to x1 when entering battle with NoSpeedHackInBattle
-            if (!Plugin.Config.NoSpeedHackInBattle.Value ||
-                _chapter != Chapter.Battle ||
-                _prevChapter != Chapter.Battle)
-            {
-                SetFrameSkip(factor);
-                SoundManager.SetPitchType(pitchType);
-                SetSpeedIcon(factor > 1);
-            }
-        }
+        SetFrameSkip(factor);
+        SoundManager.SetPitchType(pitchType);
+        SetSpeedIcon(speedIcon);
     }
 
-    private void UpdateSpeedHackState()
+    private bool IsSpeedHackSafe()
     {
-        _speedHackEnabled = true;
+        bool safe = true;
 
         // Avoid skipping frames on menus to avoid skipped inputs
 
-        if ((Plugin.Config.NoSpeedHackInBattle.Value && _chapter == Chapter.Battle) ||
-            _chapter == Chapter.Title ||
+        if (_chapter == Chapter.Title ||
             _chapter == Chapter.GameOver ||
             IsInShop)
         {
-            _speedHackEnabled = false;
+            safe = false;
         }
         else if (_activeGame == Game.GSD1)
         {
@@ -409,7 +423,7 @@ public sealed class ModComponent : MonoBehaviour
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    _speedHackEnabled = false;
+                    safe = false;
                 }
             }
         }
@@ -425,9 +439,11 @@ public sealed class ModComponent : MonoBehaviour
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    _speedHackEnabled = false;
+                    safe = false;
                 }
             }
         }
+
+        return safe;
     }
 }

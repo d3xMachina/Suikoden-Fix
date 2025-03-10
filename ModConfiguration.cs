@@ -22,6 +22,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
     public ConfigEntry<string> WindowBGColor;
+    public ConfigEntry<bool> RememberBattleSpeed;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -123,7 +124,7 @@ public sealed class ModConfiguration
 
         NoSpeedHackInBattle = _config.Bind(
              "Skip",
-             "NoSpeedhackInBattle",
+             "NoSpeedHackInBattle",
              false,
              "Disable the speedhack in battle. Only relevant when using SpeedHackFactor."
         );
@@ -147,6 +148,13 @@ public sealed class ModConfiguration
              "WindowBGColor",
              "",
              "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)"
+        );
+
+        RememberBattleSpeed = _config.Bind(
+             "Misc",
+             "RememberBattleSpeed",
+             false,
+             "Remember the battle speed between battles."
         );
     }
 }

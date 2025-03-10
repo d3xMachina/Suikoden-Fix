@@ -29,6 +29,9 @@ public partial class Plugin : BasePlugin
 
     private void ApplyPatches()
     {
+        bool fastTransition = false;
+        bool disableBattleSpeedChange = false;
+
         if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0)
         {
             ApplyPatch(typeof(FrameratePatch));
@@ -53,8 +56,6 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(DisableFootStepSoundPatch));
         }
-
-        bool fastTransition = false;
 
         if (Config.ZoneTransitionFactor.Value >= 0f)
         {
@@ -87,6 +88,17 @@ public partial class Plugin : BasePlugin
         if (Config.SpeedHackFactor.Value > 1)
         {
             ApplyPatch(typeof(SpeedHackPatch));
+            disableBattleSpeedChange = true;
+        }
+
+        if (Config.RememberBattleSpeed.Value)
+        {
+            disableBattleSpeedChange = true;
+        }
+
+        if (disableBattleSpeedChange)
+        {
+            ApplyPatch(typeof(DisableBattleSpeedChangePatch));
         }
 
         if (Config.DisableMessageWindowSound.Value)
