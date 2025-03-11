@@ -27,6 +27,8 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> ClassicMode;
     public ConfigEntry<bool> ExitApplication;
     public ConfigEntry<bool> EditSave;
+    public ConfigEntry<float> PlayerDamageMultiplier;
+    public ConfigEntry<float> MonsterDamageMultiplier;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -187,6 +189,20 @@ public sealed class ModConfiguration
              "EditSave",
              false,
              "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (filenames start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
+        );
+
+        PlayerDamageMultiplier = _config.Bind(
+             "Cheat",
+             "PlayerDamageMultiplier",
+             1f,
+             "Multiply the damage of your party members."
+        );
+
+        MonsterDamageMultiplier = _config.Bind(
+             "Cheat",
+             "MonsterDamageMultiplier",
+             1f,
+             "Multiply the damage of enemies."
         );
     }
 }

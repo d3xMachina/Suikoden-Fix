@@ -125,6 +125,11 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(EditSavePatch));
         }
+        
+        if (Config.PlayerDamageMultiplier.Value != 1f || Config.MonsterDamageMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(DamageMultiplierPatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }
