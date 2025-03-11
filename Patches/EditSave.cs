@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -28,6 +29,19 @@ public class EditSavePatch
         return json;
     }
 
+    static string GetDecryptedSaveName(string path)
+    {
+        var fileName = Path.GetFileName(path);
+
+        if (fileName.StartsWith("_sharetmpsave"))
+        {
+            return "";
+        }
+
+        var gameName = Directory.GetParent(path).Name;
+        return $"_decrypted_{gameName}_{fileName}.json";
+    }
+
     [HarmonyPatch(typeof(SystemSave), nameof(SystemSave.Save))]
     [HarmonyPostfix]
     static void Save(string path, string json, SystemSave.DataSize dataSize, Il2CppSystem.Action<bool> cb, bool is_consume)
@@ -36,18 +50,17 @@ public class EditSavePatch
 
         try
         {
-            fileName = System.IO.Path.GetFileName(path);
+            fileName = GetDecryptedSaveName(path);
             
-            if (!fileName.StartsWith("_sharetmpsave"))
+            if (fileName != "")
             {
-                fileName = "_decrypted_" + fileName + ".json";
                 json = FormatJson(json, true);
-                System.IO.File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
+                File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
 
                 Plugin.Log.LogInfo($"Saved decrypted save \"{fileName}\".");
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Plugin.Log.LogError($"Cannot save decrypted save \"{fileName}\": {ex.Message}.");
         }
@@ -62,15 +75,13 @@ public class EditSavePatch
 
         try
         {
-            fileName = System.IO.Path.GetFileName(path);
+            fileName = GetDecryptedSaveName(path);
 
-            if (!fileName.StartsWith("_sharetmpsave"))
+            if (fileName != "")
             {
-                fileName = "_decrypted_" + fileName + ".json";
-
-                if (System.IO.File.Exists(fileName) )
+                if (File.Exists(fileName) )
                 {
-                    var json = System.IO.File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+                    var json = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
                     json = FormatJson(json, false);
                     var saveData = SystemSave.HEADER + Encrypter.Encrypt(json, SystemSave.ENCRYPT_PASSWORD);
                     end.Invoke(saveData);
@@ -84,7 +95,7 @@ public class EditSavePatch
                 }
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Plugin.Log.LogError($"Cannot load decrypted save named \"{fileName}\": {ex.Message}. Fallback to steam save.");
         }
