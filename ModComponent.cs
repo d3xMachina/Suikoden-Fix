@@ -57,7 +57,7 @@ public sealed class ModComponent : MonoBehaviour
 
     public Patches.TransitionState transition = Patches.TransitionState.None;
     public bool IsEventMsgMWOpen = false;
-    public bool IsInShop = false;
+    public bool IsInSpecialMenu = false;
 
     public Color? WindowBGColor = null;
 
@@ -425,7 +425,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_chapter == Chapter.Title ||
             _chapter == Chapter.GameOver ||
-            IsInShop)
+            IsInSpecialMenu)
         {
             safe = false;
         }
