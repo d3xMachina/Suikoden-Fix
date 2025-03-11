@@ -135,6 +135,11 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(ExperienceMultiplierPatch));
         }
+        
+        if (Config.MoneyMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(MoneyMultiplierPatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }

@@ -30,6 +30,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> ExperienceMultiplier;
+    public ConfigEntry<float> MoneyMultiplier;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -211,6 +212,12 @@ public sealed class ModConfiguration
              "ExperienceMultiplier",
              1f,
              "Multiply the experience gained."
+
+        MoneyMultiplier = _config.Bind(
+             "Cheat",
+             "MoneyMultiplier",
+             1f,
+             "Multiply the money gained after a battle."
         );
     }
 }
