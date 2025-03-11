@@ -130,6 +130,11 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(DamageMultiplierPatch));
         }
+        
+        if (Config.ExperienceMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(ExperienceMultiplierPatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }

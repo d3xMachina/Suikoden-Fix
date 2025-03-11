@@ -29,6 +29,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> EditSave;
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
+    public ConfigEntry<float> ExperienceMultiplier;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -203,6 +204,13 @@ public sealed class ModConfiguration
              "MonsterDamageMultiplier",
              1f,
              "Multiply the damage of enemies."
+        );
+
+        ExperienceMultiplier = _config.Bind(
+             "Cheat",
+             "ExperienceMultiplier",
+             1f,
+             "Multiply the experience gained."
         );
     }
 }
