@@ -26,6 +26,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
     public ConfigEntry<bool> ExitApplication;
+    public ConfigEntry<bool> EditSave;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -179,6 +180,13 @@ public sealed class ModConfiguration
              "ExitApplication",
              true,
              "Allow you to exit the application by pressing the start button or the escape key on the title selection screen."
+        );
+
+        EditSave = _config.Bind(
+             "Misc",
+             "EditSave",
+             false,
+             "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (filenames start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
         );
     }
 }

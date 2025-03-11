@@ -120,6 +120,11 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(ExitApplicationPatch));
         }
+        
+        if (Config.EditSave.Value)
+        {
+            ApplyPatch(typeof(EditSavePatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }
