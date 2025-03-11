@@ -173,7 +173,7 @@ public sealed class ModConfiguration
         );
 
         ClassicMode = _config.Bind(
-             "Misc",
+             "Advanced",
              "ClassicMode",
              false,
              "Active the classic mode (PS1 visuals). This is a proof of concept, it is unfinished and many assets are missings."
@@ -187,7 +187,7 @@ public sealed class ModConfiguration
         );
 
         EditSave = _config.Bind(
-             "Misc",
+             "Advanced",
              "EditSave",
              false,
              "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (filenames start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
