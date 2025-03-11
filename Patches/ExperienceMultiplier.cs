@@ -8,30 +8,35 @@ namespace Suikoden_Fix.Patches;
 
 public class ExperienceMultiplierPatch
 {
+    static int MultiplyExperience(int experience)
+    {
+        return (int)MathF.Round(experience * Plugin.Config.ExperienceMultiplier.Value);;
+    }
+
     [HarmonyPatch(typeof(GSD1.BattleBase), nameof(GSD1.BattleBase.calc_exp))]
     [HarmonyPostfix]
-    static void GSD1_CalcExp()
+    static void GSD1_CalcExperience()
     {
-        var expExit = GSD1.BattleBase.exit_work?.exp;
-        if (expExit != null)
+        var expTable = GSD1.BattleBase.exit_work?.exp;
+        if (expTable != null)
         {
-            for (int i = 0; i < expExit.Length; ++i)
+            for (int i = 0; i < expTable.Length; ++i)
             {
-                expExit[i] = (int)MathF.Round(expExit[i] * Plugin.Config.ExperienceMultiplier.Value);
+                expTable[i] = MultiplyExperience(expTable[i]);
             }
         }
     }
 
     [HarmonyPatch(typeof(GSD2.BattleManager), nameof(GSD2.BattleManager.calc_exp))]
     [HarmonyPostfix]
-    static void GSD2_CalcExp(GSD2.BATTLE_WORK battle_work)
+    static void GSD2_CalcExperience(GSD2.BATTLE_WORK battle_work)
     {
-        var expExit = battle_work.exit_work?.exp;
-        if (expExit != null)
+        var expTable = battle_work.exit_work?.exp;
+        if (expTable != null)
         {
-            for (int i = 0; i < expExit.Length; ++i)
+            for (int i = 0; i < expTable.Length; ++i)
             {
-                expExit[i] = (int)MathF.Round(expExit[i] * Plugin.Config.ExperienceMultiplier.Value);
+                expTable[i] = MultiplyExperience(expTable[i]);
             }
         }
     }

@@ -169,7 +169,7 @@ public sealed class ModConfiguration
              "Misc",
              "RememberBattleSpeed",
              false,
-             "Remember the battle speed between battles."
+             "Remember the battle speed between battles. It will also disable the speedhack in battle like NoSpeedHackInBattle."
         );
 
         ClassicMode = _config.Bind(
@@ -197,21 +197,22 @@ public sealed class ModConfiguration
              "Cheat",
              "PlayerDamageMultiplier",
              1f,
-             "Multiply the damage of your party members."
+             "Multiply the damage of your party members in battle."
         );
 
         MonsterDamageMultiplier = _config.Bind(
              "Cheat",
              "MonsterDamageMultiplier",
              1f,
-             "Multiply the damage of enemies."
+             "Multiply the damage of enemies in battle."
         );
 
         ExperienceMultiplier = _config.Bind(
              "Cheat",
              "ExperienceMultiplier",
              1f,
-             "Multiply the experience gained."
+             "Multiply the experience gained after a battle."
+        );
 
         MoneyMultiplier = _config.Bind(
              "Cheat",
