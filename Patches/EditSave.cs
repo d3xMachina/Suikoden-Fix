@@ -12,10 +12,15 @@ public class EditSavePatch
 
         try
         {
-            fileName = "_decrypted_" + System.IO.Path.GetFileName(path) + ".json";
-            System.IO.File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
+            fileName = System.IO.Path.GetFileName(path);
+            
+            if (!fileName.StartsWith("_sharetmpsave"))
+            {
+                fileName = "_decrypted_" + fileName + ".json";
+                System.IO.File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
 
-            Plugin.Log.LogInfo($"Saved decrypted save \"{fileName}\".");
+                Plugin.Log.LogInfo($"Saved decrypted save \"{fileName}\".");
+            }
         }
         catch (System.Exception ex)
         {
@@ -32,20 +37,25 @@ public class EditSavePatch
 
         try
         {
-            fileName = "_decrypted_" + System.IO.Path.GetFileName(path) + ".json";
+            fileName = System.IO.Path.GetFileName(path);
 
-            if (System.IO.File.Exists(fileName) )
+            if (!fileName.StartsWith("_sharetmpsave"))
             {
-                var saveData = System.IO.File.ReadAllText(fileName, System.Text.Encoding.UTF8);
-                saveData = SystemSave.HEADER + Encrypter.Encrypt(saveData, SystemSave.ENCRYPT_PASSWORD);
-                end.Invoke(saveData);
-                saveLoaded = true;
+                fileName = "_decrypted_" + fileName + ".json";
 
-                Plugin.Log.LogInfo($"Loaded decrypted save \"{fileName}\".");
-            }
-            else
-            {
-                Plugin.Log.LogInfo($"No decrypted save found named \"{fileName}\".");
+                if (System.IO.File.Exists(fileName) )
+                {
+                    var saveData = System.IO.File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+                    saveData = SystemSave.HEADER + Encrypter.Encrypt(saveData, SystemSave.ENCRYPT_PASSWORD);
+                    end.Invoke(saveData);
+                    saveLoaded = true;
+
+                    Plugin.Log.LogInfo($"Loaded decrypted save \"{fileName}\".");
+                }
+                else
+                {
+                    Plugin.Log.LogInfo($"No decrypted save found named \"{fileName}\".");
+                }
             }
         }
         catch (System.Exception ex)
