@@ -26,6 +26,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
     public ConfigEntry<bool> ExitApplication;
+    public ConfigEntry<bool> ResetGame;
     public ConfigEntry<bool> EditSave;
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
@@ -185,6 +186,13 @@ public sealed class ModConfiguration
              "ExitApplication",
              true,
              "Allow you to exit the application by pressing the start button or the escape key on the title selection screen."
+        );
+
+        ResetGame = _config.Bind(
+             "Misc",
+             "ResetGame",
+             true,
+             "Allow you to go back to the title screen of the game by pressing start + left shoulder + right shoulder on the gamepad or Escape + R on the keyboard."
         );
 
         EditSave = _config.Bind(

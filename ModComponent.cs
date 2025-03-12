@@ -4,6 +4,7 @@ extern alias GSD2;
 using System;
 using System.Collections.Generic;
 using BepInEx;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Suikoden_Fix.Tools.Input;
 using UnityEngine;
@@ -37,7 +38,8 @@ public sealed class ModComponent : MonoBehaviour
         SaveAnywhere,
         SpeedHack,
         BattleSpeed,
-        ExitApplication
+        ExitApplication,
+        ResetApplication
     }
 
     public static ModComponent Instance { get; private set; }
@@ -48,7 +50,14 @@ public sealed class ModComponent : MonoBehaviour
         { CommandType.SaveAnywhere, new Command([ GamepadButton.Select ], [ Key.F1 ], []) },
         { CommandType.SpeedHack, new Command([ GamepadButton.RightTrigger ], [ Key.T ], []) },
         { CommandType.BattleSpeed, new Command([], [], [ GRInputManager.Type.BattleSpeed ]) },
-        { CommandType.ExitApplication, new Command([ GamepadButton.Start ], [ Key.Escape ], []) }
+        { CommandType.ExitApplication, new Command([ GamepadButton.Start ], [ Key.Escape ], []) },
+        { 
+            CommandType.ResetApplication, new Command(
+                [ GamepadButton.Start, GamepadButton.LeftShoulder, GamepadButton.RightShoulder ],
+                [ Key.Escape, Key.R],
+                [], true
+            )
+        }
     };
 
     private bool _speedHackToggle = false;
@@ -154,6 +163,7 @@ public sealed class ModComponent : MonoBehaviour
             }
 
             UpdateExitApplication();
+            UpdateResetApplication();
             UpdateSaveAnywhere();
             UpdateGameSpeed();
 
@@ -174,6 +184,31 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         Application.Quit();
+    }
+
+    public void UpdateResetApplication()
+    {
+        if (!Plugin.Config.ResetGame.Value || !_commands[CommandType.ResetApplication].IsOn || _chapter == Chapter.Title)
+        {
+            return;
+        }
+
+        if (_activeGame == Game.GSD1)
+        {
+            var chapterManager = GSD1.ChapterManager.GR1Instance;
+            if (chapterManager != null)
+            {
+                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD1.ReturnTitleChapter)));
+            }
+        }
+        else if (_activeGame == Game.GSD2)
+        {
+            var chapterManager = GSD2.GRChapterManager.GRInstance;
+            if (chapterManager != null)
+            {
+                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD2.ReturnTitleChapter)));
+            }
+        }
     }
 
     private void UpdateGameState()
