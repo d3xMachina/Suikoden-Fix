@@ -9,14 +9,20 @@ namespace Suikoden_Fix.Patches;
 public class InstantMessagePatch
 {
     static bool skipMessage = true;
+    static int messagePage = 0;
 
     // For GSD2, the Update code is skipped in GSD1
 
     [HarmonyPatch(typeof(UIMessageWindow), nameof(UIMessageWindow.Opened))]
-    [HarmonyPrefix]
-    static void Opened()
+    [HarmonyPostfix]
+    static void Opened(UIMessageWindow __instance)
     {
-        skipMessage = true;
+        messagePage = __instance.nowPage;
+
+        if (!__instance.isMessageInputWait)
+        {
+            skipMessage = true;
+        }
     }
 
     [HarmonyPatch(typeof(UIMessageWindow), nameof(UIMessageWindow.Update))]
@@ -25,10 +31,19 @@ public class InstantMessagePatch
     {
         __state = __instance.isTextAllDisp;
 
-        if (skipMessage)
+        if (!__instance.isMessageInputWait)
         {
-            __instance.isTextAllDisp = true; // same as doing an input in this context
-            skipMessage = false;
+            if (messagePage != __instance.nowPage)
+            {
+                skipMessage = true;
+                messagePage = __instance.nowPage;
+            }
+        
+            if (skipMessage)
+            {
+                __instance.isTextAllDisp = true; // same as doing an input in this context
+                skipMessage = false;
+            }
         }
     }
 
