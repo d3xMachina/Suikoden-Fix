@@ -2,10 +2,13 @@
 extern alias GSD2;
 
 using System;
+using System.Collections.Generic;
 using BepInEx;
 using Il2CppInterop.Runtime.Injection;
+using Suikoden_Fix.Tools.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 
 namespace Suikoden_Fix;
@@ -29,20 +32,27 @@ public sealed class ModComponent : MonoBehaviour
         GameOver
     }
 
+    public enum CommandType
+    {
+        SaveAnywhere,
+        SpeedHack,
+        BattleSpeed,
+        ExitApplication
+    }
+
     public static ModComponent Instance { get; private set; }
     private bool _isDisabled;
 
-    private bool _wasSelectPressed = false;
-    private bool _wasSpeedHackPressed = false;
-    private bool _wasBattleSpeedPressed = false;
-    private bool _wasExitApplicationPressed = false;
+    private readonly Dictionary<CommandType, Command> _commands = new()
+    {
+        { CommandType.SaveAnywhere, new Command([ GamepadButton.Select ], [ Key.F1 ], []) },
+        { CommandType.SpeedHack, new Command([ GamepadButton.RightTrigger ], [ Key.T ], []) },
+        { CommandType.BattleSpeed, new Command([], [], [ GRInputManager.Type.BattleSpeed ]) },
+        { CommandType.ExitApplication, new Command([ GamepadButton.Start ], [ Key.Escape ], []) }
+    };
 
-    private bool _isSaveAnywhere = false;
     private bool _speedHackToggle = false;
-    private bool _speedHackChange = false;
-    private bool _battleSpeedChange = false;
     private int _battleSpeed = 0;
-    private bool _exitApplication = false;
 
     private string _sceneName = "";
     private Game _activeGame = Game.None;
@@ -158,7 +168,7 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateExitApplication()
     {
-        if (!_exitApplication || TitleSelectStep != GSDTitleSelect.State.SelectContent)
+        if (!_commands[CommandType.ExitApplication].IsOn || TitleSelectStep != GSDTitleSelect.State.SelectContent)
         {
             return;
         }
@@ -246,28 +256,15 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateInputs()
     {
-        var gamepad = Gamepad.current;
-
-        bool isSelectPressed = (gamepad?.selectButton.isPressed ?? false) || GRInputManager.IsKeyPress(Key.F1);
-        _isSaveAnywhere = isSelectPressed && !_wasSelectPressed;
-        _wasSelectPressed = isSelectPressed;
-        
-        bool isSpeedHackPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
-        _speedHackChange = isSpeedHackPressed && !_wasSpeedHackPressed;
-        _wasSpeedHackPressed = isSpeedHackPressed;
-
-        bool isBattleSpeedPressed = GRInputManager.IsPress(GRInputManager.Type.BattleSpeed);
-        _battleSpeedChange = isBattleSpeedPressed && !_wasBattleSpeedPressed;
-        _wasBattleSpeedPressed = isBattleSpeedPressed;
-
-        bool isExitApplicationPressed = (gamepad?.startButton.isPressed ?? false) || GRInputManager.IsKeyPress(Key.Escape);
-        _exitApplication = isExitApplicationPressed && !_wasExitApplicationPressed;
-        _wasExitApplicationPressed = isExitApplicationPressed;
+        foreach (var command in _commands.Values)
+        {
+            command.Update();
+        }
     }
 
     private void UpdateSaveAnywhere()
     {
-        if (!Plugin.Config.SaveAnywhere.Value || !_isSaveAnywhere)
+        if (!Plugin.Config.SaveAnywhere.Value || !_commands[CommandType.SaveAnywhere].IsOn)
         {
             return;
         }
@@ -364,6 +361,9 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
+        bool speedHackChange = _commands[CommandType.SpeedHack].IsOn;
+        bool battleSpeedChange = _commands[CommandType.BattleSpeed].IsOn;
+
         int factor = 1;
         var pitchType = SoundManager.PitchType.x1;
         var speedIcon = 0;
@@ -375,7 +375,7 @@ public sealed class ModComponent : MonoBehaviour
             {
                 _battleSpeed = 0;
             }
-            else if (_battleSpeedChange)
+            else if (battleSpeedChange)
             {
                 _battleSpeed = (_battleSpeed + 1) % 3;
                 // TODO: check when you can use battle speed 2
@@ -399,7 +399,7 @@ public sealed class ModComponent : MonoBehaviour
         }
         else if (speedHackEnabled && IsSpeedHackSafe())
         {
-            if (_speedHackChange || (_chapter == Chapter.Battle && _battleSpeedChange))
+            if (speedHackChange || (_chapter == Chapter.Battle && battleSpeedChange))
             {
                 _speedHackToggle = !_speedHackToggle;
             }
