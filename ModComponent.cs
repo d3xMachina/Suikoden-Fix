@@ -63,22 +63,17 @@ public sealed class ModComponent : MonoBehaviour
     private bool _speedHackToggle = false;
     private int _battleSpeed = 0;
 
-    private string _sceneName = "";
     private Game _activeGame = Game.None;
     private Chapter _chapter = Chapter.None;
     private Chapter _prevChapter = Chapter.None;
+
+    /******* Values manipulated by patches ******/
+
     public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
-
-    public bool InvertDash = false;
-    public bool LastDash = false;
-    public uint LastPadData = 0;
-    public uint LastPadDataSanitized = 0;
-
-    public Patches.TransitionState transition = Patches.TransitionState.None;
-    public bool IsEventMsgMWOpen = false;
     public bool IsInSpecialMenu = false;
-
     public Color? WindowBGColor = null;
+
+    /********************************************/
 
     public ModComponent(IntPtr ptr) : base(ptr) { }
 
@@ -214,17 +209,17 @@ public sealed class ModComponent : MonoBehaviour
     private void UpdateGameState()
     {
         var scene = SceneManager.GetActiveScene();
-        _sceneName = scene.name;
+        var sceneName = scene.name;
 
-        if (_sceneName == "GSD1")
+        if (sceneName == "GSD1")
         {
             _activeGame = Game.GSD1;
         }
-        else if (_sceneName == "GSD2")
+        else if (sceneName == "GSD2")
         {
             _activeGame = Game.GSD2;
         }
-        else if (_sceneName == "Main")
+        else if (sceneName == "Main")
         {
             _activeGame = Game.None;
         }

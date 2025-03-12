@@ -17,15 +17,15 @@ public enum TransitionState
 
 public class FastTransitionPatch
 {
+    public static TransitionState Transition = TransitionState.None;
+
     static float ApplyTransitionFactor(float time)
     {
-        var transition = ModComponent.Instance.transition;
-
-        if (transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             var factor = 1f;
 
-            switch (transition)
+            switch (Transition)
             {
                 case TransitionState.Zone:
                     factor = Plugin.Config.ZoneTransitionFactor.Value;
@@ -60,7 +60,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FadeIn1(ref float time, Il2CppSystem.Action onEnd)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             time = ApplyTransitionFactor(time);
             //Plugin.Log.LogInfo($"FadeIn1: {time}s");
@@ -71,7 +71,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FadeIn2(ref float time)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             time = ApplyTransitionFactor(time);
             //Plugin.Log.LogInfo($"FadeIn2: {time}s");
@@ -82,7 +82,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FadeInHalf(ref float time)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             time = ApplyTransitionFactor(time);
             //Plugin.Log.LogInfo($"FadeInHalf: {time}s");
@@ -93,7 +93,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FadeOut(ref float time, Il2CppSystem.Action onEnd)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             time = ApplyTransitionFactor(time);
             //Plugin.Log.LogInfo($"FadeOut: {time}s");
@@ -104,7 +104,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FadeWhiteOut(ref float time, Il2CppSystem.Action onEnd)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             time = ApplyTransitionFactor(time);
             //Plugin.Log.LogInfo($"FadeWhiteOut: {time}s");
@@ -115,7 +115,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackIn(int timer)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackIn: timer={timer}");
@@ -126,7 +126,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackOut(int timer)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackOut: timer={timer}");
@@ -137,7 +137,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackIn(int pri, ref ushort timer)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackIn: pri={pri} timer={timer}");
@@ -148,7 +148,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackInHalf(int pri, ref ushort timer)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackInHalf: pri={pri} timer={timer}");
@@ -159,7 +159,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackOut(int pri, ref ushort timer, bool isReserve)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackOut: pri={pri} timer={timer}");
@@ -170,7 +170,7 @@ public class FastTransitionPatch
     [HarmonyPrefix]
     static void FilterBlackOutHalf(int pri, ref ushort timer, bool isReserve)
     {
-        if (ModComponent.Instance.transition != TransitionState.None)
+        if (Transition != TransitionState.None)
         {
             timer = ApplyTransitionFactor(timer);
             //Plugin.Log.LogInfo($"FilterBlackOutHalf: pri={pri} timer={timer}");
@@ -213,7 +213,7 @@ public class FastZoneTransitionPatch
     [HarmonyPrefix]
     static void Zone()
     {
-        ModComponent.Instance.transition = TransitionState.Zone;
+        FastTransitionPatch.Transition = TransitionState.Zone;
         //Plugin.Log.LogInfo("Zone");
     }
 
@@ -227,7 +227,7 @@ public class FastZoneTransitionPatch
     [HarmonyPostfix]
     static void ZonePost()
     {
-        ModComponent.Instance.transition = TransitionState.None;
+        FastTransitionPatch.Transition = TransitionState.None;
         //Plugin.Log.LogInfo("Zone Post");
     }
 }
@@ -240,7 +240,7 @@ public class FastLoadingTransitionPatch
     [HarmonyPrefix]
     static void Loading()
     {
-        ModComponent.Instance.transition = TransitionState.Loading;
+        FastTransitionPatch.Transition = TransitionState.Loading;
         //Plugin.Log.LogInfo("Loading");
     }
 
@@ -250,7 +250,7 @@ public class FastLoadingTransitionPatch
     [HarmonyPostfix]
     static void LoadingPost()
     {
-        ModComponent.Instance.transition = TransitionState.None;
+        FastTransitionPatch.Transition = TransitionState.None;
         //Plugin.Log.LogInfo("Loading Post");
     }
 }
@@ -262,7 +262,7 @@ public class FastTitleMenuTransitionPatch
     [HarmonyPrefix]
     static void TitleMenu()
     {
-        ModComponent.Instance.transition = TransitionState.TitleMenu;
+        FastTransitionPatch.Transition = TransitionState.TitleMenu;
         //Plugin.Log.LogInfo("TitleMenu");
     }
 
@@ -271,7 +271,7 @@ public class FastTitleMenuTransitionPatch
     [HarmonyPostfix]
     static void TitleMenuPost()
     {
-        ModComponent.Instance.transition = TransitionState.None;
+        FastTransitionPatch.Transition = TransitionState.None;
         //Plugin.Log.LogInfo("TitleMenu Post");
     }
 }

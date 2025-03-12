@@ -8,14 +8,17 @@ namespace Suikoden_Fix.Patches;
 
 public class DisableSoundEffectPatch
 {
+    public static bool IsEventMsgMWOpen = false;
+    public static bool IsECObjEfctCon = false;
+
     [HarmonyPatch(typeof(SoundManager), nameof(SoundManager.PlaySE), [typeof(string), typeof(int), typeof(float), typeof(bool)])]
     [HarmonyPrefix]
     static bool PlaySE(string clip, int channel, float delay, bool isLoop)
     {
         //Plugin.Log.LogWarning($"PlaySE: {clip}");
 
-        if (ModComponent.Instance.IsEventMsgMWOpen && clip == "SD_WOP" ||
-            ModComponent.Instance.IsECObjEfctCon && clip == "SD_HD_REACTION1")
+        if (IsEventMsgMWOpen && clip == "SD_WOP" ||
+            IsECObjEfctCon && clip == "SD_HD_REACTION1")
         {
             return false;
         }
@@ -30,14 +33,14 @@ public class DisableMessageWindowSoundPatch
     [HarmonyPrefix]
     static void GSD1_SetEventMsgMWOpen()
     {
-        ModComponent.Instance.IsEventMsgMWOpen = true;
+        DisableSoundEffectPatch.IsEventMsgMWOpen = true;
     }
 
     [HarmonyPatch(typeof(GSD1.Event_c), nameof(GSD1.Event_c.SetEventMsgMWOpen))]
     [HarmonyPostfix]
     static void GSD1_SetEventMsgMWOpenPost()
     {
-        ModComponent.Instance.IsEventMsgMWOpen = false;
+        DisableSoundEffectPatch.IsEventMsgMWOpen = false;
     }
 
     [HarmonyPatch(typeof(GSD2.WindowManager), nameof(GSD2.WindowManager.PlaySEMessageWindow))]
@@ -61,13 +64,13 @@ public class DisableReactionSoundPatch
     [HarmonyPrefix]
     static void GSD2_SetEventMsgMWOpen()
     {
-        ModComponent.Instance.IsECObjEfctCon = true;
+        DisableSoundEffectPatch.IsECObjEfctCon = true;
     }
 
     [HarmonyPatch(typeof(GSD2.EVENTCON), nameof(GSD2.EVENTCON.ECObjEfctCon))]
     [HarmonyPostfix]
     static void GSD2_SetEventMsgMWOpenPost()
     {
-        ModComponent.Instance.IsECObjEfctCon = false;
+        DisableSoundEffectPatch.IsECObjEfctCon = false;
     }
 }

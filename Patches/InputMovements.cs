@@ -15,26 +15,29 @@ public class InputMovementsPatch
         public bool ok;
     }
 
+    private static bool _invertDash = false;
+    private static bool _lastDash = false;
+    private static uint _lastPadData = 0;
+    private static uint _lastPadDataSanitized = 0;
+
     static uint HandleDash(uint padData, out bool dash)
     {
         const uint DashBit = 0x40;
 
         // Change the bit corresponding to the dash button
         dash = (DashBit & padData) != 0;
-        ref var lastDash = ref ModComponent.Instance.LastDash;
-        ref var InvertDash = ref ModComponent.Instance.InvertDash;
 
-        if (dash != lastDash)
+        if (dash != _lastDash)
         {
             if (!dash)
             {
-                InvertDash = !InvertDash;
+                _invertDash = !_invertDash;
             }
             
-            lastDash = dash;
+            _lastDash = dash;
         }
 
-        if (InvertDash)
+        if (_invertDash)
         {
             if (dash)
             {
@@ -59,31 +62,28 @@ public class InputMovementsPatch
         const uint PadXMask = 0xA000;
         const uint PadYMask = 0x5000;
 
-        ref var LastPadData = ref ModComponent.Instance.LastPadData;
-        ref var LastPadDataSanitized = ref ModComponent.Instance.LastPadDataSanitized;
-
-        if ((padData & PadMask) == LastPadData)
+        if ((padData & PadMask) == _lastPadData)
         {
             padData &= ~PadMask;
-            padData |= LastPadDataSanitized;
+            padData |= _lastPadDataSanitized;
         }
         else
         {
-            LastPadData = padData & PadMask;
+            _lastPadData = padData & PadMask;
 
             // 2 directions pressed, in case of irresolvable conflict we ignore the input, other priorize the most recent input
-            if ((LastPadData & PadXMask) != 0 && (LastPadData & PadYMask) != 0)
+            if ((_lastPadData & PadXMask) != 0 && (_lastPadData & PadYMask) != 0)
             {
                 // Irresolvable conflict as the previous input doesn't overlap
-                if ((LastPadDataSanitized & PadXMask) != (LastPadData & PadXMask) && (LastPadDataSanitized & PadYMask) != (LastPadData & PadYMask))
+                if ((_lastPadDataSanitized & PadXMask) != (_lastPadData & PadXMask) && (_lastPadDataSanitized & PadYMask) != (_lastPadData & PadYMask))
                 {
                     padData &= ~PadMask;
                 }
                 // Up-Right and Up-Left
-                else if ((LastPadData & UpBit) != 0 && (LastPadData & RightBit) != 0 ||
-                        (LastPadData & UpBit) != 0 && (LastPadData & LeftBit) != 0)
+                else if ((_lastPadData & UpBit) != 0 && (_lastPadData & RightBit) != 0 ||
+                        (_lastPadData & UpBit) != 0 && (_lastPadData & LeftBit) != 0)
                 {
-                    if ((LastPadDataSanitized & UpBit) != 0)
+                    if ((_lastPadDataSanitized & UpBit) != 0)
                     {
                         padData &= ~PadYMask;
                     }
@@ -95,7 +95,7 @@ public class InputMovementsPatch
                 // Down-Right and Down-Left
                 else
                 {
-                    if ((LastPadDataSanitized & DownBit) != 0)
+                    if ((_lastPadDataSanitized & DownBit) != 0)
                     {
                         padData &= ~PadYMask;
                     }
@@ -106,7 +106,7 @@ public class InputMovementsPatch
                 }
             }
 
-            LastPadDataSanitized = padData & PadMask;
+            _lastPadDataSanitized = padData & PadMask;
         }
 
         return padData;
@@ -180,7 +180,7 @@ public class InputMovementsPatch
             {
                 syswork.pad_dat = HandleDash(syswork.pad_dat, out var dash);
 
-                if (ModComponent.Instance.InvertDash)
+                if (_invertDash)
                 {
                     syswork.g_shu_dash = !dash;
                 }
