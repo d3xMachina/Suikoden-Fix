@@ -226,7 +226,7 @@ public sealed class ModConfiguration
              "Skip",
              "InstantMessage",
              false,
-             "(Suikoden 2 only) Display messages instantly."
+             "Display messages instantly."
         );
     }
 }
