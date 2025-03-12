@@ -140,6 +140,11 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(MoneyMultiplierPatch));
         }
+        
+        if (Config.InstantMessage.Value)
+        {
+            ApplyPatch(typeof(InstantMessagePatch));
+        }
 
         Log.LogInfo("Patches applied!");
     }

@@ -31,6 +31,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> ExperienceMultiplier;
     public ConfigEntry<float> MoneyMultiplier;
+    public ConfigEntry<bool> InstantMessage;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -219,6 +220,13 @@ public sealed class ModConfiguration
              "MoneyMultiplier",
              1f,
              "Multiply the money gained after a battle."
+        );
+
+        InstantMessage = _config.Bind(
+             "Skip",
+             "InstantMessage",
+             false,
+             "(Suikoden 2 only) Display messages instantly."
         );
     }
 }
