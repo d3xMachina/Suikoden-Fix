@@ -19,8 +19,7 @@ All features are optional.
 - Speed up the game. (speedhack)
 - Edit your saves.
 - Disable the speed up of the music when the battle speed change.
-- Disable footstep sounds.
-- Disable the sound when a message window appears.
+- Disable the sound when a message window appears, footstep sounds and startled sound effects.
 - Change the background color of some windows.
 - Adjust framerate and vsync.
 
