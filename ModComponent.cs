@@ -398,47 +398,50 @@ public sealed class ModComponent : MonoBehaviour
         var pitchType = SoundManager.PitchType.x1;
         var speedIcon = 0;
 
-        if (_chapter == Chapter.Battle &&
-            (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
+        if (IsSpeedHackSafe())
         {
-            if (_chapter != _prevChapter && !Plugin.Config.RememberBattleSpeed.Value)
+            if (_chapter == Chapter.Battle &&
+                (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
             {
-                _battleSpeed = 0;
-            }
-            else if (battleSpeedChange)
-            {
-                _battleSpeed = (_battleSpeed + 1) % 3;
-                // TODO: check when you can use battle speed 2
-            }
+                if (_chapter != _prevChapter && !Plugin.Config.RememberBattleSpeed.Value)
+                {
+                    _battleSpeed = 0;
+                }
+                else if (battleSpeedChange)
+                {
+                    _battleSpeed = (_battleSpeed + 1) % 3;
+                    // TODO: check when you can use battle speed 2
+                }
 
-            switch (_battleSpeed)
-            {
-                default:
-                    factor = 1;
-                    break;
-                case 1:
-                    factor = 2;
-                    break;
-                case 2:
-                    factor = 4;
-                    break;
-            }
+                switch (_battleSpeed)
+                {
+                    default:
+                        factor = 1;
+                        break;
+                    case 1:
+                        factor = 2;
+                        break;
+                    case 2:
+                        factor = 4;
+                        break;
+                }
 
-            pitchType = (SoundManager.PitchType)_battleSpeed;
-            speedIcon = _battleSpeed;
-        }
-        else if (speedHackEnabled && IsSpeedHackSafe())
-        {
-            if (speedHackChange || (_chapter == Chapter.Battle && battleSpeedChange))
-            {
-                _speedHackToggle = !_speedHackToggle;
+                pitchType = (SoundManager.PitchType)_battleSpeed;
+                speedIcon = _battleSpeed;
             }
-
-            if (_speedHackToggle)
+            else if (speedHackEnabled)
             {
-                factor = Plugin.Config.SpeedHackFactor.Value;
-                pitchType = SoundManager.PitchType.x3;
-                speedIcon = 1;
+                if (speedHackChange || (_chapter == Chapter.Battle && battleSpeedChange))
+                {
+                    _speedHackToggle = !_speedHackToggle;
+                }
+
+                if (_speedHackToggle)
+                {
+                    factor = Plugin.Config.SpeedHackFactor.Value;
+                    pitchType = SoundManager.PitchType.x3;
+                    speedIcon = 1;
+                }
             }
         }
 

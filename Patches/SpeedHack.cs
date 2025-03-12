@@ -173,6 +173,7 @@ public class SpeedHackPatch
     [HarmonyPatch(typeof(GSD1.Ms_ws_main_c), nameof(GSD1.Ms_ws_main_c.ms_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Sd_ws_main_c), nameof(GSD1.Sd_ws_main_c.sd_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Ws_ws_main_c), nameof(GSD1.Ws_ws_main_c.ws_coin_loop))]
+    [HarmonyPatch(typeof(GSD1.G1_w_main_c), nameof(GSD1.G1_w_main_c.war_loop))]
     [HarmonyPostfix]
     static void GSD1_Minigame(int __result)
     {
