@@ -252,7 +252,7 @@ public sealed class ModComponent : MonoBehaviour
         _isSaveAnywhere = isSelectPressed && !_wasSelectPressed;
         _wasSelectPressed = isSelectPressed;
         
-        bool isSpeedHackPressed =  (gamepad?.rightTrigger.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
+        bool isSpeedHackPressed =  (gamepad?.rightShoulder.isPressed ?? false) || GRInputManager.IsKeyPress(Key.T);
         _speedHackChange = isSpeedHackPressed && !_wasSpeedHackPressed;
         _wasSpeedHackPressed = isSpeedHackPressed;
 

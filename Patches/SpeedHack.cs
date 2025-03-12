@@ -30,7 +30,7 @@ public class SpeedHackPatch
                 {
                     InputBinding binding = action.bindings[i];
 
-                    if (binding.path.Contains("/rightTrigger"))
+                    if (binding.path.Contains("/rightShoulder"))
                     {
                         action.ChangeBinding(i).Erase();
                         Plugin.Log.LogInfo($"Removed binding {binding.path} in action '{action.name}' in map '{actionMap.name}'");
