@@ -214,14 +214,14 @@ public sealed class ModConfiguration
              "Cheat",
              "PlayerDamageMultiplier",
              1f,
-             "Multiply the damage of your party members in battle."
+             "(Suikoden 1 only) Multiply the damage of your party members in battle."
         );
 
         MonsterDamageMultiplier = _config.Bind(
              "Cheat",
              "MonsterDamageMultiplier",
              1f,
-             "Multiply the damage of enemies in battle."
+             "(Suikoden 1 only) Multiply the damage of enemies in battle."
         );
 
         ExperienceMultiplier = _config.Bind(

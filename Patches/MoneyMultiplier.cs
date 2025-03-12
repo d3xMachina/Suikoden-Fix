@@ -10,7 +10,7 @@ public class MoneyMultiplierPatch
 {
     static int MultiplyMoney(int money)
     {
-        return (int)MathF.Round(money * Plugin.Config.MoneyMultiplier.Value);;
+        return Math.Clamp((int)Math.Round(money * (double)Plugin.Config.MoneyMultiplier.Value), 0, int.MaxValue);
     }
 
     [HarmonyPatch(typeof(GSD1.BattleBase), nameof(GSD1.BattleBase.get_monster_okane))]

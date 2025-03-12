@@ -10,7 +10,7 @@ public class ExperienceMultiplierPatch
 {
     static int MultiplyExperience(int experience)
     {
-        return (int)MathF.Round(experience * Plugin.Config.ExperienceMultiplier.Value);;
+        return Math.Clamp((int)Math.Round(experience * (double)Plugin.Config.ExperienceMultiplier.Value), 0, int.MaxValue);
     }
 
     [HarmonyPatch(typeof(GSD1.BattleBase), nameof(GSD1.BattleBase.calc_exp))]

@@ -8,10 +8,12 @@ namespace Suikoden_Fix.Patches;
 
 public class DamageMultiplierPatch
 {
+    private const int MaxDamage = 9999;
+
     static int MultiplyDamage(int damage, bool isPlayer)
     {
         var multiplier = isPlayer ? Plugin.Config.PlayerDamageMultiplier.Value : Plugin.Config.MonsterDamageMultiplier.Value;
-        damage = (int)MathF.Round(damage * multiplier);
+        damage = Math.Clamp((int)Math.Round(damage * (double)multiplier), -MaxDamage, MaxDamage);
 
         return damage;
     }
@@ -63,6 +65,7 @@ public class DamageMultiplierPatch
         __result = GSD1_MultiplyDamage(__result, player_no);
     }
 
+    /*
     [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.CalcPlayerDamage))]
     [HarmonyPostfix]
     static void GSD2_CalcPlayerDamage(ref int __result)
@@ -76,4 +79,5 @@ public class DamageMultiplierPatch
     {
         __result = MultiplyDamage(__result, false);
     }
+    */
 }

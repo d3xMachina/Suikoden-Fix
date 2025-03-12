@@ -144,12 +144,12 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DamageMultiplierPatch));
         }
         
-        if (Config.ExperienceMultiplier.Value != 1f)
+        if (Config.ExperienceMultiplier.Value > 1f)
         {
             ApplyPatch(typeof(ExperienceMultiplierPatch));
         }
         
-        if (Config.MoneyMultiplier.Value != 1f)
+        if (Config.MoneyMultiplier.Value > 1f)
         {
             ApplyPatch(typeof(MoneyMultiplierPatch));
         }
