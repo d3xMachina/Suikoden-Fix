@@ -43,7 +43,7 @@ public class Command
     private bool CheckButtonCombination()
     {
         var gamepad = Gamepad.current;
-        return _buttons.Count > 0 && _buttons.All(button => gamepad[button].isPressed);
+        return gamepad != null && _buttons.Count > 0 && _buttons.All(button => gamepad[button].isPressed);
     }
 
     private bool CheckGameInputCombination()
@@ -59,7 +59,7 @@ public class Command
     private bool CheckAnyButtonPressed()
     {
         var gamepad = Gamepad.current;
-        return _buttons.Any(button => gamepad[button].isPressed);
+        return gamepad != null && _buttons.Any(button => gamepad[button].isPressed);
     }
 
     private bool CheckAnyGameInputPressed()
