@@ -31,6 +31,7 @@ public partial class Plugin : BasePlugin
     {
         bool fastTransition = false;
         bool disableBattleSpeedChange = false;
+        bool disableSoundEffect = false;
 
         if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0)
         {
@@ -104,6 +105,18 @@ public partial class Plugin : BasePlugin
         if (Config.DisableMessageWindowSound.Value)
         {
             ApplyPatch(typeof(DisableMessageWindowSoundPatch));
+            disableSoundEffect = true;
+        }
+
+        if (Config.DisableStartledSound.Value)
+        {
+            ApplyPatch(typeof(DisableReactionSoundPatch));
+            disableSoundEffect = true;
+        }
+
+        if (disableSoundEffect)
+        {
+            ApplyPatch(typeof(DisableSoundEffectPatch));
         }
 
         if (!Config.WindowBGColor.Value.IsNullOrWhiteSpace())

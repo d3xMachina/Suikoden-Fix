@@ -22,6 +22,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
+    public ConfigEntry<bool> DisableStartledSound;
     public ConfigEntry<string> WindowBGColor;
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
@@ -158,6 +159,13 @@ public sealed class ModConfiguration
              "DisableMessageWindowSound",
              false,
              "Don't play a sound effect when a message window appears."
+        );
+
+        DisableStartledSound = _config.Bind(
+             "Audio",
+             "DisableStartledSound",
+             false,
+             "Don't play a sound effect when a character is startled (with the icon above the head) in Suikoden 2."
         );
 
         WindowBGColor = _config.Bind(
