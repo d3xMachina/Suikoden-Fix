@@ -19,6 +19,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableFootStepSound;
     public ConfigEntry<bool> SaveAnywhere;
     public ConfigEntry<int> SpeedHackFactor;
+    public ConfigEntry<bool> SpeedHackAffectsGameTimer;
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
@@ -138,6 +139,13 @@ public sealed class ModConfiguration
              "SpeedHackFactor",
              1,
              "Increase the game speed by X when the R2 button or the T key is pressed. Minimum value of 1."
+        );
+
+        SpeedHackAffectsGameTimer = _config.Bind(
+             "Skip",
+             "SpeedHackAffectsGameTimer",
+             true,
+             "The speedhack will change the game timer (used for events) accordingly. It will not take effect in battle. Only relevant when using SpeedHackFactor."
         );
 
         NoSpeedHackInBattle = _config.Bind(

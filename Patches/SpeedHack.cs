@@ -8,6 +8,10 @@ namespace Suikoden_Fix.Patches;
 
 public class SpeedHackPatch
 {
+    private static bool _isInUpdateTimer = false;
+    private static float _lastRealtimeSinceStartup = 0f;
+    private static float _faketimeSinceStartup = 0f;
+
     [HarmonyPatch(typeof(GRInputManager), nameof(GRInputManager.Create))]
     [HarmonyPostfix]
     static void RemoveBinding(GRInputManager __instance, GRInputManager.Mode _mode)
@@ -173,10 +177,45 @@ public class SpeedHackPatch
     [HarmonyPatch(typeof(GSD1.Ms_ws_main_c), nameof(GSD1.Ms_ws_main_c.ms_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Sd_ws_main_c), nameof(GSD1.Sd_ws_main_c.sd_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Ws_ws_main_c), nameof(GSD1.Ws_ws_main_c.ws_coin_loop))]
-    [HarmonyPatch(typeof(GSD1.G1_w_main_c), nameof(GSD1.G1_w_main_c.war_loop))]
+    [HarmonyPatch(typeof(GSD1.G1_w_main_c), nameof(GSD1.G1_w_main_c.war_loop))] // War
     [HarmonyPostfix]
     static void GSD1_Minigame(int __result)
     {
         ModComponent.Instance.IsInSpecialMenu = __result != 0;
+    }
+
+    // This returns the elapsed time since the last call to this function
+    [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.main_initialize))]
+    [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.update_game_timer))]
+    [HarmonyPatch(typeof(GSD2.GRChapterManager), nameof(GSD2.GRChapterManager.G2_Count_Up))]
+    [HarmonyPrefix]
+    static void UpdateGameTimer()
+    {
+        _isInUpdateTimer = true;
+    }
+
+    [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.main_initialize))]
+    [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.update_game_timer))]
+    [HarmonyPatch(typeof(GSD2.GRChapterManager), nameof(GSD2.GRChapterManager.G2_Count_Up))]
+    [HarmonyPostfix]
+    static void UpdateGameTimerPost()
+    {
+        _isInUpdateTimer = false;
+    }
+
+    [HarmonyPatch(typeof(UnityEngine.Time), nameof(UnityEngine.Time.realtimeSinceStartup), MethodType.Getter)]
+    [HarmonyPostfix]
+    static void GetTimeSinceStartup(ref float __result)
+    {
+        var elapsed = __result - _lastRealtimeSinceStartup;
+        _faketimeSinceStartup += elapsed * ModComponent.Instance.GameTimerMultiplier;
+        _lastRealtimeSinceStartup = __result;
+
+        // Unity methods are only accessed from 1 thread so no need to check the thread id with the pinvoke method GetCurrentWin32ThreadId()
+        if (_isInUpdateTimer)
+        {
+            //Plugin.Log.LogWarning($"Real Time={__result} Fake Time={_faketimeSinceStartup}");
+            __result = _faketimeSinceStartup;
+        }
     }
 }

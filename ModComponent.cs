@@ -72,6 +72,7 @@ public sealed class ModComponent : MonoBehaviour
     public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
     public bool IsInSpecialMenu = false;
     public Color? WindowBGColor = null;
+    public int GameTimerMultiplier = 1;
 
     /********************************************/
 
@@ -448,6 +449,7 @@ public sealed class ModComponent : MonoBehaviour
         SetFrameSkip(factor);
         SoundManager.SetPitchType(pitchType);
         SetSpeedIcon(speedIcon);
+        SetGameTimerMultiplier(factor);
     }
 
     private bool IsSpeedHackSafe()
@@ -496,5 +498,16 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         return safe;
+    }
+
+    private void SetGameTimerMultiplier(int factor)
+    {
+        if (!Plugin.Config.SpeedHackAffectsGameTimer.Value)
+        {
+            return;
+        }
+
+        // don't speedup the game timer during battle like the base game
+        GameTimerMultiplier = _chapter ==  Chapter.Battle ? 1 : factor;
     }
 }
