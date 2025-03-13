@@ -76,7 +76,7 @@ public class InstantMessagePatch
 
     [HarmonyPatch(typeof(GSD1.Event_c), nameof(GSD1.Event_c.chkBottanWait))]
     [HarmonyPostfix]
-    static void GSD1_CheckButton(uint __state)
+    static void GSD1_CheckButtonPost(uint __state)
     {
         var sysWork = GSD1.Event_c.sys_work;
         if (sysWork == null)
@@ -85,5 +85,32 @@ public class InstantMessagePatch
         }
 
         sysWork.PadTrig = __state; // restore input state
+    }
+
+    [HarmonyPatch(typeof(GSD1.W_serifu_c), nameof(GSD1.W_serifu_c.war_WriteSerifuWindow))]
+    [HarmonyPrefix]
+    static void GSD1_CheckButtonWar(GSD1.W_serifu_c __instance, ref uint __state)
+    {
+        var sysWork = GSD1.Event_c.sys_work;
+        if (sysWork == null)
+        {
+            return;
+        }
+
+        __state = sysWork.PadTrig;
+        sysWork.PadData |= 0x20; // simulate a Confirm input
+    }
+
+    [HarmonyPatch(typeof(GSD1.W_serifu_c), nameof(GSD1.W_serifu_c.war_WriteSerifuWindow))]
+    [HarmonyPostfix]
+    static void GSD1_CheckButtonWarPost(uint __state)
+    {
+        var sysWork = GSD1.Event_c.sys_work;
+        if (sysWork == null)
+        {
+            return;
+        }
+
+        sysWork.PadData = __state; // restore input state
     }
 }
