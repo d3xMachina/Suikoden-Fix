@@ -38,6 +38,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="build\**" />
+    <EmbeddedResource Remove="build\**" />
+    <None Remove="build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove=".gitignore" />
     <None Remove="LICENSE.txt" />
   </ItemGroup>
