@@ -15,7 +15,7 @@
     <GamePath Condition="'$(GamePath)' == ''">$([MSBuild]::GetRegistryValueFromView('$(GameRegistryPath)', 'InstallLocation', null, RegistryView.Registry64))</GamePath>
     <OutputPath>$(GamePath)\BepInEx\plugins\</OutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<ZipFileName>$(ProjectDir)build\$(MSBuildProjectName).zip</ZipFileName>
+	<ZipFileName>$(MSBuildProjectName).zip</ZipFileName>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -142,9 +142,9 @@
     <Error Condition="!Exists('$(PublishDir)')" Text="PublishDir '$(PublishDir)' does not exist!" />
 
     <!-- Create the ZIP file using PowerShell (Windows) or zip (non-Windows) -->
-    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -NoProfile -Command &quot;Get-ChildItem -Path '$(PublishDir)' -Exclude '$(MSBuildProjectName).deps.json' | Compress-Archive -DestinationPath '$(ZipFileName)' -Force&quot;" />
-    <Exec Condition="'$(OS)' != 'Windows_NT'" Command="zip -r '$(ZipFileName)' '$(PublishDir)' -x '$(MSBuildProjectName).deps.json'" />
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -NoProfile -Command &quot;Get-ChildItem -Path '$(PublishDir)' -Exclude '$(MSBuildProjectName).deps.json', '$(ZipFileName)' | Compress-Archive -DestinationPath '$(ProjectDir)build\$(ZipFileName)' -Force&quot;" />
+    <Exec Condition="'$(OS)' != 'Windows_NT'" Command="zip -r '$(ProjectDir)build\$(ZipFileName)' '$(PublishDir)' -x '$(MSBuildProjectName).deps.json' '$(ZipFileName)'" />
 
-    <Message Text="Zipped publish output to $(ZipFileName)" Importance="high" />
+    <Message Text="Zipped publish output to $(ProjectDir)build\$(ZipFileName)" Importance="high" />
   </Target>
 </Project>
