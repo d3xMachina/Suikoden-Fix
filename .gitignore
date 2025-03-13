@@ -6,3 +6,4 @@ Release/
 Debug/
 .vs/
 obj/
+build/

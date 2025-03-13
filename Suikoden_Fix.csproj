@@ -15,6 +15,7 @@
     <GamePath Condition="'$(GamePath)' == ''">$([MSBuild]::GetRegistryValueFromView('$(GameRegistryPath)', 'InstallLocation', null, RegistryView.Registry64))</GamePath>
     <OutputPath>$(GamePath)\BepInEx\plugins\</OutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<ZipFileName>$(ProjectDir)build\$(MSBuildProjectName).zip</ZipFileName>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -28,7 +29,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -39,66 +40,106 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>$(GamePath)\BepInEx\core\0Harmony.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="BepInEx.Core">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.Core.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="BepInEx.Unity.IL2CPP">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="BepInEx.Preloader.Core">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.Preloader.Core.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>$(GamePath)\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="GSD1">
       <HintPath>$(GamePath)\BepInEx\interop\GSD1.dll</HintPath>
+	  <Private>false</Private>
       <Aliases>GSD1</Aliases>
     </Reference>
     <Reference Include="GSD2">
       <HintPath>$(GamePath)\BepInEx\interop\GSD2.dll</HintPath>
+	  <Private>false</Private>
       <Aliases>GSD2</Aliases>
     </Reference>
     <Reference Include="GSDShare">
       <HintPath>$(GamePath)\BepInEx\interop\GSDShare.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="FrameWork">
       <HintPath>$(GamePath)\BepInEx\interop\FrameWork.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>$(GamePath)\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Il2CppSystem">
       <HintPath>$(GamePath)\BepInEx\interop\Il2CppSystem.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Il2CppSystem.Core">
       <HintPath>$(GamePath)\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="ShareUI">
       <HintPath>$(GamePath)\BepInEx\interop\ShareUI.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Unity.Addressables">
       <HintPath>$(GamePath)\BepInEx\interop\Unity.Addressables.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="Unity.InputSystem">
       <HintPath>$(GamePath)\BepInEx\interop\Unity.InputSystem.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.InputModule">
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.InputModule.dll</HintPath>
+	  <Private>false</Private>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+
+  <ItemGroup>
+	<ContentWithTargetPath Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  <TargetPath>%(Filename)%(Extension)</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+	
+  <!-- Custom target to zip the output after publish -->
+  <Target Name="ZipOutputAfterPublish" AfterTargets="Publish">
+    <Message Text="PublishDir: $(PublishDir)" Importance="high" />
+    <Message Text="ZipFileName: $(ZipFileName)" Importance="high" />
+
+    <Error Condition="!Exists('$(PublishDir)')" Text="PublishDir '$(PublishDir)' does not exist!" />
+
+    <!-- Create the ZIP file using PowerShell (Windows) or zip (non-Windows) -->
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -NoProfile -Command &quot;Get-ChildItem -Path '$(PublishDir)' -Exclude '$(MSBuildProjectName).deps.json' | Compress-Archive -DestinationPath '$(ZipFileName)' -Force&quot;" />
+    <Exec Condition="'$(OS)' != 'Windows_NT'" Command="zip -r '$(ZipFileName)' '$(PublishDir)' -x '$(MSBuildProjectName).deps.json'" />
+
+    <Message Text="Zipped publish output to $(ZipFileName)" Importance="high" />
+  </Target>
 </Project>
