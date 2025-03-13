@@ -13,7 +13,7 @@ public class DamageMultiplierPatch
     static int MultiplyDamage(int damage, bool isPlayer)
     {
         var multiplier = isPlayer ? Plugin.Config.PlayerDamageMultiplier.Value : Plugin.Config.MonsterDamageMultiplier.Value;
-        damage = Math.Clamp((int)Math.Round(damage * (double)multiplier), -MaxDamage, MaxDamage);
+        damage = (int)Math.Clamp(Math.Round(damage * (double)multiplier), 0, MaxDamage);
 
         return damage;
     }
@@ -65,8 +65,12 @@ public class DamageMultiplierPatch
         __result = GSD1_MultiplyDamage(__result, player_no);
     }
 
-    /*
     [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.CalcPlayerDamage))]
+    [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.PlayerCalcMagicDamage))]
+    [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.PlayerCalcBouhatuDamage))]
+    [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.PlayerClacCombMagicDamage))]
+    // Already multiplied by CalcPlayerDamage
+    // [HarmonyPatch(typeof(GSD2.BattlePlayerCharacter), nameof(GSD2.BattlePlayerCharacter.PlayerCalcSpcDamage))]
     [HarmonyPostfix]
     static void GSD2_CalcPlayerDamage(ref int __result)
     {
@@ -74,10 +78,11 @@ public class DamageMultiplierPatch
     }
 
     [HarmonyPatch(typeof(GSD2.BattleMonsterCharacter), nameof(GSD2.BattleMonsterCharacter.CalcMonsterDamage))]
+    [HarmonyPatch(typeof(GSD2.BattleMonsterCharacter), nameof(GSD2.BattleMonsterCharacter.CalcMonsterHangekiDamage))]
+    [HarmonyPatch(typeof(GSD2.boss_las), nameof(GSD2.boss_las.CalcMonsterDamageLast))]
     [HarmonyPostfix]
     static void GSD2_CalcMonsterDamage(ref int __result)
     {
         __result = MultiplyDamage(__result, false);
     }
-    */
 }
