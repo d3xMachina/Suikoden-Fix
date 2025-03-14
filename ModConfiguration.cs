@@ -33,6 +33,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> ExperienceMultiplier;
+    public ConfigEntry<float> LootMultiplier;
     public ConfigEntry<float> MoneyMultiplier;
     public ConfigEntry<bool> InstantMessage;
 
@@ -244,6 +245,13 @@ public sealed class ModConfiguration
              "MoneyMultiplier",
              1f,
              "Multiply the money gained after a battle."
+        );
+
+        LootMultiplier = _config.Bind(
+             "Cheat",
+             "LootMultiplier",
+             1f,
+             "Multiply the chance to loot an item after a battle. A value of 100 will guarantee the monster will drop its items (if it has items it can drop)."
         );
 
         InstantMessage = _config.Bind(

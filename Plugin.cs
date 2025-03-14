@@ -154,6 +154,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(MoneyMultiplierPatch));
         }
         
+        if (Config.LootMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(LootMultiplierPatch));
+        }
+        
         if (Config.InstantMessage.Value)
         {
             ApplyPatch(typeof(InstantMessagePatch));
