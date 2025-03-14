@@ -14,4 +14,11 @@ public class ClassicModePatch
     {
         isHD = false;
     }
+
+    [HarmonyPatch(typeof(ShareSaveData), nameof(ShareSaveData.SetHDMode))]
+    [HarmonyPrefix]
+    static void AlwaysSaveHDMode(SystemObject.Mode mode, ref bool flag)
+    {
+        flag = true;
+    }
 }
