@@ -164,6 +164,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InstantMessagePatch));
         }
 
+        if (Config.EncounterRateMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(EncounterRatePatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

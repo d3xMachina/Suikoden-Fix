@@ -24,7 +24,7 @@ public class LootMultiplierPatch
         }
         else
         {
-            newChance = Math.Clamp(Math.Round(chance * multiplier), 0, 100);
+            newChance = Math.Clamp(Math.Round(newChance), 0, 100);
         }
 
         return (byte)newChance;

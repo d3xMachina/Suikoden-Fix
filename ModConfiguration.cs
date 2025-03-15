@@ -34,6 +34,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> ExperienceMultiplier;
     public ConfigEntry<float> LootMultiplier;
+    public ConfigEntry<float> EncounterRateMultiplier;
     public ConfigEntry<float> MoneyMultiplier;
     public ConfigEntry<bool> InstantMessage;
 
@@ -252,6 +253,13 @@ public sealed class ModConfiguration
              "LootMultiplier",
              1f,
              "Multiply the chance to loot an item after a battle. A value of 100 will guarantee the monster will drop its items (if it has items it can drop)."
+        );
+
+        EncounterRateMultiplier = _config.Bind(
+             "Cheat",
+             "EncounterRateMultiplier",
+             1f,
+             "(Suikoden 2 only) Multiply the chances to get into a battle when walking. A value of 0 will disable encounters and 512 will guarantee you the highest probability."
         );
 
         InstantMessage = _config.Bind(
