@@ -259,7 +259,7 @@ public sealed class ModConfiguration
              "Cheat",
              "EncounterRateMultiplier",
              1f,
-             "(Suikoden 2 only) Multiply the chances to get into a battle when walking. A value of 0 will disable encounters and 512 will guarantee you the highest probability."
+             "Multiply the chances to get into a battle when walking. A value of 0 will disable encounters and 512 will guarantee you the highest probability. Encounters are checked every few steps mostly."
         );
 
         InstantMessage = _config.Bind(
