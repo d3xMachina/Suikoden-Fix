@@ -62,22 +62,12 @@ public class ResolutionPatch
     }
 
     // The resolution has to be set after this initialization or the scaling fix won't work
-    [HarmonyPatch(typeof(Initialize), nameof(Initialize.OnApplicationinitiralize))]
+    [HarmonyPatch(typeof(Initialize), nameof(Initialize.Start))]
     [HarmonyPostfix]
     static void SetInitialDisplay()
     {
-        var resolution = Screen.currentResolution;
-        var fullscreenMode = Screen.fullScreenMode;
-
-        _defaultAspectRatio = resolution.width / (float)resolution.height;
-
-        var width = resolution.width;
-        var height = resolution.height;
-
-        OnSetResolution(ref width, ref height);
-        OnSetFullscreenMode(ref fullscreenMode);
-        
-        Screen.SetResolution(width, height, fullscreenMode, resolution.refreshRate);
+        var displayConfig = new DisplayConfig();
+        displayConfig.SetInitialDisplay();
     }
 
     [HarmonyPatch(typeof(CanvasScaler), nameof(CanvasScaler.OnEnable))]
