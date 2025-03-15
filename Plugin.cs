@@ -169,6 +169,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(EncounterRatePatch));
         }
 
+        if ((Config.Height.Value > 0 && Config.Width.Value > 0) || Config.Fullscreen.Value != -1)
+        {
+            ApplyPatch(typeof(ResolutionPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

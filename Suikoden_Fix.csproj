@@ -127,6 +127,10 @@
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.InputModule.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.UI.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

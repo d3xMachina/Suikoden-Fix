@@ -7,6 +7,9 @@ public sealed class ModConfiguration
     private ConfigFile _config;
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
+    public ConfigEntry<int> Width;
+    public ConfigEntry<int> Height;
+    public ConfigEntry<int> Fullscreen;
     public ConfigEntry<bool> SkipSplashscreens;
     public ConfigEntry<bool> SkipMovies;
     public ConfigEntry<float> LoadingTransitionFactor;
@@ -46,17 +49,38 @@ public sealed class ModConfiguration
     public void Init()
     {
         FPS = _config.Bind(
-             "Framerate",
+             "Display",
              "FPS",
              -1,
              "Set the FPS limit. Set to 0 to uncap, a positive value, or -1 to use the default behavior."
         );
 
         Vsync = _config.Bind(
-             "Framerate",
+             "Display",
              "Vsync",
              -1,
              "Set to 0 to disable VSync, 1 to enable VSync or -1 to use the default behavior. When on, the framerate will match your monitor refresh rate."
+        );
+
+        Width = _config.Bind(
+             "Display",
+             "Width",
+             -1,
+             "Set to your desired width resolution."
+        );
+
+        Height = _config.Bind(
+             "Display",
+             "Height",
+             -1,
+             "Set to your desired height resolution."
+        );
+
+        Fullscreen = _config.Bind(
+             "Display",
+             "Fullscreen",
+             -1,
+             "Set to 0 for windowed mode or 1 for fullscreen mode."
         );
 
         SkipSplashscreens = _config.Bind(
