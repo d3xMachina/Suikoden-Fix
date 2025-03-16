@@ -30,6 +30,7 @@ All features are optional.
 - Download the mod [here](https://github.com/d3xMachina/Suikoden-Fix/releases/latest) and extract the content to "(GAME_PATH)\BepInEx\plugins\". Replace the files if asked.
 - On Steam Deck, add to the Steam launch options : export WINEDLLOVERRIDES="winhttp=n,b"; %command%
 - Run the game once to generate the config file, change the config in "(GAME_PATH)\BepInEx\config\d3xMachina.suikoden_fix.cfg" and restart the game.
+- To remove the console : open "(GAME_PATH)\BepInEx\config\BepInEx.cfg" and change "Enabled = true" to "Enabled = false" in the "[Logging.Console]" section.
 
 ## License
 
