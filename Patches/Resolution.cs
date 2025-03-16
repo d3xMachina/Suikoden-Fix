@@ -169,4 +169,48 @@ public class ResolutionPatch
 
         _prevTitleStep = step;
     }
+
+    static void FixCameraZoom()
+    {
+        var cameraManager = CameraManager.Instance;
+        if (cameraManager == null)
+        {
+            return;
+        }
+
+        var camera = cameraManager.ActiveCamera;
+        var type = cameraManager.CurrentType;
+        if (camera == null || type == CameraManager.Type.None)
+        {
+            return;
+        }
+
+        //Plugin.Log.LogWarning($"FixCamera name{camera.name} type={type}");
+        camera.orthographicSize /= _aspectRatio / _defaultAspectRatio;
+    }
+
+    [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.ChangeSetting))]
+    [HarmonyPostfix]
+    static void GSD1_FixCameraZoom()
+    {
+        FixCameraZoom();
+    }
+
+    [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.ChangeCameraJust))]
+    [HarmonyPrefix]
+    static void GSD2_FixCameraZoom(ref Camera __state)
+    {
+        __state = CameraManager.Instance?.ActiveCamera;
+    }
+
+    [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.ChangeCameraJust))]
+    [HarmonyPostfix]
+    static void GSD2_FixCameraZoomPost(Camera __state)
+    {
+        var camera = CameraManager.Instance?.ActiveCamera;
+        if (camera != __state)
+        {
+            FixCameraZoom();
+        }
+    }
 }
