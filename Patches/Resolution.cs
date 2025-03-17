@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Share.UI.Panel;
+using Share.UI.Window;
 using ShareUI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
