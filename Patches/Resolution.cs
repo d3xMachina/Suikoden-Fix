@@ -21,10 +21,11 @@ public class ResolutionPatch
         {
             width = cWidth;
             height = cHeight;
-            _aspectRatio = width / (float)height;
 
             Plugin.Log.LogInfo($"Resolution: {width}x{height}");
         }
+
+        _aspectRatio = width / (float)height;
     }
 
     static void OnSetFullscreenMode(ref FullScreenMode fullscreenMode)
@@ -61,13 +62,42 @@ public class ResolutionPatch
         OnSetFullscreenMode(ref fullscreen); 
     }
 
+    // Prevent the config UI from reverting the display mode
+    static void AddResolutionToConfigUI()
+    {
+        if (Plugin.Config.Width.Value <= 0 || Plugin.Config.Height.Value <= 0)
+        {
+            return;
+        }
+
+        var screenSize = UIConfigWindow.c_ScreenSize;
+        if (screenSize == null || screenSize.Count <= 0 || screenSize[0].Count < 2)
+        {
+            Plugin.Log.LogWarning("No resolution found!");
+            return;
+        }
+
+        screenSize[0][0] = Plugin.Config.Width.Value;
+        screenSize[0][1] = Plugin.Config.Height.Value;
+    }
+
     // The resolution has to be set after this initialization or the scaling fix won't work
     [HarmonyPatch(typeof(Initialize), nameof(Initialize.Start))]
     [HarmonyPostfix]
     static void SetInitialDisplay()
     {
+        // Get the default aspect ratio
         var displayConfig = new DisplayConfig();
-        displayConfig.SetInitialDisplay();
+        var resolution = displayConfig.GetFirstBootResolution();
+        var width = resolution.Item1;
+        var height = resolution.Item2;
+
+        _defaultAspectRatio = width / (float)height;
+        _aspectRatio = _defaultAspectRatio;
+
+        // Apply the resolution with the hook
+        Screen.SetResolution(Screen.width, Screen.height, Screen.fullScreenMode);   
+        AddResolutionToConfigUI();
     }
 
     [HarmonyPatch(typeof(CanvasScaler), nameof(CanvasScaler.OnEnable))]
