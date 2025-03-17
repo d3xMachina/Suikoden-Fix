@@ -86,15 +86,6 @@ public class ResolutionPatch
     [HarmonyPostfix]
     static void SetInitialDisplay()
     {
-        // Get the default aspect ratio
-        var displayConfig = new DisplayConfig();
-        var resolution = displayConfig.GetFirstBootResolution();
-        var width = resolution.Item1;
-        var height = resolution.Item2;
-
-        _defaultAspectRatio = width / (float)height;
-        _aspectRatio = _defaultAspectRatio;
-
         // Apply the resolution with the hook
         Screen.SetResolution(Screen.width, Screen.height, Screen.fullScreenMode);   
         AddResolutionToConfigUI();
