@@ -35,6 +35,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> EditSave;
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
+    public ConfigEntry<float> MonsterHealthMultiplier;
     public ConfigEntry<float> ExperienceMultiplier;
     public ConfigEntry<float> LootMultiplier;
     public ConfigEntry<float> EncounterRateMultiplier;
@@ -256,6 +257,13 @@ public sealed class ModConfiguration
              "MonsterDamageMultiplier",
              1f,
              "Multiply the damage of enemies in battle. (Damage capped at 9999 before bonus)"
+        );
+        
+        MonsterHealthMultiplier = _config.Bind(
+             "Cheat",
+             "MonsterHealthMultiplier",
+             1f,
+             "Multiply the HP of enemies in battle. (HP capped at 32767)"
         );
 
         ExperienceMultiplier = _config.Bind(

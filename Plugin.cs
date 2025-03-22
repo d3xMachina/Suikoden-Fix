@@ -144,6 +144,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DamageMultiplierPatch));
         }
         
+        if (Config.MonsterHealthMultiplier.Value != 1f)
+        {
+            ApplyPatch(typeof(HealthMultiplierPatch));
+        }
+        
         if (Config.ExperienceMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(ExperienceMultiplierPatch));
