@@ -2,16 +2,13 @@
 extern alias GSD2;
 
 using HarmonyLib;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System;
+using System.Collections.Generic;
 
 namespace Suikoden_Fix.Patches;
 
 public class LootMultiplierPatch
 {
-    private static Il2CppReferenceArray<GSD1.MONSTER_DATA_SO> _gsd1LastMonsterData = null;
-    private static Il2CppReferenceArray<GSD2.MONSTER_DATA> _gsd2LastMonsterData = null;
-
     static byte MultiplyLoot(byte chance)
     {
         var multiplier = (double)Plugin.Config.LootMultiplier.Value;
@@ -31,29 +28,26 @@ public class LootMultiplierPatch
     }
 
     [HarmonyPatch(typeof(GSD1.BattleBase), nameof(GSD1.BattleBase.get_monster_okane))]
-    //[HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.fieldClose2))]
-    //[HarmonyPatch(typeof(GSD1.Event_c), nameof(GSD1.Event_c.eventBattle))]
     [HarmonyPrefix]
-    static void GSD1_ChangeMonsterData()
+    static void GSD1_ChangeMonsterData(ref List<byte[]> __state)
     {
-        var monsterDatas = GSD1.BattleBase.game_work?.battle_data?.battle_ground?.monster_data;
-        if (monsterDatas == null || monsterDatas == _gsd1LastMonsterData)
+        var monsterDatas = GSD1.BattleBase.battle_work?.monster_data_table;
+        if (monsterDatas == null)
         {
             return;
         }
 
+        __state = new();
+
         foreach (var monsterData in monsterDatas)
         {
-            if (monsterData == null)
-            {
-                continue;
-            }
-
-            var items = monsterData.item;
+            var items = monsterData?.item;
             if (items == null)
             {
                 continue;
             }
+
+            __state.Add(items);
 
             // First Elem: item ID, Second Elem: Loot chance (up to 100), and repeat...
             for (int i = 1; i < items.Count; i += 2)
@@ -62,32 +56,56 @@ public class LootMultiplierPatch
                 //Plugin.Log.LogInfo($"Item LootRate={items[i]}");
             }
         }
-
-        _gsd1LastMonsterData = monsterDatas;
     }
 
-    [HarmonyPatch(typeof(GSD2.BattleManager), nameof(GSD2.BattleManager.get_monster_okane))]
-    [HarmonyPrefix]
-    static void GSD2_ChangeMonsterData()
+    [HarmonyPatch(typeof(GSD1.BattleBase), nameof(GSD1.BattleBase.get_monster_okane))]
+    [HarmonyPostfix]
+    static void GSD1_RestoreMonsterData(List<byte[]> __state)
     {
-        var monsterDatas = GSD2.BattleManager.sys_work?.battle_data?.monster_data;
-        if (monsterDatas == null || monsterDatas == _gsd2LastMonsterData)
+        var monsterDatas = GSD1.BattleBase.battle_work?.monster_data_table;
+        if (monsterDatas == null)
         {
             return;
         }
 
+        int i = 0;
         foreach (var monsterData in monsterDatas)
         {
-            if (monsterData == null)
+            if (monsterData?.item == null)
             {
                 continue;
             }
 
-            var items = monsterData.item_prob;
+            var backupItem = __state[i];
+            for (int j = 0; j < backupItem.Length; ++j)
+            {
+                monsterData.item[j] = backupItem[j];
+            }
+            ++i;
+        }
+    }
+
+    [HarmonyPatch(typeof(GSD2.BattleManager), nameof(GSD2.BattleManager.get_monster_okane))]
+    [HarmonyPrefix]
+    static void GSD2_ChangeMonsterData(GSD2.BattleManager __instance, ref List<byte[]> __state)
+    {
+        var monsterDatas = __instance.battle_work?.monster_data;
+        if (monsterDatas == null)
+        {
+            return;
+        }
+
+        __state = new();
+
+        foreach (var monsterData in monsterDatas)
+        {
+            var items = monsterData?.item_prob;
             if (items == null)
             {
                 continue;
             }
+
+            __state.Add(items);
 
             for (int i = 0; i < items.Count; ++i)
             {
@@ -95,7 +113,32 @@ public class LootMultiplierPatch
                 //Plugin.Log.LogInfo($"Item LootRate={items[i]}");
             }
         }
+    }
 
-        _gsd2LastMonsterData = monsterDatas;
+    [HarmonyPatch(typeof(GSD2.BattleManager), nameof(GSD2.BattleManager.get_monster_okane))]
+    [HarmonyPostfix]
+    static void GSD2_RestoreMonsterData(GSD2.BattleManager __instance, List<byte[]> __state)
+    {
+        var monsterDatas = __instance.battle_work?.monster_data;
+        if (monsterDatas == null)
+        {
+            return;
+        }
+
+        int i = 0;
+        foreach (var monsterData in monsterDatas)
+        {
+            if (monsterData?.item_prob == null)
+            {
+                continue;
+            }
+
+            var backupItem = __state[i];
+            for (int j = 0; j < backupItem.Length; ++j)
+            {
+                monsterData.item_prob[j] = backupItem[j];
+            }
+            ++i;
+        }
     }
 }
