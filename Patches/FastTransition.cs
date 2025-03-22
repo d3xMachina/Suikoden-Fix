@@ -2,7 +2,7 @@
 extern alias GSD2;
 
 using HarmonyLib;
-using UnityEngine;
+using System;
 
 namespace Suikoden_Fix.Patches;
 
@@ -48,7 +48,7 @@ public class FastTransitionPatch
 
     static int ApplyTransitionFactor(int timer)
     {
-        return (int)Mathf.Round(ApplyTransitionFactor((float)timer));
+        return (int)MathF.Round(ApplyTransitionFactor((float)timer));
     }
 
     static ushort ApplyTransitionFactor(ushort timer)
@@ -113,7 +113,7 @@ public class FastTransitionPatch
 
     [HarmonyPatch(typeof(GSD1.G1_BACK), nameof(GSD1.G1_BACK.FilterBlackIn))]
     [HarmonyPrefix]
-    static void FilterBlackIn(int timer)
+    static void FilterBlackIn(ref int timer)
     {
         if (Transition != TransitionState.None)
         {
@@ -122,9 +122,9 @@ public class FastTransitionPatch
         }
     }
 
-    [HarmonyPatch(typeof(GSD1.G1_BACK), nameof(GSD1.G1_BACK.FilterBlackIn))]
+    [HarmonyPatch(typeof(GSD1.G1_BACK), nameof(GSD1.G1_BACK.FilterBlackOut))]
     [HarmonyPrefix]
-    static void FilterBlackOut(int timer)
+    static void FilterBlackOut(ref int timer)
     {
         if (Transition != TransitionState.None)
         {
