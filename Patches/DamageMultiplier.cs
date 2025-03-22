@@ -13,9 +13,7 @@ public class DamageMultiplierPatch
     static int MultiplyDamage(int damage, bool isPlayer)
     {
         var multiplier = isPlayer ? Plugin.Config.PlayerDamageMultiplier.Value : Plugin.Config.MonsterDamageMultiplier.Value;
-        damage = (int)Math.Clamp(Math.Round(damage * (double)multiplier), 0, MaxDamage);
-
-        return damage;
+        return (int)Math.Clamp(Math.Round(damage * (double)multiplier), 0, MaxDamage);
     }
 
     static bool GSD1_TryIsPlayer(int charaNo, out bool isPlayer)
