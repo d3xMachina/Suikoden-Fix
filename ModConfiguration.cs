@@ -116,7 +116,7 @@ public sealed class ModConfiguration
              "Skip",
              "ZoneTransitionFactor",
              -1f,
-             "Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+             "(Might cause some events to not trigger in Suikoden 2!!!) Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         DisableVignette = _config.Bind(
