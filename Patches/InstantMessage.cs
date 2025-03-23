@@ -11,6 +11,17 @@ public class InstantMessagePatch
     static bool skipMessage = true;
     static int messagePage = 0;
 
+    [HarmonyPatch(typeof(ShareSaveData), nameof(ShareSaveData.LoadFile), [typeof(string), typeof(Il2CppSystem.Action<bool>)])]
+    [HarmonyPostfix]
+    static void GSD1_ForceFastestSpeed()
+    {
+        var config = ShareSaveData.system_config;
+        if (config != null)
+        {
+            config.message_speed = 0;
+        }
+    }
+
     // For GSD2, the Update code is skipped in GSD1
 
     [HarmonyPatch(typeof(UIMessageWindow), nameof(UIMessageWindow.Opened))]
