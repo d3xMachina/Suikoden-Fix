@@ -179,6 +179,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(ResolutionPatch));
         }
 
+        if (Config.RecoverAfterBattle.Value)
+        {
+            ApplyPatch(typeof(RecoverAfterBattlePatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
