@@ -184,6 +184,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(RecoverAfterBattlePatch));
         }
 
+        if (Config.DisableAutoSaveNotification.Value)
+        {
+            ApplyPatch(typeof(DisableAutoSaveNotificationPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

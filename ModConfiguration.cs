@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using Suikoden_Fix.Patches;
 
 namespace Suikoden_Fix;
 
@@ -28,6 +29,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableMessageWindowSound;
     public ConfigEntry<bool> DisableStartledSound;
     public ConfigEntry<string> WindowBGColor;
+    public ConfigEntry<bool> DisableAutoSaveNotification;
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
     public ConfigEntry<bool> ExitApplication;
@@ -209,6 +211,13 @@ public sealed class ModConfiguration
              "WindowBGColor",
              "",
              "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)"
+        );
+
+        DisableAutoSaveNotification = _config.Bind(
+             "Visual",
+             "DisableAutoSaveNotification",
+             false,
+             "Don't show the autosave notification window."
         );
 
         RememberBattleSpeed = _config.Bind(
