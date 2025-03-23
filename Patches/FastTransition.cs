@@ -23,22 +23,13 @@ public class FastTransitionPatch
     {
         if (Transition != TransitionState.None)
         {
-            var factor = 1f;
-
-            switch (Transition)
+            var factor = Transition switch
             {
-                case TransitionState.Zone:
-                    factor = Plugin.Config.ZoneTransitionFactor.Value;
-                    break;
-                case TransitionState.TitleMenu:
-                    factor = Plugin.Config.TitleMenuTransitionFactor.Value;
-                    break;
-                case TransitionState.Loading:
-                    factor = Plugin.Config.LoadingTransitionFactor.Value;
-                    break;
-                default:
-                    break;
-            }
+                TransitionState.Zone => Plugin.Config.ZoneTransitionFactor.Value,
+                TransitionState.TitleMenu => Plugin.Config.TitleMenuTransitionFactor.Value,
+                TransitionState.Loading => Plugin.Config.LoadingTransitionFactor.Value,
+                _ => 1f
+            };
 
             time = factor > 0f ? time / factor : 0f;
         }
