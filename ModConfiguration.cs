@@ -44,6 +44,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> RecoverAfterBattle;
     public ConfigEntry<float> MoneyMultiplier;
     public ConfigEntry<bool> InstantMessage;
+    public ConfigEntry<bool> UncapMoney;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -316,6 +317,13 @@ public sealed class ModConfiguration
              "InstantMessage",
              false,
              "Display messages instantly."
+        );
+
+        UncapMoney = _config.Bind(
+             "Misc",
+             "UncapMoney",
+             false,
+             "Increase the money cap from 999,999 to 999,999,999."
         );
     }
 }

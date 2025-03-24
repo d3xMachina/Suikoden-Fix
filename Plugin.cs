@@ -189,6 +189,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableAutoSaveNotificationPatch));
         }
 
+        if (Config.UncapMoney.Value)
+        {
+            ApplyPatch(typeof(UncapMoneyPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

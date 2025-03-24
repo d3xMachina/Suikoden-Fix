@@ -131,6 +131,14 @@
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.UI.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+    <Reference Include="DOTweenPro">
+      <HintPath>$(GamePath)\BepInEx\interop\DOTweenPro.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
+    <Reference Include="DOTweenPro.Scripts">
+      <HintPath>$(GamePath)\BepInEx\interop\DOTweenPro.Scripts.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
