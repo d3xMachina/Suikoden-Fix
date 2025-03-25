@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using DG.Tweening;
+using HarmonyLib;
+using Share.UI;
 using Share.UI.Panel;
 using Share.UI.Window;
 using ShareUI.Menu;
@@ -190,5 +192,97 @@ public class ResolutionPatch
         }
 
         _prevTitleStep = step;
+    }
+
+    static float GetScaleX2(float scale)
+    {
+        if (scale >= 1)
+        {
+            return (scale - 1) * 2 + 1;
+        }
+
+        return 2 * scale - 1;
+    }
+
+    [HarmonyPatch(typeof(UIHeader), nameof(UIHeader.Initialize))]
+    [HarmonyPostfix]
+    static void FixMoneyPosition(UIHeader __instance)
+    {
+        var scale = _aspectRatio / _defaultAspectRatio;
+        if (scale == 1)
+        {
+            return;
+        }
+
+        var scaleX2 = GetScaleX2(scale);
+
+        // Fix the animations end positions
+        var moneyBg = __instance.moneyBG;
+        if (moneyBg != null)
+        {
+            var menuAnims = moneyBg.GetComponents<DOTweenAnimation>();
+
+            foreach (var anim in menuAnims)
+            {
+                if (anim == null)
+                {
+                    continue;
+                }
+
+                var endValue = anim.endValueV3;
+
+                if (anim.id == "MenuOut")
+                {
+                    if (scale > 1)
+                    {
+                        endValue.x *= scaleX2;
+                    }
+                    else
+                    {
+                        endValue.x /= scaleX2;
+                    }
+                }
+                else if (anim.id == "MenuIn")
+                {
+                    if (scale > 1)
+                    {
+                        endValue.x /= scaleX2;
+                    }
+                    else
+                    {
+                        endValue.x *= scaleX2;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+
+                anim.tween?.Kill();
+                anim.endValueV3 = endValue;
+                anim.CreateTween();
+            }
+        }
+
+        // Fix the default position of the text
+        var transform = __instance.gameObject?.transform;
+        if (transform != null)
+        {
+            var textObject = transform.FindChild("Img_Bg02/Text");
+            if (textObject != null)
+            {
+                var position = textObject.localPosition;
+                position.x *= scaleX2;
+                textObject.localPosition = position;
+            }
+
+            var imgBg02 = transform.FindChild("Img_Bg02");
+            if (imgBg02 != null && scale < 1)
+            {
+                var position = imgBg02.localPosition;
+                position.y /= scale;
+                imgBg02.localPosition = position;
+            }
+        }
     }
 }
