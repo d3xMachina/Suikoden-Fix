@@ -460,7 +460,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_chapter == Chapter.Title ||
             _chapter == Chapter.GameOver ||
-            IsInSpecialMenu)
+            (IsInSpecialMenu && (_activeGame != Game.GSD2 || !Plugin.Config.SpeedHackAffectsSpecialMenus.Value)))
         {
             safe = false;
         }

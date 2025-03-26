@@ -24,6 +24,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> SaveAnywhere;
     public ConfigEntry<int> SpeedHackFactor;
     public ConfigEntry<bool> SpeedHackAffectsGameTimer;
+    public ConfigEntry<bool> SpeedHackAffectsSpecialMenus;
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
@@ -180,6 +181,13 @@ public sealed class ModConfiguration
              "The speedhack will change the game timer (used for events) accordingly. It will not take effect in battle. Only relevant when using SpeedHackFactor."
         );
 
+        SpeedHackAffectsSpecialMenus = _config.Bind(
+             "Skip",
+             "SpeedHackAffectsSpecialMenus",
+             false,
+             "(Suikoden 2 only) The speedhack will take effect in shop menus and some special menus like tablet, investigation, teleport..."
+        );
+
         NoSpeedHackInBattle = _config.Bind(
              "Skip",
              "NoSpeedHackInBattle",
@@ -324,7 +332,7 @@ public sealed class ModConfiguration
              "Skip",
              "InstantRichmondInvestigation",
              false,
-             "No need to wait for the Richmond investigations in Suikoden 2."
+             "(Suikoden 2 only) No need to wait for the Richmond investigations."
         );
 
         UncapMoney = _config.Bind(
