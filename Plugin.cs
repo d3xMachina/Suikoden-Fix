@@ -32,6 +32,7 @@ public partial class Plugin : BasePlugin
         bool fastTransition = false;
         bool disableBattleSpeedChange = false;
         bool disableSoundEffect = false;
+        bool menuDetection = false;
 
         if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0)
         {
@@ -51,6 +52,11 @@ public partial class Plugin : BasePlugin
         if (Config.ToggleDash.Value || Config.DisableDiagonalMovements.Value)
         {
             ApplyPatch(typeof(InputMovementsPatch));
+
+            if (Config.ToggleDash.Value)
+            {
+                menuDetection = true;
+            }
         }
 
         if (Config.DisableFootStepSound.Value)
@@ -90,16 +96,23 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(SpeedHackPatch));
             disableBattleSpeedChange = true;
+            menuDetection = true;
         }
 
         if (Config.RememberBattleSpeed.Value)
         {
             disableBattleSpeedChange = true;
+            menuDetection = true;
         }
 
         if (disableBattleSpeedChange)
         {
             ApplyPatch(typeof(DisableBattleSpeedChangePatch));
+        }
+
+        if (menuDetection)
+        {
+            ApplyPatch(typeof(MenuDetectionPatch));
         }
 
         if (Config.DisableMessageWindowSound.Value)

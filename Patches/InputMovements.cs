@@ -11,42 +11,53 @@ public class InputMovementsPatch
 {
     public struct PadData
     {
-        public uint data;
         public bool ok;
+        public uint data;
+        public bool cancelPressed;
+        public GRInputManager.SingleKey cancelKey;
     }
 
-    private static bool _invertDash = false;
+    private static bool _dashToggle = false;
     private static bool _lastDash = false;
     private static uint _lastPadData = 0;
     private static uint _lastPadDataSanitized = 0;
+    private static bool _ignoreNextDashInput = false;
 
-    static uint HandleDash(uint padData, out bool dash)
+    static uint HandleDash(uint padData)
     {
         const uint DashBit = 0x40;
 
         // Change the bit corresponding to the dash button
-        dash = (DashBit & padData) != 0;
+        var dash = (DashBit & padData) != 0;
 
         if (dash != _lastDash)
         {
-            if (!dash)
+            if (ModComponent.Instance.IsMenuOpened || ModComponent.Instance.IsInSpecialMenu)
             {
-                _invertDash = !_invertDash;
+                _ignoreNextDashInput = true;
+            }
+            else if (dash)
+            {
+                if (_ignoreNextDashInput)
+                {
+                    _ignoreNextDashInput = false;
+                }
+                else
+                {
+                    _dashToggle = !_dashToggle;
+                }
             }
             
             _lastDash = dash;
         }
 
-        if (_invertDash)
+        if (_dashToggle)
         {
-            if (dash)
-            {
-                padData &= ~DashBit; 
-            }
-            else
-            {
-                padData |= DashBit;
-            }
+            padData |= DashBit;
+        }
+        else
+        {
+            padData &= ~DashBit;
         }
 
         return padData;
@@ -119,6 +130,7 @@ public class InputMovementsPatch
         var padData = new PadData
         {
             data = 0,
+            cancelKey = null,
             ok = false
         };
 
@@ -132,7 +144,7 @@ public class InputMovementsPatch
 
             if (Plugin.Config.ToggleDash.Value)
             {
-                syswork.PadData = HandleDash(syswork.PadData, out _);
+                syswork.PadData = HandleDash(syswork.PadData);
             }
 
             if (Plugin.Config.DisableDiagonalMovements.Value)
@@ -148,14 +160,16 @@ public class InputMovementsPatch
     [HarmonyPostfix]
     static void GSSD1_NewPlayerMovePost(int step_level, PadData __state)
     {
-        // Restore the PadData value
-        if (__state.ok)
+        if (!__state.ok)
         {
-            var syswork = GSD1::Pad.sys_work;
-            if (syswork != null)
-            {
-                syswork.PadData = __state.data;
-            }
+            return;
+        }
+
+        // Restore the PadData value
+        var syswork = GSD1::Pad.sys_work;
+        if (syswork != null)
+        {
+            syswork.PadData = __state.data;
         }
     }
 
@@ -166,6 +180,8 @@ public class InputMovementsPatch
         var padData = new PadData
         {
             data = 0,
+            cancelPressed = false,
+            cancelKey = null,
             ok = false
         };
 
@@ -178,11 +194,16 @@ public class InputMovementsPatch
 
             if (Plugin.Config.ToggleDash.Value)
             {
-                syswork.pad_dat = HandleDash(syswork.pad_dat, out var dash);
+                syswork.pad_dat = HandleDash(syswork.pad_dat);
 
-                if (_invertDash)
+                var keys = GRInputManager.Instance?.keys;
+                if (keys != null && keys.TryGetValue(GRInputManager.Type.Cancel, out var key))
                 {
-                    syswork.g_shu_dash = !dash;
+                    // Backup the cancel key
+                    padData.cancelKey = key;
+                    padData.cancelPressed = key.press;
+
+                    key.press = _dashToggle;
                 }
             }
 
@@ -199,14 +220,22 @@ public class InputMovementsPatch
     [HarmonyPostfix]
     static void GSSD2_NewEventPlayerMovePost(PadData __state)
     {
-        // Restore the PadData value
-        if (__state.ok)
+        if (!__state.ok)
         {
-            var syswork = GSD2::EVENTCON.sys_work;
-            if (syswork != null)
-            {
-                syswork.pad_dat = __state.data;
-            }
+            return;
+        }
+
+        // Restore the PadData value
+        var syswork = GSD2::EVENTCON.sys_work;
+        if (syswork != null)
+        {
+            syswork.pad_dat = __state.data;
+        }
+
+        // Restore the cancel key
+        if (__state.cancelKey != null)
+        {
+            __state.cancelKey.press = __state.cancelPressed;
         }
     }
 

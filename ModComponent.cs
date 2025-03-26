@@ -73,6 +73,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsInSpecialMenu = false;
     public Color? WindowBGColor = null;
     public int GameTimerMultiplier = 1;
+    public bool IsMenuOpened = false;
 
     /********************************************/
 
@@ -161,6 +162,7 @@ public sealed class ModComponent : MonoBehaviour
             UpdateExitApplication();
             UpdateResetApplication();
             UpdateSaveAnywhere();
+            IsMenuOpened = CheckMenuOpened();
             UpdateGameSpeed();
 
             _prevChapter = _chapter;
@@ -290,6 +292,7 @@ public sealed class ModComponent : MonoBehaviour
         {
             IsInSpecialMenu = false;
             GameTimerMultiplier = 1;
+            IsMenuOpened = false;
         }
     }
 
@@ -460,19 +463,11 @@ public sealed class ModComponent : MonoBehaviour
         SetGameTimerMultiplier(factor);
     }
 
-    private bool IsSpeedHackSafe()
+    public bool CheckMenuOpened()
     {
-        bool safe = true;
+        bool opened = false;
 
-        // Avoid skipping frames on menus to avoid skipped inputs
-
-        if (_chapter == Chapter.Title ||
-            _chapter == Chapter.GameOver ||
-            (IsInSpecialMenu && (_activeGame != Game.GSD2 || !Plugin.Config.SpeedHackAffectsSpecialMenus.Value)))
-        {
-            safe = false;
-        }
-        else if (_activeGame == Game.GSD1)
+        if (_activeGame == Game.GSD1)
         {
             var windowManager = GSD1.WindowManager.Instance;
             if (windowManager != null)
@@ -484,7 +479,7 @@ public sealed class ModComponent : MonoBehaviour
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    safe = false;
+                    opened = true;
                 }
             }
         }
@@ -500,12 +495,27 @@ public sealed class ModComponent : MonoBehaviour
                     (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    safe = false;
+                    opened = true;
                 }
             }
         }
 
-        return safe;
+        return opened;
+    }
+
+    private bool IsSpeedHackSafe()
+    {
+        // Avoid skipping frames on menus to avoid skipped inputs
+
+        if (_chapter == Chapter.Title ||
+            _chapter == Chapter.GameOver ||
+            IsMenuOpened ||
+            (IsInSpecialMenu && (_activeGame != Game.GSD2 || !Plugin.Config.SpeedHackAffectsSpecialMenus.Value)))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void SetGameTimerMultiplier(int factor)
