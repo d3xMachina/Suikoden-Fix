@@ -62,8 +62,13 @@ public class SpeedHackPatch
     [HarmonyPatch(typeof(GSD1.Teventf4_c), nameof(GSD1.Teventf4_c.member_main))] // Party Add/Remove characters
     //[HarmonyPatch(typeof(GSD1.h_yadoya_c), nameof(GSD1.h_yadoya_c.yadoya_start))] // ???
     //[HarmonyPatch(typeof(GSD1.D_wall_c), nameof(GSD1.D_wall_c.demo_init))] // ???
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.book_main), nameof(GSD2.EventOverlayClass.book_main.BookMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.meyasu_main), nameof(GSD2.EventOverlayClass.meyasu_main.MeyasuboxMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.p_main), nameof(GSD2.EventOverlayClass.p_main.PeepingMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.s_main), nameof(GSD2.EventOverlayClass.s_main.StoneMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.t_main), nameof(GSD2.EventOverlayClass.t_main.TanteiMain))]
     [HarmonyPrefix]
-    static void GSD1_SpecialMenuEnter()
+    static void SpecialMenuEnter()
     {
         ModComponent.Instance.IsInSpecialMenu = true;
     }
@@ -83,8 +88,13 @@ public class SpeedHackPatch
     [HarmonyPatch(typeof(GSD1.Teventf4_c), nameof(GSD1.Teventf4_c.member_main99))]
     //[HarmonyPatch(typeof(GSD1.h_yadoya_c), nameof(GSD1.h_yadoya_c.yadoya_exit))] // ???
     //[HarmonyPatch(typeof(GSD1.D_wall_c), nameof(GSD1.D_wall_c.demo_exit)] // ???
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.book_main), nameof(GSD2.EventOverlayClass.book_main.BookEnd))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.meyasu_main), nameof(GSD2.EventOverlayClass.meyasu_main.MeyasuboxEnd))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.p_main), nameof(GSD2.EventOverlayClass.p_main.PeepingEnd))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.s_main), nameof(GSD2.EventOverlayClass.s_main.StoneEnd))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.t_main), nameof(GSD2.EventOverlayClass.t_main.TanteiEnd))]
     [HarmonyPrefix]
-    static void GSD1_SpecialMenuExit()
+    static void SpecialMenuExit()
     {
         ModComponent.Instance.IsInSpecialMenu = false;
     }
@@ -156,18 +166,40 @@ public class SpeedHackPatch
         }
     }
 
-    // Untested
-    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_souko), nameof(GSD2.EventOverlayClass.h_souko.OverlayBaseSoukoMain))]
-    [HarmonyPostfix]
-    static void GSD2_OverlayBaseSoukoMain(int __result)
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.telepo), nameof(GSD2.EventOverlayClass.telepo.telepoMain))]
+    [HarmonyPrefix]
+    static void GSD2_TelepoMain(GSD2.EventOverlayClass.telepo __instance)
     {
-        /*
-        var baseSouko = __instance.bsk;
-        if (baseSouko != null)
+        var tcon = __instance.tcon;
+        if (tcon != null)
         {
-            ModComponent.Instance.IsInShop = baseSouko.stp > 8;
+            ModComponent.Instance.IsInSpecialMenu = tcon.step != 'c';
         }
-        */
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_souko), nameof(GSD2.EventOverlayClass.h_souko.OverlayBaseSoukoMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_dougu), nameof(GSD2.EventOverlayClass.h_dougu.ShopDouguMain))] // has dcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_fudazuk), nameof(GSD2.EventOverlayClass.h_fudazuk.ShopMonsyoMain))] // has dcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_kaji), nameof(GSD2.EventOverlayClass.h_kaji.ShopKajiMain))] // has dcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_rest), nameof(GSD2.EventOverlayClass.h_rest.RestMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_shugo), nameof(GSD2.EventOverlayClass.h_shugo.ShugoMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.hmonsyo), nameof(GSD2.EventOverlayClass.hmonsyo.ShopMonsyoMain))] // has dcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.hsound), nameof(GSD2.EventOverlayClass.hsound.HSoundMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.hwindow), nameof(GSD2.EventOverlayClass.hwindow.HWindowMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.k_get), nameof(GSD2.EventOverlayClass.k_get.k_OverlayAddItem2Main))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.k_get), nameof(GSD2.EventOverlayClass.k_get.KikoriItemGetLoop))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay108Win), nameof(GSD2.EventOverlayClass.Overlay108Win.S108InMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_addeven), nameof(GSD2.EventOverlayClass.Overlay_addeven.OverlayAddEventMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_AddItem2), nameof(GSD2.EventOverlayClass.Overlay_AddItem2.OverlayAddItem2Main))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_ElvWin), nameof(GSD2.EventOverlayClass.Overlay_ElvWin.ElvWinMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_partychg), nameof(GSD2.EventOverlayClass.Overlay_partychg.PartyChageMain))] // has pcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_partychg1), nameof(GSD2.EventOverlayClass.Overlay_partychg1.PartyChageMain))] // has pcon
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.OverlayLookMenu), nameof(GSD2.EventOverlayClass.OverlayLookMenu.LookMenuMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.sndtest), nameof(GSD2.EventOverlayClass.sndtest.SndTestMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.syugoitm), nameof(GSD2.EventOverlayClass.syugoitm.s_OverlayAddItem2Main))]
+    [HarmonyPostfix]
+    static void GSD2_SpecialMenu(int __result)
+    {
         ModComponent.Instance.IsInSpecialMenu = __result != 1;
     }
 
