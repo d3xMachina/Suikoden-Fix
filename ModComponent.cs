@@ -211,6 +211,7 @@ public sealed class ModComponent : MonoBehaviour
     {
         var scene = SceneManager.GetActiveScene();
         var sceneName = scene.name;
+        var prevGame = _activeGame;
 
         if (sceneName == "GSD1")
         {
@@ -282,6 +283,13 @@ public sealed class ModComponent : MonoBehaviour
         else
         {
             _chapter = Chapter.None;
+        }
+
+        // Init values
+        if (_activeGame != prevGame)
+        {
+            IsInSpecialMenu = false;
+            GameTimerMultiplier = 1;
         }
     }
 
