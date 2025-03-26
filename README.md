@@ -17,7 +17,9 @@ All features are optional.
 - Remember the battle speed between battles.
 - Save anywhere in the last save slot. (be careful to not softlock yourself)
 - Disable autosave notifications.
+- Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.
+- Instant Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
 - Disable the speed up of the music when the battle speed change.
