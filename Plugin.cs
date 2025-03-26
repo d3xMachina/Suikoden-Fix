@@ -194,6 +194,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(UncapMoneyPatch));
         }
 
+        if (Config.InstantRichmondInvestigation.Value)
+        {
+            ApplyPatch(typeof(InstantRichmondInvestigationPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

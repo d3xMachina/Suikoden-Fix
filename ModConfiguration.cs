@@ -45,6 +45,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> MoneyMultiplier;
     public ConfigEntry<bool> InstantMessage;
     public ConfigEntry<bool> UncapMoney;
+    public ConfigEntry<bool> InstantRichmondInvestigation;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -317,6 +318,13 @@ public sealed class ModConfiguration
              "InstantMessage",
              false,
              "Display messages instantly."
+        );
+
+        InstantRichmondInvestigation = _config.Bind(
+             "Skip",
+             "InstantRichmondInvestigation",
+             false,
+             "No need to wait for the Richmond investigations in Suikoden 2."
         );
 
         UncapMoney = _config.Bind(
