@@ -74,7 +74,13 @@ public class SpeedHackPatch
             if (_chapterUpdateCount > 0)
             {
                 // Disable inputs so only the first update processes inputs
-                GSD1.Pad.PadUpdate(false, false);
+                var sysWork = GSD1.GlobalWork.Instance?.sys_work;
+                if (sysWork != null)
+                {
+                    sysWork.PadTrig = 0;
+                    sysWork.PadNTrig = 0;
+                    sysWork.PadRTrig = 0;
+                }
             }
 
             ++_chapterUpdateCount;

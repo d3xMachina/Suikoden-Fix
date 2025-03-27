@@ -9,7 +9,7 @@ namespace Suikoden_Fix.Patches;
 
 public class InputMovementsPatch
 {
-    public struct PadData
+    private struct PadData
     {
         public bool ok;
         public uint data;
