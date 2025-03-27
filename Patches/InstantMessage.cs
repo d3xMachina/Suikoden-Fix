@@ -8,8 +8,8 @@ namespace Suikoden_Fix.Patches;
 
 public class InstantMessagePatch
 {
-    static bool skipMessage = true;
-    static int messagePage = 0;
+    private static bool _skipMessage = true;
+    private static int _messagePage = 0;
 
     [HarmonyPatch(typeof(ShareSaveData), nameof(ShareSaveData.LoadFile), [typeof(string), typeof(Il2CppSystem.Action<bool>)])]
     [HarmonyPostfix]
@@ -28,11 +28,11 @@ public class InstantMessagePatch
     [HarmonyPostfix]
     static void Opened(UIMessageWindow __instance)
     {
-        messagePage = __instance.nowPage;
+        _messagePage = __instance.nowPage;
 
         if (!__instance.isMessageInputWait)
         {
-            skipMessage = true;
+            _skipMessage = true;
         }
     }
 
@@ -44,16 +44,16 @@ public class InstantMessagePatch
 
         if (!__instance.isMessageInputWait)
         {
-            if (messagePage != __instance.nowPage)
+            if (_messagePage != __instance.nowPage)
             {
-                skipMessage = true;
-                messagePage = __instance.nowPage;
+                _skipMessage = true;
+                _messagePage = __instance.nowPage;
             }
         
-            if (skipMessage)
+            if (_skipMessage)
             {
                 __instance.isTextAllDisp = true; // same as doing an input in this context
-                skipMessage = false;
+                _skipMessage = false;
             }
         }
     }
