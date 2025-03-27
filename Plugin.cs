@@ -212,6 +212,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InstantRichmondInvestigationPatch));
         }
 
+        if (Config.FixKeyboardBindings.Value)
+        {
+            ApplyPatch(typeof(FixKeyboardBindingsPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

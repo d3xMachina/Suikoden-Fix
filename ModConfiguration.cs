@@ -48,6 +48,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> InstantMessage;
     public ConfigEntry<bool> UncapMoney;
     public ConfigEntry<bool> InstantRichmondInvestigation;
+    public ConfigEntry<bool> FixKeyboardBindings;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -271,6 +272,13 @@ public sealed class ModConfiguration
              "ResetGame",
              true,
              "Allow you to go back to the title screen of the game by pressing start + left shoulder + right shoulder on the gamepad or Escape + R on the keyboard."
+        );
+        
+        FixKeyboardBindings = _config.Bind(
+             "Misc",
+             "FixKeyboardBindings",
+             true,
+             "Bind the key q to the action L1 and the key e to the action R1 which are necessary for the dance minigame."
         );
 
         EditSave = _config.Bind(
