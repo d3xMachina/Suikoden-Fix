@@ -74,6 +74,7 @@ public sealed class ModComponent : MonoBehaviour
     public Color? WindowBGColor = null;
     public int GameTimerMultiplier = 1;
     public bool IsMenuOpened = false;
+    public bool IsMessageBoxOpened = false;
     public bool IsInWar = false;
 
     /********************************************/
@@ -163,7 +164,7 @@ public sealed class ModComponent : MonoBehaviour
             UpdateExitApplication();
             UpdateResetApplication();
             UpdateSaveAnywhere();
-            IsMenuOpened = CheckMenuOpened();
+            UpdateWindowOpened();
             UpdateGameSpeed();
 
             _prevChapter = _chapter;
@@ -294,6 +295,7 @@ public sealed class ModComponent : MonoBehaviour
             IsInSpecialMenu = false;
             GameTimerMultiplier = 1;
             IsMenuOpened = false;
+            IsMessageBoxOpened = false;
             IsInWar = false;
         }
     }
@@ -465,9 +467,10 @@ public sealed class ModComponent : MonoBehaviour
         SetGameTimerMultiplier(factor);
     }
 
-    public bool CheckMenuOpened()
+    public void UpdateWindowOpened()
     {
-        bool opened = false;
+        bool menuOpened = false;
+        bool messageBoxOpened = false;
 
         if (_activeGame == Game.GSD1)
         {
@@ -477,11 +480,15 @@ public sealed class ModComponent : MonoBehaviour
                 var menuWindow = windowManager.GetMenuWindow();
                 var minimapPanel = windowManager.GetMiniMapPanel();
 
-                if (windowManager.GetIsOpen() ||
-                    (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
+                if (windowManager.GetIsOpen())
+                {
+                    messageBoxOpened = true;
+                }
+
+                if ((minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    opened = true;
+                    menuOpened = true;
                 }
             }
         }
@@ -493,16 +500,21 @@ public sealed class ModComponent : MonoBehaviour
                 var menuWindow = windowManager.GetMenuWindow();
                 var minimapPanel = windowManager.GetMiniMapPanel();
 
-                if (windowManager.isUseMessageWindow ||
-                    (minimapPanel != null && minimapPanel.IsWholeMapShow) ||
+                if (windowManager.isUseMessageWindow)
+                {
+                    messageBoxOpened = true;
+                }
+
+                if ((minimapPanel != null && minimapPanel.IsWholeMapShow) ||
                     (menuWindow != null && menuWindow.IsOpen))
                 {
-                    opened = true;
+                    menuOpened = true;
                 }
             }
         }
 
-        return opened;
+        IsMenuOpened = menuOpened;
+        IsMessageBoxOpened = messageBoxOpened;
     }
 
     private bool IsSpeedHackSafe()
@@ -511,6 +523,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_chapter == Chapter.Title ||
             _chapter == Chapter.GameOver ||
+            (IsMessageBoxOpened && !Plugin.Config.SpeedHackAffectsMessageBoxes.Value) ||
             IsMenuOpened ||
             (IsInSpecialMenu && !Plugin.Config.SpeedHackAffectsSpecialMenus.Value))
         {

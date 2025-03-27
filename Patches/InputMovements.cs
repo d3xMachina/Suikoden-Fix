@@ -32,7 +32,9 @@ public class InputMovementsPatch
 
         if (dash != _lastDash)
         {
-            if (ModComponent.Instance.IsMenuOpened || ModComponent.Instance.IsInSpecialMenu)
+            if (ModComponent.Instance.IsMenuOpened ||
+                ModComponent.Instance.IsMessageBoxOpened ||
+                ModComponent.Instance.IsInSpecialMenu)
             {
                 _ignoreNextDashInput = true;
             }

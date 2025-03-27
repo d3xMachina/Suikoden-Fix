@@ -25,6 +25,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> SpeedHackFactor;
     public ConfigEntry<bool> SpeedHackAffectsGameTimer;
     public ConfigEntry<bool> SpeedHackAffectsSpecialMenus;
+    public ConfigEntry<bool> SpeedHackAffectsMessageBoxes;
     public ConfigEntry<bool> NoSpeedHackInBattle;
     public ConfigEntry<bool> NoHighPitchMusic;
     public ConfigEntry<bool> DisableMessageWindowSound;
@@ -186,6 +187,13 @@ public sealed class ModConfiguration
              "SpeedHackAffectsSpecialMenus",
              false,
              "The speedhack will take effect in shop menus and some special menus like tablet, investigation, teleport..."
+        );
+
+        SpeedHackAffectsMessageBoxes = _config.Bind(
+             "Skip",
+             "SpeedHackAffectsMessageBoxes",
+             false,
+             "The speedhack will take effect in dialogues when a message box appears"
         );
 
         NoSpeedHackInBattle = _config.Bind(
