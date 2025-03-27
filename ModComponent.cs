@@ -74,6 +74,7 @@ public sealed class ModComponent : MonoBehaviour
     public Color? WindowBGColor = null;
     public int GameTimerMultiplier = 1;
     public bool IsMenuOpened = false;
+    public bool IsInWar = false;
 
     /********************************************/
 
@@ -293,6 +294,7 @@ public sealed class ModComponent : MonoBehaviour
             IsInSpecialMenu = false;
             GameTimerMultiplier = 1;
             IsMenuOpened = false;
+            IsInWar = false;
         }
     }
 
@@ -412,7 +414,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (IsSpeedHackSafe())
         {
-            if (_chapter == Chapter.Battle &&
+            if (_chapter == Chapter.Battle && !IsInWar &&
                 (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
             {
                 if (_chapter != _prevChapter && !Plugin.Config.RememberBattleSpeed.Value)
