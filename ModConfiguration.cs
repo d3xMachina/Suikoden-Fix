@@ -185,7 +185,7 @@ public sealed class ModConfiguration
              "Skip",
              "SpeedHackAffectsSpecialMenus",
              false,
-             "(Suikoden 2 only) The speedhack will take effect in shop menus and some special menus like tablet, investigation, teleport..."
+             "The speedhack will take effect in shop menus and some special menus like tablet, investigation, teleport..."
         );
 
         NoSpeedHackInBattle = _config.Bind(

@@ -8,6 +8,8 @@ namespace Suikoden_Fix.Patches;
 
 public class SpeedHackPatch
 {
+    private static bool _isInChapterManagerUpdate = false;
+    private static int _chapterUpdateCount = 0;
     private static bool _isInUpdateTimer = false;
     private static float _lastRealtimeSinceStartup = 0f;
     private static float _faketimeSinceStartup = 0f;
@@ -45,6 +47,37 @@ public class SpeedHackPatch
                     }
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    [HarmonyPrefix]
+    static void GSD1_ChapterManagerUpdate()
+    {
+        _isInChapterManagerUpdate = true;
+        _chapterUpdateCount = 0;
+    }
+
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    [HarmonyPostfix]
+    static void GSD1_ChapterManagerUpdatePost()
+    {
+        _isInChapterManagerUpdate = false;
+    }
+
+    [HarmonyPatch(typeof(Framework.Chapter), nameof(Framework.Chapter.Update))]
+    [HarmonyPrefix]
+    static void ChapterUpdate()
+    {
+        if (_isInChapterManagerUpdate)
+        {
+            if (_chapterUpdateCount > 0)
+            {
+                // Disable inputs so only the first update processes inputs
+                GSD1.Pad.PadUpdate(false, false);
+            }
+
+            ++_chapterUpdateCount;
         }
     }
 
