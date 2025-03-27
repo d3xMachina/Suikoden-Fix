@@ -87,9 +87,9 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(FastTransitionPatch));
         }
 
-        if (Config.NoHighPitchMusic.Value)
+        if (Config.SpedUpMusic.Value >= 0 || Config.SpedUpSoundEffect.Value >= 0)
         {
-            ApplyPatch(typeof(NoHighPitchMusicPatch));
+            ApplyPatch(typeof(SpedUpSoundPatch));
         }
 
         if (Config.SpeedHackFactor.Value > 1)

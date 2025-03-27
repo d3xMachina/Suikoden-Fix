@@ -73,6 +73,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsInSpecialMenu = false;
     public Color? WindowBGColor = null;
     public int GameTimerMultiplier = 1;
+    public int GameSpeed = 1;
     public bool IsMenuOpened = false;
     public bool IsMessageBoxOpened = false;
     public bool IsInWar = false;
@@ -294,6 +295,7 @@ public sealed class ModComponent : MonoBehaviour
         {
             IsInSpecialMenu = false;
             GameTimerMultiplier = 1;
+            GameSpeed = 1;
             IsMenuOpened = false;
             IsMessageBoxOpened = false;
             IsInWar = false;
@@ -342,6 +344,30 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
+    private int GetGameSpeed()
+    {
+        int speed = 1;
+
+        if (_activeGame == Game.GSD1)
+        {
+            var gr1Instance = GSD1.ChapterManager.GR1Instance;
+            if (gr1Instance != null)
+            {
+                speed = gr1Instance.frameSkip;
+            }
+        }
+        else if (_activeGame == Game.GSD2)
+        {
+            var grInstance = GSD2.GRChapterManager.GRInstance;
+            if (grInstance != null)
+            {
+                speed = grInstance.BattleFrameSkip;
+            }
+        }
+
+        return speed;
+    }
+
     private void SetFrameSkip(int factor)
     {
         if (_activeGame == Game.GSD1)
@@ -360,6 +386,8 @@ public sealed class ModComponent : MonoBehaviour
                 grInstance.BattleFrameSkip = factor;
             }
         }
+
+        GameSpeed = factor;
     }
 
     private void SetSpeedIcon(int speed)
@@ -399,11 +427,15 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateGameSpeed()
     {
-        bool speedHackEnabled = Plugin.Config.SpeedHackFactor.Value > 1;
-
-        if ((!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value) ||
-            _activeGame == Game.None)
+        if (_activeGame == Game.None)
         {
+            return;
+        }
+
+        bool speedHackEnabled = Plugin.Config.SpeedHackFactor.Value > 1;
+        if (!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value)
+        {
+            GameSpeed = GetGameSpeed();
             return;
         }
 
@@ -541,6 +573,6 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         // don't speedup the game timer during battle like the base game
-        GameTimerMultiplier = _chapter ==  Chapter.Battle ? 1 : factor;
+        GameTimerMultiplier = _chapter == Chapter.Battle ? 1 : factor;
     }
 }

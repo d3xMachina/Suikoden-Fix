@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using Suikoden_Fix.Patches;
 
 namespace Suikoden_Fix;
 
@@ -27,7 +26,8 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> SpeedHackAffectsSpecialMenus;
     public ConfigEntry<bool> SpeedHackAffectsMessageBoxes;
     public ConfigEntry<bool> NoSpeedHackInBattle;
-    public ConfigEntry<bool> NoHighPitchMusic;
+    public ConfigEntry<int> SpedUpMusic;
+    public ConfigEntry<int> SpedUpSoundEffect;
     public ConfigEntry<bool> DisableMessageWindowSound;
     public ConfigEntry<bool> DisableStartledSound;
     public ConfigEntry<string> WindowBGColor;
@@ -203,11 +203,18 @@ public sealed class ModConfiguration
              "Disable the speedhack in battle. Only relevant when using SpeedHackFactor."
         );
 
-        NoHighPitchMusic = _config.Bind(
+        SpedUpMusic = _config.Bind(
              "Audio",
-             "NoHighPitchMusic",
-             false,
-             "Prevent the music from speeding up when you change the game speed."
+             "SpedUpMusic",
+             -1,
+             "Change the pitch or speed of the music when you change the game speed. Set 0 to have the sounds remain the same, 1 to have the sounds played at a higher pitch, 2 to have the sounds played faster at specific speeds, 3 to have the sounds played faster matching the game speed, or -1 for the default behavior."
+        );
+
+        SpedUpSoundEffect = _config.Bind(
+             "Audio",
+             "SpedUpSoundEffect",
+             -1,
+             "Change the pitch or speed of sound effects when you change the game speed. Set 0 to have the sounds remain the same, 1 to have the sounds played at a higher pitch, 2 to have the sounds played faster at specific speeds, 3 to have the sounds played faster matching the game speed or -1 for the default behavior."
         );
 
         DisableMessageWindowSound = _config.Bind(
