@@ -26,8 +26,8 @@ public class InstantRichmondInvestigationPatch
             return;
         }
 
-        eventTime[InvestigationEventTimeIndex][0] = UInt16.MaxValue;
-        eventTime[InvestigationEventTimeIndex][1] = UInt16.MaxValue;
+        eventTime[InvestigationEventTimeIndex][0] = 0;
+        eventTime[InvestigationEventTimeIndex][1] = 0;
         //Plugin.Log.LogWarning("Instant investigation!");
     }
 }
