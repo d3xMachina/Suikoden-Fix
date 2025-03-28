@@ -22,9 +22,10 @@ All features are optional.
 - Instant Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
-- Disable the speed up of the music when the battle speed change.
+- Disable or alter the speed up of the music and sound effects when the battle speed change.
 - Disable the sound when a message window appears, footstep sounds and startled sound effects.
 - Change the background color of some windows.
+- Add missing keybinds for the dance minigame.
 - Adjust framerate and vsync.
 
 ## Installation
