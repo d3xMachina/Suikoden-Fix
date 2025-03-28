@@ -23,6 +23,13 @@ public class UncapMoneyPatch
         public uint stolenMoney;
     }
 
+    private struct CashAdjust
+    {
+        public bool ok;
+        public byte cnt2;
+        public bool moneyBufferEmpty;
+    }
+
     static int LimitMoney(long money)
     {
         return (int)Math.Clamp(money, 0, MaxMoney);
@@ -98,6 +105,14 @@ public class UncapMoneyPatch
         }
 
         partyData.mochi_kin = LimitMoney(partyData.mochi_kin + (long)addsub_pocchi);
+        return false;
+    }
+
+    [HarmonyPatch(typeof(GSD1.GAME_WORK), nameof(GSD1.GAME_WORK.LimitPocchi))]
+    [HarmonyPrefix]
+    static bool GSD1_LimitPocchi(ref int __result)
+    {
+        __result = MaxMoney;
         return false;
     }
 
@@ -182,8 +197,65 @@ public class UncapMoneyPatch
             return;
         }
        
-        dw.p_money = Math.Min(__state, MaxMoney); // probably unecessary
+        dw.p_money = Math.Min(__state, MaxMoney); // probably unnecessary
         GSD2.G2_SYS.G2_party_gold(2, dw.p_money);
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.ch_main), nameof(GSD2.EventOverlayClass.ch_main.cash_adjust))]
+    [HarmonyPrefix]
+    static void GSD2_CashAdjust(GSD2.EventOverlayClass.chin_h.CHIN_DAM_WORK dw, out CashAdjust __state)
+    {
+        __state = new()
+        {
+            ok = false
+        };
+
+        if (dw == null || dw.cnt2 != 2)
+        {
+            return;
+        }
+
+        dw.p_money += 100;
+        dw.money_buf2 -= 100;
+
+        if (dw.ver > 1)
+        {
+            dw.rest -= 100;
+        }
+
+        if (dw.p_money > MaxMoney)
+        {
+            dw.p_money += dw.money_buf2;
+            dw.rest -= dw.money_buf2;
+            dw.money_buf2 = 0;
+        }
+
+        if (dw.money_buf2 == 0)
+        {
+            GSD2.OldSrcBase.SD_call(0x50A);
+            __state.moneyBufferEmpty = true;
+        }
+
+        __state.ok = true;
+        __state.cnt2 = dw.cnt2;
+        dw.cnt2 = 0xFF; // skip the code handling cnt2 == 2 since we handled it
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.ch_main), nameof(GSD2.EventOverlayClass.ch_main.cash_adjust))]
+    [HarmonyPostfix]
+    static void GSD2_CashAdjustPost(GSD2.EventOverlayClass.chin_h.CHIN_DAM_WORK dw, CashAdjust __state, ref int __result)
+    {
+        if (dw == null || !__state.ok)
+        {
+            return;
+        }
+
+        dw.cnt2 = __state.cnt2; // restore cnt2
+        
+        if (__state.moneyBufferEmpty && __result == 0)
+        {
+            __result = 1;
+        }
     }
 
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.ch_main), nameof(GSD2.EventOverlayClass.ch_main.set_rest_msg))]
