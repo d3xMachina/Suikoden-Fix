@@ -215,7 +215,7 @@ public sealed class ModConfiguration
              "Audio",
              "SpedUpSoundEffect",
              -1,
-             "Change the pitch or speed of sound effects when you change the game speed. Set 0 to have the sounds remain the same, 1 to have the sounds played at a higher pitch, 2 to have the sounds played faster at specific speeds, 3 to have the sounds played faster matching the game speed or -1 for the default behavior."
+             "Change the pitch or speed of sound effects when you change the game speed. Set 0 to have the sounds remain the same, 1 to have the sounds played at a higher pitch, or -1 for the default behavior."
         );
 
         DisableMessageWindowSound = _config.Bind(
