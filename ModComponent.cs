@@ -30,6 +30,7 @@ public sealed class ModComponent : MonoBehaviour
         Title,
         Map,
         Battle,
+        War,
         GameOver
     }
 
@@ -76,7 +77,6 @@ public sealed class ModComponent : MonoBehaviour
     public int GameSpeed = 1;
     public bool IsMenuOpened = false;
     public bool IsMessageBoxOpened = false;
-    public bool IsInWar = false;
 
     /********************************************/
 
@@ -240,9 +240,13 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.Title;
                 }
-                else if (chapter.TryCast<GSD1.BattleChapter>() != null || chapter.TryCast<GSD1.WarChapter>() != null)
+                else if (chapter.TryCast<GSD1.BattleChapter>() != null)
                 {
                     _chapter = Chapter.Battle;
+                }
+                else if (chapter.TryCast<GSD1.WarChapter>() != null)
+                {
+                    _chapter = Chapter.War;
                 }
                 else if (chapter.TryCast<GSD1.MapChapter>() != null || chapter.TryCast<GSD1.FieldChapter>() != null)
                 {
@@ -267,9 +271,13 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.Title;
                 }
-                else if (chapter.TryCast<GSD2.BattleChapter>() != null || chapter.TryCast<GSD2.WarChapter>() != null)
+                else if (chapter.TryCast<GSD2.BattleChapter>() != null)
                 {
                     _chapter = Chapter.Battle;
+                }
+                else if (chapter.TryCast<GSD2.WarChapter>() != null)
+                {
+                    _chapter = Chapter.War;
                 }
                 else if (chapter.TryCast<GSD2.MapChapter>() != null)
                 {
@@ -298,7 +306,6 @@ public sealed class ModComponent : MonoBehaviour
             GameSpeed = 1;
             IsMenuOpened = false;
             IsMessageBoxOpened = false;
-            IsInWar = false;
         }
     }
 
@@ -448,7 +455,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (IsSpeedHackSafe())
         {
-            if (_chapter == Chapter.Battle && !IsInWar &&
+            if (_chapter == Chapter.Battle &&
                 (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
             {
                 if (_chapter != _prevChapter && !Plugin.Config.RememberBattleSpeed.Value)

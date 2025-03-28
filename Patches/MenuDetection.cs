@@ -162,13 +162,6 @@ public class MenuDetectionPatch
         ModComponent.Instance.IsInSpecialMenu = __result != 1;
     }
 
-    [HarmonyPatch(typeof(GSD1.G1_w_main_c), nameof(GSD1.G1_w_main_c.war_loop))]
-    [HarmonyPostfix]
-    static void GSD1_War(int __result)
-    {
-        ModComponent.Instance.IsInWar = __result != 0;
-    }
-
     /*
     [HarmonyPatch(typeof(GSD1.Co_main_c), nameof(GSD1.Co_main_c.coin_loop))]
     [HarmonyPatch(typeof(GSD1.Go_ws_main), nameof(GSD1.Go_ws_main.go_coin_loop))]
