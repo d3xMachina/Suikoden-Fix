@@ -222,9 +222,9 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(BackupSavesPatch));
         }
 
-        if (Config.InstantBlacksmith.Value)
+        if (Config.InstantShop.Value)
         {
-            ApplyPatch(typeof(InstantBlacksmithPatch));
+            ApplyPatch(typeof(InstantShopPatch));
         }
 
         Log.LogInfo("Patches applied!");

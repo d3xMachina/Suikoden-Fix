@@ -49,7 +49,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> InstantMessage;
     public ConfigEntry<bool> UncapMoney;
     public ConfigEntry<bool> InstantRichmondInvestigation;
-    public ConfigEntry<bool> InstantBlacksmith;
+    public ConfigEntry<bool> InstantShop;
     public ConfigEntry<bool> FixKeyboardBindings;
 
     public ModConfiguration(ConfigFile config)
@@ -367,11 +367,11 @@ public sealed class ModConfiguration
              "(Suikoden 2 only) No need to wait for the Richmond investigations."
         );
 
-        InstantBlacksmith = _config.Bind(
+        InstantShop = _config.Bind(
              "Skip",
-             "InstantBlacksmith",
+             "InstantShop",
              false,
-             "No need to wait when leveling up weapons at the blacksmith."
+             "No need to wait when doing operations in shops like leveling up weapons or appraising items."
         );
 
         UncapMoney = _config.Bind(

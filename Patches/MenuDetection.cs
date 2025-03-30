@@ -10,8 +10,8 @@ public class MenuDetectionPatch
     // To find similar hooks, look for references to Q_window_c.QDispWindow and functions with "_main" in their name
     [HarmonyPatch(typeof(GSD1.h_omise_c), nameof(GSD1.h_omise_c.omise_main))] // Shop
     [HarmonyPatch(typeof(GSD1.h_item_c), nameof(GSD1.h_item_c.item_main))]
-    [HarmonyPatch(typeof(GSD1.h_kajiya_c), nameof(GSD1.h_kajiya_c.kajiya_main))] // Shop
-    [HarmonyPatch(typeof(GSD1.h_kantei_c), nameof(GSD1.h_kantei_c.kantei_main))] // Shop
+    [HarmonyPatch(typeof(GSD1.h_kajiya_c), nameof(GSD1.h_kajiya_c.kajiya_main))] // Blacksmith
+    [HarmonyPatch(typeof(GSD1.h_kantei_c), nameof(GSD1.h_kantei_c.kantei_main))] // Appraiser
     [HarmonyPatch(typeof(GSD1.h_monsyo_c), nameof(GSD1.h_monsyo_c.monsyo_main))] // Shop
     [HarmonyPatch(typeof(GSD1.D_azukar_c), nameof(GSD1.D_azukar_c.azukari_start))] // Storage
     [HarmonyPatch(typeof(GSD1.Event_c), nameof(GSD1.Event_c.teleport_main))] // Teleport
