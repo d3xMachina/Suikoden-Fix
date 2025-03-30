@@ -37,6 +37,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> ExitApplication;
     public ConfigEntry<bool> ResetGame;
     public ConfigEntry<bool> EditSave;
+    public ConfigEntry<int> BackupSave;
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> MonsterHealthMultiplier;
@@ -286,7 +287,14 @@ public sealed class ModConfiguration
              "Advanced",
              "EditSave",
              false,
-             "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (filenames start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
+             "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (file names start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
+        );
+
+        BackupSave = _config.Bind(
+             "Advanced",
+             "BackupSave",
+             0,
+             "Keep a backup of the last N saves for each game in the game folder where N is the number you set for this option. File names start with \"_backup\"."
         );
 
         PlayerDamageMultiplier = _config.Bind(

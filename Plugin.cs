@@ -217,6 +217,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(FixKeyboardBindingsPatch));
         }
 
+        if (Config.BackupSave.Value > 0)
+        {
+            ApplyPatch(typeof(BackupSavesPatch));
+        }
+
         if (Config.InstantBlacksmith.Value)
         {
             ApplyPatch(typeof(InstantBlacksmithPatch));
