@@ -51,6 +51,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> InstantRichmondInvestigation;
     public ConfigEntry<bool> InstantShop;
     public ConfigEntry<bool> FixKeyboardBindings;
+    public ConfigEntry<bool> StallionBoons;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -379,6 +380,13 @@ public sealed class ModConfiguration
              "UncapMoney",
              false,
              "Increase the money cap from 999,999 to 999,999,999."
+        );
+
+        StallionBoons = _config.Bind(
+             "Misc",
+             "StallionBoons",
+             false,
+             "Unlock the x4 battle speed and run on the worldmap without Stallion."
         );
     }
 }

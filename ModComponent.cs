@@ -432,6 +432,33 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
+    private bool IsStallionUnlocked()
+    {
+        if (Plugin.Config.StallionBoons.Value)
+        {
+            return true;
+        }
+
+        if (_activeGame == Game.GSD1)
+        {
+            const int StallionId = 75;
+
+            var memberFlags = GSD1.OldSrcBase.game_work?.member_flag;
+            if (memberFlags != null && memberFlags.Count > StallionId)
+            {
+                return (memberFlags[StallionId] & 1) != 0;
+            }
+        }
+        else if (_activeGame == Game.GSD2)
+        {
+            const int StallionId = 67;
+
+            return GSD2.G2_SYS.G2_cha_flag(2, StallionId) > 0;
+        }
+
+        return false;
+    }
+
     private void UpdateGameSpeed()
     {
         if (_activeGame == Game.None)
@@ -440,7 +467,7 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         bool speedHackEnabled = Plugin.Config.SpeedHackFactor.Value > 1;
-        if (!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value)
+        if (!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value && !Plugin.Config.StallionBoons.Value)
         {
             GameSpeed = GetGameSpeed();
             return;
@@ -462,10 +489,21 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _battleSpeed = 0;
                 }
-                else if (battleSpeedChange)
+                else
                 {
-                    _battleSpeed = (_battleSpeed + 1) % 3;
-                    // TODO: check when you can use battle speed 2
+                    var isStallionUnlocked = IsStallionUnlocked();
+
+                    // Can happen if you load a save with stallion then load a save without him
+                    if (!isStallionUnlocked && _battleSpeed > 1)
+                    {
+                        _battleSpeed = 1;
+                    }
+
+                    if (battleSpeedChange)
+                    {
+                        int nbSpeed = isStallionUnlocked ? 3 : 2;
+                        _battleSpeed = (_battleSpeed + 1) % nbSpeed;
+                    }
                 }
 
                 switch (_battleSpeed)

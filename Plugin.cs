@@ -227,6 +227,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InstantShopPatch));
         }
 
+        if (Config.StallionBoons.Value)
+        {
+            ApplyPatch(typeof(StallionBoonsPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
