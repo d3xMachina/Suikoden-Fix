@@ -38,7 +38,7 @@ public class InstantShopPatch
     static void GSD2_SetBlacksmithTimer(GSD2.DOUGUCON dcon)
     {
         // step 1 is "tink tink" and step 2 is the following wait
-        if (dcon == null || dcon.mstep != 1 && dcon.mstep != 2)
+        if (dcon == null || (dcon.mstep != 1 && dcon.mstep != 2))
         {
             return;
         }
@@ -50,13 +50,29 @@ public class InstantShopPatch
     [HarmonyPrefix]
     static void GSD2_SetAppraiserTimer(GSD2.DOUGUCON dcon)
     {
-        // step 1 is appraising, step 2 is the following wait but keep step 2 intact since it shows the item appraised
-        if (dcon == null || dcon.mstep != 1)
+        if (dcon == null)
         {
             return;
         }
 
-        dcon.wtim = 1; // set 1 instead of 0 since it's decremented first
+        // Appraising
+        if (dcon.mstep == 1)
+        {
+            dcon.wtim = 1; // set 1 instead of 0 since it's decremented first
+        }
+        // Item appraised shown
+        else if (dcon.mstep == 2)
+        {
+            var sysWork = GSD2.OldSrcBase.sys_work;
+            if (sysWork != null)
+            {
+                var confirmPressed = (sysWork.pad_trg & 0x20) > 0;
+                if (confirmPressed)
+                {
+                    dcon.wtim = 1;
+                }
+            }
+        }
     }
 
     /*
