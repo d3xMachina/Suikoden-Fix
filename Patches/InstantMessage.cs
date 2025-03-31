@@ -153,4 +153,18 @@ public class InstantMessagePatch
 
         sysWork.PadTrig = __state; // restore input state
     }
+
+    [HarmonyPatch(typeof(GSD1.D_azukar_c), nameof(GSD1.D_azukar_c.azukari_DispKaiwaBuff))]
+    [HarmonyPatch(typeof(GSD1.h_omise_c), nameof(GSD1.h_omise_c.DispKaiwaBuff))]
+    [HarmonyPatch(typeof(GSD1.G1_i_main_c), nameof(GSD1.G1_i_main_c.i_DispKaiwaBuff))]
+    [HarmonyPrefix]
+    static void GSD1_KaiwaBuffer(GSD1.KAIWA_BUFFER kaiwa_buff)
+    {
+        if (kaiwa_buff == null)
+        {
+            return;
+        }
+
+        kaiwa_buff.timer = 1; // Decremented first
+    }
 }
