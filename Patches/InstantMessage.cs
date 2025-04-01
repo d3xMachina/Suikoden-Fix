@@ -167,4 +167,17 @@ public class InstantMessagePatch
 
         kaiwa_buff.timer = 1; // Decremented first
     }
+
+    [HarmonyPatch(typeof(GSD1.G1_i_main_c), nameof(GSD1.G1_i_main_c.i_disp_window))]
+    [HarmonyPrefix]
+    static void GSD1_Battle1v1(GSD1.G1_i_main_c __instance)
+    {
+        var kaiwaBuffer = __instance.ikki_work?.kaiwa;
+        if (kaiwaBuffer == null)
+        {
+            return;
+        }
+
+        kaiwaBuffer.timer = 1; // Decremented first
+    }
 }
