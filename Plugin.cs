@@ -232,6 +232,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(StallionBoonsPatch));
         }
 
+        if (Config.SaveAnywhere.Value)
+        {
+            ApplyPatch(typeof(SaveAnywherePatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

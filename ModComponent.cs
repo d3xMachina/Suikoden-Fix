@@ -77,6 +77,7 @@ public sealed class ModComponent : MonoBehaviour
     public int GameSpeed = 1;
     public bool IsMenuOpened = false;
     public bool IsMessageBoxOpened = false;
+    public bool IsInGameEvent = false;
 
     /********************************************/
 
@@ -306,6 +307,7 @@ public sealed class ModComponent : MonoBehaviour
             GameSpeed = 1;
             IsMenuOpened = false;
             IsMessageBoxOpened = false;
+            IsInGameEvent = false;
         }
     }
 
@@ -327,16 +329,43 @@ public sealed class ModComponent : MonoBehaviour
         const int slot = 16; // last slot
         var success = false;
 
-        if (_activeGame == Game.GSD1 && _chapter == Chapter.Map)
+        if (_chapter == Chapter.Map && !IsInGameEvent)
         {
-            GSD1.UISaveLoad1.Save(slot, null);
-            success = true;
-                
-        }
-        else if (_activeGame == Game.GSD2 && _chapter == Chapter.Map)
-        {
-            GSD2.UISaveLoad2.Save(slot, null);
-            success = true;
+            if (_activeGame == Game.GSD1)
+            {
+                var village = GSD1.GlobalWork.Instance?.village_c;
+                var partyData = village?.fm_party_data;
+                var player = village?.player;
+                bool saveCurrentPosition = partyData != null && player != null;
+
+                int playerX = 0;
+                int playerY = 0;
+
+                if (saveCurrentPosition)
+                {
+                    Plugin.Log.LogInfo("Save current position.");
+
+                    playerX = partyData.x;
+                    playerY = partyData.y;
+                    partyData.x = player.map_x;
+                    partyData.y = player.map_y;
+                }
+
+                GSD1.UISaveLoad1.Save(slot, null);
+
+                if (saveCurrentPosition)
+                {
+                    partyData.x = playerX;
+                    partyData.y = playerY;
+                }
+
+                success = true; 
+            }
+            else if (_activeGame == Game.GSD2)
+            {
+                GSD2.UISaveLoad2.Save(slot, null);
+                success = true;
+            }
         }
         
         if (success)
