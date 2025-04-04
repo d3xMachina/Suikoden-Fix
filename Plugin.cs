@@ -237,6 +237,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(SaveAnywherePatch));
         }
 
+        if (Config.ResetGame.Value)
+        {
+            ApplyPatch(typeof(ResetGamePatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

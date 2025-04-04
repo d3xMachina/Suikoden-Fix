@@ -78,6 +78,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsMenuOpened = false;
     public bool IsMessageBoxOpened = false;
     public bool IsInGameEvent = false;
+    public bool ResetOnExit = false;
 
     /********************************************/
 
@@ -199,8 +200,9 @@ public sealed class ModComponent : MonoBehaviour
         {
             var chapterManager = GSD1.ChapterManager.GR1Instance;
             if (chapterManager != null)
-            {
-                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD1.ReturnTitleChapter)));
+            {   
+                ResetOnExit = true;
+                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD1.ExitChapter)));
             }
         }
         else if (_activeGame == Game.GSD2)
@@ -308,6 +310,7 @@ public sealed class ModComponent : MonoBehaviour
             IsMenuOpened = false;
             IsMessageBoxOpened = false;
             IsInGameEvent = false;
+            ResetOnExit = false;
         }
     }
 
