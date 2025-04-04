@@ -217,7 +217,7 @@ public sealed class ModComponent : MonoBehaviour
     {
         var scene = SceneManager.GetActiveScene();
         var sceneName = scene.name;
-        var prevGame = _activeGame;
+        var prevChapter = _chapter;
 
         if (sceneName == "GSD1")
         {
@@ -237,9 +237,9 @@ public sealed class ModComponent : MonoBehaviour
             var chapter = GSD1.ChapterManager.GR1Instance?.activeChapter;
             if (chapter != null)
             {
-                if (chapter.TryCast<GSD1.TitleChapter>() != null)
+                if (chapter.TryCast<GSD1.MapChapter>() != null || chapter.TryCast<GSD1.FieldChapter>() != null)
                 {
-                    _chapter = Chapter.Title;
+                    _chapter = Chapter.Map;
                 }
                 else if (chapter.TryCast<GSD1.BattleChapter>() != null)
                 {
@@ -249,9 +249,9 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.War;
                 }
-                else if (chapter.TryCast<GSD1.MapChapter>() != null || chapter.TryCast<GSD1.FieldChapter>() != null)
+                else if (chapter.TryCast<GSD1.TitleChapter>() != null)
                 {
-                    _chapter = Chapter.Map;
+                    _chapter = Chapter.Title;
                 }
                 else if (chapter.TryCast<GSD1.GameOverChapter>() != null)
                 {
@@ -268,9 +268,9 @@ public sealed class ModComponent : MonoBehaviour
             var chapter = GSD2.GRChapterManager.GRInstance?.activeChapter;
             if (chapter != null)
             {
-                if (chapter.TryCast<GSD2.TitleChapter>() != null)
+                if (chapter.TryCast<GSD2.MapChapter>() != null)
                 {
-                    _chapter = Chapter.Title;
+                    _chapter = Chapter.Map;
                 }
                 else if (chapter.TryCast<GSD2.BattleChapter>() != null)
                 {
@@ -280,9 +280,9 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.War;
                 }
-                else if (chapter.TryCast<GSD2.MapChapter>() != null)
+                else if (chapter.TryCast<GSD2.TitleChapter>() != null)
                 {
-                    _chapter = Chapter.Map;
+                    _chapter = Chapter.Title;
                 }
                 else if (chapter.TryCast<GSD2.GameOverChapter>() != null)
                 {
@@ -300,7 +300,7 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         // Init values
-        if (_activeGame != prevGame)
+        if (_chapter == Chapter.Title && _chapter != prevChapter)
         {
             IsInSpecialMenu = false;
             GameTimerMultiplier = 1;
