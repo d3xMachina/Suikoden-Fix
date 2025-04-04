@@ -19,7 +19,8 @@ All features are optional.
 - Disable autosave notifications.
 - Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.
-- Instant Richmond investigations.
+- Run on worldmap and unlock x4 battle speed without Stallion.
+- Instant weapon upgrade, item appraisal and Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
 - Disable or alter the speed up of the music and sound effects when the battle speed change.
