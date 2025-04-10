@@ -4,7 +4,6 @@ extern alias GSD2;
 using System;
 using System.Collections.Generic;
 using BepInEx;
-using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Suikoden_Fix.Tools.Input;
 using UnityEngine;
@@ -198,20 +197,13 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_activeGame == Game.GSD1)
         {
-            var chapterManager = GSD1.ChapterManager.GR1Instance;
-            if (chapterManager != null)
-            {   
-                ResetOnExit = true;
-                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD1.ExitChapter)));
-            }
+            ResetOnExit = true;
+            Framework.Chapter.Request<GSD1.ExitChapter>();
         }
         else if (_activeGame == Game.GSD2)
         {
-            var chapterManager = GSD2.GRChapterManager.GRInstance;
-            if (chapterManager != null)
-            {
-                chapterManager.RequestChapter(Il2CppType.From(typeof(GSD2.ReturnTitleChapter)));
-            }
+            ResetOnExit = true;
+            Framework.Chapter.Request<GSD2.ExitChapter>();
         }
     }
 
