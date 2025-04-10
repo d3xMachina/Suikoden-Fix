@@ -154,9 +154,10 @@ public class MenuDetectionPatch
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_partychg), nameof(GSD2.EventOverlayClass.Overlay_partychg.PartyChageMain))] // has pcon
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_partychg1), nameof(GSD2.EventOverlayClass.Overlay_partychg1.PartyChageMain))] // has pcon
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.OverlayLookMenu), nameof(GSD2.EventOverlayClass.OverlayLookMenu.LookMenuMain))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_furo), nameof(GSD2.EventOverlayClass.Overlay_furo.furomain))] // Bath
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.sndtest), nameof(GSD2.EventOverlayClass.sndtest.SndTestMain))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.syugoitm), nameof(GSD2.EventOverlayClass.syugoitm.s_OverlayAddItem2Main))]
-    [HarmonyPatch(typeof(GSD2.Overlay_teamchg), nameof(GSD2.Overlay_teamchg.TeamChgMain))]
+    [HarmonyPatch(typeof(GSD2.Overlay_teamchg), nameof(GSD2.Overlay_teamchg.TeamChgMain))] // War units rearrange
     [HarmonyPostfix]
     static void GSD2_SpecialMenu(int __result)
     {
