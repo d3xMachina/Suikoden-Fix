@@ -504,7 +504,7 @@ public sealed class ModComponent : MonoBehaviour
         var pitchType = SoundManager.PitchType.x1;
         var speedIcon = 0;
 
-        if (IsSpeedHackSafe())
+        if (IsSpeedHackAllowed())
         {
             if (_chapter == Chapter.Battle &&
                 (!speedHackEnabled || Plugin.Config.NoSpeedHackInBattle.Value || Plugin.Config.RememberBattleSpeed.Value))
@@ -618,7 +618,7 @@ public sealed class ModComponent : MonoBehaviour
         IsMessageBoxOpened = messageBoxOpened;
     }
 
-    private bool IsSpeedHackSafe()
+    private bool IsSpeedHackAllowed()
     {
         // Avoid skipping frames on menus to avoid skipped inputs
 
