@@ -156,6 +156,7 @@ public class MenuDetectionPatch
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.OverlayLookMenu), nameof(GSD2.EventOverlayClass.OverlayLookMenu.LookMenuMain))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.sndtest), nameof(GSD2.EventOverlayClass.sndtest.SndTestMain))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.syugoitm), nameof(GSD2.EventOverlayClass.syugoitm.s_OverlayAddItem2Main))]
+    [HarmonyPatch(typeof(GSD2.Overlay_teamchg), nameof(GSD2.Overlay_teamchg.TeamChgMain))]
     [HarmonyPostfix]
     static void GSD2_SpecialMenu(int __result)
     {
