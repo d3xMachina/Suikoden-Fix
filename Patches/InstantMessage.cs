@@ -99,32 +99,6 @@ public class InstantMessagePatch
     }
 
     [HarmonyPatch(typeof(GSD1.W_serifu_c), nameof(GSD1.W_serifu_c.war_WriteSerifuWindow))]
-    [HarmonyPrefix]
-    static void GSD1_CheckButtonWar(ref uint __state)
-    {
-        var sysWork = GSD1.Event_c.sys_work;
-        if (sysWork == null)
-        {
-            return;
-        }
-
-        __state = sysWork.PadTrig;
-        sysWork.PadData |= 0x20; // simulate a Confirm input
-    }
-
-    [HarmonyPatch(typeof(GSD1.W_serifu_c), nameof(GSD1.W_serifu_c.war_WriteSerifuWindow))]
-    [HarmonyPostfix]
-    static void GSD1_CheckButtonWarPost(uint __state)
-    {
-        var sysWork = GSD1.Event_c.sys_work;
-        if (sysWork == null)
-        {
-            return;
-        }
-
-        sysWork.PadData = __state; // restore input state
-    }
-
     [HarmonyPatch(typeof(GSD1.Ws_serif_c), nameof(GSD1.Ws_serif_c.WriteSerifuWindow))]
     [HarmonyPatch(typeof(GSD1.Go_ws_main), nameof(GSD1.Go_ws_main.WriteSerifuWindow))]
     [HarmonyPrefix]
@@ -140,6 +114,7 @@ public class InstantMessagePatch
         sysWork.PadTrig |= 0x20; // simulate a Confirm input
     }
 
+    [HarmonyPatch(typeof(GSD1.W_serifu_c), nameof(GSD1.W_serifu_c.war_WriteSerifuWindow))]
     [HarmonyPatch(typeof(GSD1.Ws_serif_c), nameof(GSD1.Ws_serif_c.WriteSerifuWindow))]
     [HarmonyPatch(typeof(GSD1.Go_ws_main), nameof(GSD1.Go_ws_main.WriteSerifuWindow))]
     [HarmonyPostfix]
@@ -179,5 +154,80 @@ public class InstantMessagePatch
         }
 
         kaiwaBuffer.timer = 1; // Decremented first
+    }
+
+    static void GSD2_CheckMessageMinigame(int winNo, byte[] msgStep, GSD2.WIN[] msgWin)
+    {
+        if (msgStep == null || winNo >= msgStep.Length)
+        {
+            return;
+        }
+
+        var step = msgStep[winNo];
+        if (step != 1)
+        {
+            return;
+        }
+
+        if (msgWin == null || winNo >= msgWin.Length)
+        {
+            return;
+        }
+
+        var window = msgWin[winNo];
+        if (window == null || GSD2.OldSrcBase.w_getFlg(window, 0x200) || GSD2.OldSrcBase.w_getFlg(window, 0x100))
+        {
+            return;
+        }
+
+        GSD2.window.WindowMessageDispAll(window);
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.ch_main), nameof(GSD2.EventOverlayClass.ch_main.msg_check))]
+    [HarmonyPrefix]
+    static void GSD2_CheckMessageDiceMinigame(GSD2.EventOverlayClass.chin_h.CHIN_DAM_WORK dw, int win_no)
+    {
+        GSD2_CheckMessageMinigame(win_no, dw?.msg_step, dw?.msgwin);
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.fish_dsp), nameof(GSD2.EventOverlayClass.fish_dsp.BFI_CheckMessage))]
+    [HarmonyPrefix]
+    static void GSD2_CheckMessageFishMinigame(GSD2.EventOverlayClass.Overlay_fishing.BASE_FISHING bfi, int window_no)
+    {
+        GSD2_CheckMessageMinigame(window_no, bfi?.msg_stp, bfi?.bfiwin);
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.m_main), nameof(GSD2.EventOverlayClass.m_main.MoguraMain))]
+    [HarmonyPrefix]
+    static void GSD2_CheckMessageMoleMinigame(GSD2.EventOverlayClass.mogura_h.MOGURA_DAM_WORK dw)
+    {
+        var window = dw?.msg_win;
+        if (window == null || GSD2.OldSrcBase.w_getFlg(window, 0x100))
+        {
+            return;
+        }
+
+        GSD2.window.WindowMessageDispAll(window);
+    }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.r_action), nameof(GSD2.EventOverlayClass.r_action.DispEventWork))]
+    [HarmonyPrefix]
+    static void GSD2_CheckMessageCookingMinigame(GSD2.EventOverlayClass.r_action_h.EVENT_WORK ew)
+    {
+        if (ew == null || (ew.flg & 1) == 0 || ew.pc_type == null || ew.pc_num > ew.pc_type.Count)
+        {
+            return;
+        }
+
+        for (int i = 0; i < ew.pc_num; ++i)
+        {
+            var window = ew.pc_type[i]?.msg_win;
+            if (window == null || !GSD2.OldSrcBase.w_getFlg(window, 1))
+            {
+                continue;
+            }
+
+            GSD2.window.WindowMessageDispAll(window);
+        }
     }
 }
