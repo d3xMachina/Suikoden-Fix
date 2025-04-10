@@ -2,7 +2,6 @@
 extern alias GSD2;
 
 using HarmonyLib;
-using System;
 
 namespace Suikoden_Fix.Patches;
 

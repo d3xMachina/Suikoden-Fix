@@ -166,7 +166,7 @@ public class MenuDetectionPatch
     [HarmonyPatch(typeof(GSD1.Co_main_c), nameof(GSD1.Co_main_c.coin_loop))]
     [HarmonyPatch(typeof(GSD1.Go_ws_main), nameof(GSD1.Go_ws_main.go_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Ka_main_c), nameof(GSD1.Ka_main_c.ka_coin_loop))]
-    [HarmonyPatch(typeof(GSD1.Ms_ws_main_c), nameof(GSD1.Ms_ws_main_c.ms_coin_loop))]
+    [HarmonyPatch(typeof(GSD1.Ms_ws_main_c), nameof(GSD1.Ms_ws_main_c.ms_coin_loop))] // Window sound
     [HarmonyPatch(typeof(GSD1.Sd_ws_main_c), nameof(GSD1.Sd_ws_main_c.sd_coin_loop))]
     [HarmonyPatch(typeof(GSD1.Ws_ws_main_c), nameof(GSD1.Ws_ws_main_c.ws_coin_loop))]
     [HarmonyPatch(typeof(GSD1.G1_w_main_c), nameof(GSD1.G1_w_main_c.war_loop))] // War

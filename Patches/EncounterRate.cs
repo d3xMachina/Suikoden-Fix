@@ -98,7 +98,7 @@ public class EncounterRatePatch
     [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.f_wanderingMonsterChk))]
     [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.fieldMain))]
     [HarmonyPostfix]
-    static void EventBatlleCheckPost()
+    static void EventBattleCheckPost()
     {
         _isInBattleCheck = false;
     }

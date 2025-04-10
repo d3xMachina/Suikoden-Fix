@@ -44,7 +44,7 @@ public class EditSavePatch
 
     [HarmonyPatch(typeof(SystemSave), nameof(SystemSave.Save))]
     [HarmonyPostfix]
-    static void Save(string path, string json, SystemSave.DataSize dataSize, Il2CppSystem.Action<bool> cb, bool is_consume)
+    static void Save(string path, string json)
     {
         var fileName = "";
 
@@ -68,7 +68,7 @@ public class EditSavePatch
 
     [HarmonyPatch(typeof(SteamService), nameof(SteamService.Load))]
     [HarmonyPrefix]
-    static bool Load(string path, Il2CppSystem.Action<string> end, bool isHikitugi)
+    static bool Load(string path, Il2CppSystem.Action<string> end)
     {
         bool saveLoaded = false;
         var fileName = "";
@@ -79,12 +79,12 @@ public class EditSavePatch
 
             if (fileName != "")
             {
-                if (File.Exists(fileName) )
+                if (File.Exists(fileName))
                 {
                     var json = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
                     json = FormatJson(json, false);
                     var saveData = SystemSave.HEADER + Encrypter.Encrypt(json, SystemSave.ENCRYPT_PASSWORD);
-                    end.Invoke(saveData);
+                    end?.Invoke(saveData);
                     saveLoaded = true;
 
                     Plugin.Log.LogInfo($"Loaded decrypted save \"{fileName}\".");
