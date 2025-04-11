@@ -34,6 +34,7 @@ public class InstantShopPatch
     }
 
     [HarmonyPatch(typeof(GSD2.kaji), nameof(GSD2.kaji.SKMaidoKitaCom))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.h_kaji), nameof(GSD2.EventOverlayClass.h_kaji.SKMaidoKitaCom))]
     [HarmonyPrefix]
     static void GSD2_SetBlacksmithTimer(GSD2.DOUGUCON dcon)
     {
