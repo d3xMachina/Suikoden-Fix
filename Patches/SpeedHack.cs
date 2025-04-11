@@ -2,6 +2,7 @@
 extern alias GSD2;
 
 using HarmonyLib;
+using System;
 using UnityEngine.InputSystem;
 
 namespace Suikoden_Fix.Patches;
@@ -120,5 +121,39 @@ public class SpeedHackPatch
             //Plugin.Log.LogWarning($"Real Time={__result} Fake Time={_faketimeSinceStartup}");
             __result = _faketimeSinceStartup;
         }
+    }
+
+    [HarmonyPatch(typeof(SoundManager), nameof(SoundManager.GetDecOffset))]
+    [HarmonyPrefix]
+    static bool FixBgmPlayTime(int channel, ref long __result)
+    {
+        var soundManager = SoundManager.Instance;
+        if (soundManager == null)
+        {
+            return true;
+        }
+
+        var bgmPlayers = soundManager.bgmPlayer;
+        if (bgmPlayers == null || channel >= bgmPlayers.Count)
+        {
+            return true;
+        }
+
+        var bgmPlayer = soundManager.bgmPlayer[channel];
+        if (bgmPlayer == null)
+        {
+            return true;
+        }
+
+        var playback = bgmPlayer.playback;
+        if (!playback.GetNumPlayedSamples(out var samples, out var sampleRate))
+        {
+            return true;
+        }
+
+        __result = (long)Math.Round((double)samples / sampleRate * 1000);
+        //Plugin.Log.LogWarning($"DecOffset={__result} pitch={soundManager.bgmPitch}");
+
+        return false;
     }
 }

@@ -143,6 +143,10 @@
       <HintPath>$(GamePath)\BepInEx\interop\DOTweenPro.Scripts.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+    <Reference Include="CriMw.CriWare.Runtime">
+      <HintPath>$(GamePath)\BepInEx\interop\CriMw.CriWare.Runtime.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
