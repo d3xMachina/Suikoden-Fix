@@ -242,6 +242,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(ResetGamePatch));
         }
 
+        if (Config.RareFindsAlwaysInStock.Value)
+        {
+            ApplyPatch(typeof(RareFindsAlwaysInStockPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

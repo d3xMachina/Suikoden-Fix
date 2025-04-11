@@ -52,6 +52,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> InstantShop;
     public ConfigEntry<bool> FixKeyboardBindings;
     public ConfigEntry<bool> StallionBoons;
+    public ConfigEntry<bool> RareFindsAlwaysInStock;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -387,6 +388,13 @@ public sealed class ModConfiguration
              "StallionBoons",
              false,
              "Unlock the x4 battle speed and run on the worldmap without Stallion."
+        );
+
+        RareFindsAlwaysInStock = _config.Bind(
+             "Cheat",
+             "RareFindsAlwaysInStock",
+             false,
+             "Rare finds will always be in stock in the shops."
         );
     }
 }
