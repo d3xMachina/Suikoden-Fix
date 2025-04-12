@@ -67,7 +67,7 @@ public class InstantShopPatch
             var sysWork = GSD2.OldSrcBase.sys_work;
             if (sysWork != null)
             {
-                var confirmPressed = (sysWork.pad_trg & 0x20) > 0;
+                var confirmPressed = (sysWork.pad_trg & 0x20) != 0;
                 if (confirmPressed)
                 {
                     dcon.wtim = 1;

@@ -142,7 +142,7 @@ public sealed class ModConfiguration
              "Visual",
              "DisableMaskedVignette",
              false,
-             "Disable the vignette effect (darkened corners) for vignette with a custom appearance that is displayed in some scenes (in the night time intro scene of Suikoden 2 for example)."
+             "Disable the vignette effect (darkened corners) for vignettes with a custom appearance that is displayed in some scenes (in the night time intro scene of Suikoden 2 for example)."
         );
 
         DisableDiagonalMovements = _config.Bind(
@@ -233,14 +233,14 @@ public sealed class ModConfiguration
              "Audio",
              "DisableStartledSound",
              false,
-             "Don't play a sound effect when a character is startled (with the icon above the head) in Suikoden 2."
+             "(Suikoden 2 only) Don't play a sound effect when a character is startled (with the icon above the head)."
         );
 
         WindowBGColor = _config.Bind(
              "Visual",
              "WindowBGColor",
              "",
-             "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)"
+             "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)."
         );
 
         DisableAutoSaveNotification = _config.Bind(
@@ -394,7 +394,7 @@ public sealed class ModConfiguration
              "Cheat",
              "RareFindsAlwaysInStock",
              false,
-             "Rare finds will always be in stock in the shops."
+             "(Suikoden 2 only) Rare finds will always be in stock in the shops."
         );
     }
 }
