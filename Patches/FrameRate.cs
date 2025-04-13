@@ -53,4 +53,12 @@ public class FrameratePatch
     {
         return false;
     }
+
+    [HarmonyPatch(typeof(SystemObject), nameof(SystemObject.IsUpdateFrame), MethodType.Getter)]
+    [HarmonyPrefix]
+    static bool IsUpdateFrame(out bool __result)
+    {
+        __result = SystemObject._isUpdateFrame;
+        return false;
+    }
 }
