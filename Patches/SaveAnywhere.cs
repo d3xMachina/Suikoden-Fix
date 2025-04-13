@@ -20,4 +20,11 @@ public class SaveAnywherePatch
     {
         ModComponent.Instance.IsInGameEvent = (__instance.syust & 0x1000) != 0;
     }
+
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_h_dance), nameof(GSD2.EventOverlayClass.Overlay_h_dance.DanceMain))]
+    [HarmonyPostfix]
+    static void GSD2_DanceMinigame(int __result)
+    {
+        ModComponent.Instance.IsInDanceMinigame = __result == 0;
+    }
 }

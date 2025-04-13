@@ -77,6 +77,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsMenuOpened = false;
     public bool IsMessageBoxOpened = false;
     public bool IsInGameEvent = false;
+    public bool IsInDanceMinigame = false;
     public bool ResetOnExit = false;
 
     /********************************************/
@@ -302,6 +303,7 @@ public sealed class ModComponent : MonoBehaviour
             IsMenuOpened = false;
             IsMessageBoxOpened = false;
             IsInGameEvent = false;
+            IsInDanceMinigame = false;
             ResetOnExit = false;
         }
     }
@@ -316,7 +318,8 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateSaveAnywhere()
     {
-        if (!Plugin.Config.SaveAnywhere.Value || !_commands[CommandType.SaveAnywhere].IsOn)
+        // The dance minigame is the only thing that use the select button in the game
+        if (!Plugin.Config.SaveAnywhere.Value || !_commands[CommandType.SaveAnywhere].IsOn || IsInDanceMinigame)
         {
             return;
         }
