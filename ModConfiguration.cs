@@ -10,6 +10,7 @@ public sealed class ModConfiguration
     public ConfigEntry<int> Width;
     public ConfigEntry<int> Height;
     public ConfigEntry<int> Fullscreen;
+    public ConfigEntry<bool> NoFrameSkip;
     public ConfigEntry<bool> SkipSplashscreens;
     public ConfigEntry<bool> SkipMovies;
     public ConfigEntry<float> LoadingTransitionFactor;
@@ -65,14 +66,14 @@ public sealed class ModConfiguration
              "Display",
              "FPS",
              -1,
-             "Set the FPS limit. Set to 0 to uncap, a positive value, or -1 to use the default behavior."
+             "Set the FPS limit. Set to 0 to uncap, a positive value, or -1 to use the default behavior. The game loop doesn't update more than 60 times a seconds and higher FPS can make the game slower and/or stutter (barely noticeable at high frame rate). If you use an external FPS limiter you can set this to 0."
         );
 
         Vsync = _config.Bind(
              "Display",
              "Vsync",
              -1,
-             "Set to 0 to disable VSync, 1 to enable VSync or -1 to use the default behavior. When on, the framerate will match your monitor refresh rate."
+             "Set to 0 to disable VSync, 1 to enable VSync or -1 to use the default behavior. When on, the framerate will match your monitor refresh rate. Higher refresh rate than 60 Hz can make the game slower and/or stutter (barely noticeable at high refresh rate). It is recommended to disable the Vsync in game or here to have the game running at 60 FPS and to enable it in the GPU driver."
         );
 
         Width = _config.Bind(
@@ -94,6 +95,13 @@ public sealed class ModConfiguration
              "Fullscreen",
              -1,
              "Set to 0 for windowed mode or 1 for fullscreen mode."
+        );
+
+        NoFrameSkip = _config.Bind(
+             "Display",
+             "NoFrameSkip",
+             false,
+             "Only use this option if your game is running at 60 FPS, otherwise the game will be slower or faster."
         );
 
         SkipSplashscreens = _config.Bind(

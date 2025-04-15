@@ -7,7 +7,7 @@ public class FrameratePatch
 {
     [HarmonyPatch(typeof(SystemObject), nameof(SystemObject.SetTargetFrameRate))]
     [HarmonyPrefix]
-    static bool SetTargetFrameRate(int targetFrameRate)
+    static bool SetTargetFrameRate()
     {
         if (Plugin.Config.FPS.Value >= 0)
         {
@@ -21,7 +21,7 @@ public class FrameratePatch
 
     [HarmonyPatch(typeof(SystemObject), nameof(SystemObject.SetVsyncCount))]
     [HarmonyPrefix]
-    static bool SetVsyncCount(int count)
+    static bool SetVsyncCount()
     {
         if (Plugin.Config.Vsync.Value > 0)
         {
@@ -41,10 +41,15 @@ public class FrameratePatch
 
     [HarmonyPatch(typeof(SystemObject), nameof(SystemObject._FrameChange))]
     [HarmonyPostfix]
-    static void FrameChange(int srcFps)
+    static void FrameChange()
     {
-        SetVsyncCount(0); // parameter doesn't matter
-        SetTargetFrameRate(0); // parameter doesn't matter
+        SetVsyncCount();
+        SetTargetFrameRate();
+
+        if (Plugin.Config.NoFrameSkip.Value)
+        {
+            SystemObject.force60FPS = true;
+        }
     }
 
     [HarmonyPatch(typeof(SystemObject), nameof(SystemObject.Force60FPS))]
@@ -58,7 +63,8 @@ public class FrameratePatch
     [HarmonyPrefix]
     static bool IsUpdateFrame(out bool __result)
     {
-        __result = SystemObject._isUpdateFrame;
+        __result = Plugin.Config.NoFrameSkip.Value || SystemObject._isUpdateFrame;
+
         return false;
     }
 }

@@ -34,7 +34,7 @@ public partial class Plugin : BasePlugin
         bool disableSoundEffect = false;
         bool menuDetection = false;
 
-        if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0)
+        if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0 || Config.NoFrameSkip.Value)
         {
             ApplyPatch(typeof(FrameratePatch));
         }

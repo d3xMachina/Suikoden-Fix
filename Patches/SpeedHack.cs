@@ -88,6 +88,14 @@ public class SpeedHackPatch
         }
     }
 
+    [HarmonyPatch(typeof(GSD1.Pad), nameof(GSD1.Pad.PadUpdate))]
+    [HarmonyPrefix]
+    static bool GSD1_PadUpdate()
+    {
+        // Update inputs only once when frame skip is disabled
+        return !_isInChapterManagerUpdate || _chapterUpdateCount == 0;
+    }
+
     // This returns the elapsed time since the last call to this function
     [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.main_initialize))]
     [HarmonyPatch(typeof(GSD1.GameInit), nameof(GSD1.GameInit.update_game_timer))]
