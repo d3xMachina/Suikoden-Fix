@@ -54,6 +54,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> FixKeyboardBindings;
     public ConfigEntry<bool> StallionBoons;
     public ConfigEntry<bool> RareFindsAlwaysInStock;
+    public ConfigEntry<bool> EasyMinigames;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -403,6 +404,13 @@ public sealed class ModConfiguration
              "RareFindsAlwaysInStock",
              false,
              "(Suikoden 2 only) Rare finds will always be in stock in the shops."
+        );
+
+        EasyMinigames = _config.Bind(
+             "Cheat",
+             "EasyMinigames",
+             false,
+             "You will win minigames even if you lose. In the fish minigame, catching will be instant and give a random fish with equal probability."
         );
     }
 }

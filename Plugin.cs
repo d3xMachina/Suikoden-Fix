@@ -247,6 +247,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(RareFindsAlwaysInStockPatch));
         }
 
+        if (Config.EasyMinigames.Value)
+        {
+            ApplyPatch(typeof(EasyMinigamesPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
