@@ -15,6 +15,8 @@ public class UncapMoneyPatch
     private const int DefaultMaxMoney = 999999;
     private const int MaxMoney = 999999999;
     private static int _windowSetNumberMoney = -1;
+    private static bool _setZkin = false;
+    private static int _zkin = 0;
 
     private struct PickPocket
     {
@@ -60,10 +62,73 @@ public class UncapMoneyPatch
 
     [HarmonyPatch(typeof(GSD1.TurugaiFunc_c.ALCHIN), nameof(GSD1.TurugaiFunc_c.ALCHIN.zkin), MethodType.Setter)]
     [HarmonyPrefix]
-    static bool GSD1_SetZkin(GSD1.TurugaiFunc_c.ALCHIN __instance, int value)
+    static bool GSD1_DiceMinigameSetZkin(GSD1.TurugaiFunc_c.ALCHIN __instance, int value)
     {
+        if (_setZkin)
+        {
+            value = _zkin;
+        }
+
         __instance._zkin = LimitMoney(value);
+        
         return false;
+    }
+
+    [HarmonyPatch(typeof(GSD1.TurugaiFunc_c), nameof(GSD1.TurugaiFunc_c.chinchirorin_func))]
+    [HarmonyPrefix]
+    static void GSD1_DiceMinigameFixOverflow(GSD1.TurugaiFunc_c __instance)
+    {
+        _setZkin = false;
+
+        var btc = __instance.btc;
+        if (btc == null || btc.bstep != GSD1.TurugaiFunc_c.NSTEP.STEP7)
+        {
+            return;
+        }
+
+        var tren = __instance.tren?.par;
+        if (tren == null || (tren.PadTrig & 0x20) == 0)
+        {
+            return;
+        }
+
+        var alc = __instance.alc;
+        if (alc == null)
+        {
+            return;
+        }
+
+        // Fix the overflow after a bet of x3 on 999 999 999
+        var moneyBet = LimitMoney(alc.bairi * alc.kkin);
+        _zkin = alc.zkin;
+
+        if (alc.win_flg == 0) // win
+        {
+            _zkin += moneyBet;
+        }
+        else
+        {
+            _zkin -= moneyBet;
+        }
+
+        _setZkin = true;
+    }
+
+    [HarmonyPatch(typeof(GSD1.TurugaiFunc_c), nameof(GSD1.TurugaiFunc_c.chinchirofunc81))]
+    [HarmonyPostfix]
+    static void GSD1_DiceMinigameFixOverflow2(GSD1.TurugaiFunc_c __instance)
+    {
+        var alc = __instance.alc;
+        if (alc == null)
+        {
+            return;
+        }
+
+        // Fix the overflow after a bet of x3 on 999 999 999
+        if (alc.kkinbk < 0)
+        {
+            alc.kkinbk = MaxMoney;
+        }
     }
 
     [HarmonyPatch(typeof(GSD1.GAME_WORK), nameof(GSD1.GAME_WORK.SetPocchi))]
