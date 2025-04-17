@@ -45,7 +45,7 @@ public class RareFindsAlwaysInStockPatch
         if (__state != null)
         {
             // Restore items quantity so it's not saved
-            for (int i = 0; i < gdat.zai.Length; ++i)
+            for (int i = 0; i < gdat.zai.Count; ++i)
             {
                 gdat.zai[i] = __state[i];
             }

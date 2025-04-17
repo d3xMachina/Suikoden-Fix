@@ -11,7 +11,7 @@ public class WindowColorPatch
     [HarmonyPatch(typeof(GSD1.WindowManager), nameof(GSD1.WindowManager.GetBGColor))]
     [HarmonyPatch(typeof(GSD2.WindowManager), nameof(GSD2.WindowManager.GetBGColor))]
     [HarmonyPostfix]
-    static void GetBGColor(int winSuke, ref Color __result)
+    static void GetBGColor(ref Color __result)
     {
         if (ModComponent.Instance.WindowBGColor != null)
         {
