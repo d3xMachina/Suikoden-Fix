@@ -27,7 +27,8 @@ All features are optional.
 - Disable the sound when a message window appears, footstep sounds and startled sound effects.
 - Change the background color of some windows.
 - Add missing keybinds for the dance minigame.
-- Adjust framerate and vsync.
+- Adjust framerate, vsync and disable frame skipping.
+- Rare finds always in stock and always win minigames.
 
 ## Installation
 
