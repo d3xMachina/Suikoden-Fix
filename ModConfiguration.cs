@@ -403,7 +403,7 @@ public sealed class ModConfiguration
              "Cheat",
              "RareFindsAlwaysInStock",
              false,
-             "(Suikoden 2 only) Rare finds will always be in stock in the shops."
+             "(Suikoden 2 only) Rare finds will always be in stock in the shops. Unique items can only be bought once."
         );
 
         EasyMinigames = _config.Bind(
