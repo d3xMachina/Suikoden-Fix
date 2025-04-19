@@ -207,7 +207,7 @@ public class EasyMinigamesPatch
         }
 
         // The fish eat the bait instantly with same probability for every kind of fishes
-        var rand = UnityEngine.Random.RandomRangeInt(0, eatData.Length - 1);
+        var rand = UnityEngine.Random.RandomRangeInt(0, eatData.Length);
         if (eatData[rand] == null)
         {
             Plugin.Log.LogWarning("Eat check data is null!");
