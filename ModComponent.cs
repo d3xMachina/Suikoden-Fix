@@ -15,7 +15,7 @@ namespace Suikoden_Fix;
 
 public sealed class ModComponent : MonoBehaviour
 {
-    private enum Game
+    public enum Game
     {
         None,
         GSD1,
@@ -63,12 +63,12 @@ public sealed class ModComponent : MonoBehaviour
     private bool _speedHackToggle = false;
     private int _battleSpeed = 0;
 
-    private Game _activeGame = Game.None;
     private Chapter _chapter = Chapter.None;
     private Chapter _prevChapter = Chapter.None;
 
     /******* Values manipulated by patches ******/
 
+    public Game ActiveGame = Game.None;
     public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
     public bool IsInSpecialMenu = false;
     public Color? WindowBGColor = null;
@@ -196,12 +196,12 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             ResetOnExit = true;
             Framework.Chapter.Request<GSD1.ExitChapter>();
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             ResetOnExit = true;
             Framework.Chapter.Request<GSD2.ExitChapter>();
@@ -216,18 +216,18 @@ public sealed class ModComponent : MonoBehaviour
 
         if (sceneName == "GSD1")
         {
-            _activeGame = Game.GSD1;
+            ActiveGame = Game.GSD1;
         }
         else if (sceneName == "GSD2")
         {
-            _activeGame = Game.GSD2;
+            ActiveGame = Game.GSD2;
         }
         else if (sceneName == "Main")
         {
-            _activeGame = Game.None;
+            ActiveGame = Game.None;
         }
 
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             var chapter = GSD1.ChapterManager.GR1Instance?.activeChapter;
             if (chapter != null)
@@ -258,7 +258,7 @@ public sealed class ModComponent : MonoBehaviour
                 }
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             var chapter = GSD2.GRChapterManager.GRInstance?.activeChapter;
             if (chapter != null)
@@ -329,7 +329,7 @@ public sealed class ModComponent : MonoBehaviour
 
         if (_chapter == Chapter.Map && !IsInGameEvent)
         {
-            if (_activeGame == Game.GSD1)
+            if (ActiveGame == Game.GSD1)
             {
                 var village = GSD1.GlobalWork.Instance?.village_c;
                 var partyData = village?.fm_party_data;
@@ -359,7 +359,7 @@ public sealed class ModComponent : MonoBehaviour
 
                 success = true; 
             }
-            else if (_activeGame == Game.GSD2)
+            else if (ActiveGame == Game.GSD2)
             {
                 GSD2.UISaveLoad2.Save(slot, null);
                 success = true;
@@ -382,7 +382,7 @@ public sealed class ModComponent : MonoBehaviour
     {
         int speed = 1;
 
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             var gr1Instance = GSD1.ChapterManager.GR1Instance;
             if (gr1Instance != null)
@@ -390,7 +390,7 @@ public sealed class ModComponent : MonoBehaviour
                 speed = gr1Instance.frameSkip;
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             var grInstance = GSD2.GRChapterManager.GRInstance;
             if (grInstance != null)
@@ -404,7 +404,7 @@ public sealed class ModComponent : MonoBehaviour
 
     private void SetFrameSkip(int factor)
     {
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             var gr1Instance = GSD1.ChapterManager.GR1Instance;
             if (gr1Instance != null)
@@ -412,7 +412,7 @@ public sealed class ModComponent : MonoBehaviour
                 gr1Instance.frameSkip = factor;
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             var grInstance = GSD2.GRChapterManager.GRInstance;
             if (grInstance != null)
@@ -427,7 +427,7 @@ public sealed class ModComponent : MonoBehaviour
     private void SetSpeedIcon(int speed)
     {
         // Show speed icon in bottom right
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             var uiBattleManager = GSD1.UIBattleManager.Instance;
             if (uiBattleManager != null)
@@ -442,7 +442,7 @@ public sealed class ModComponent : MonoBehaviour
                 }
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             var uiBattleManager = GSD2.UIBattleManager.Instance;
             if (uiBattleManager != null)
@@ -466,7 +466,7 @@ public sealed class ModComponent : MonoBehaviour
             return true;
         }
 
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             const int StallionId = 75;
 
@@ -476,7 +476,7 @@ public sealed class ModComponent : MonoBehaviour
                 return (memberFlags[StallionId] & 1) != 0;
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             const int StallionId = 67;
 
@@ -488,7 +488,7 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateGameSpeed()
     {
-        if (_activeGame == Game.None)
+        if (ActiveGame == Game.None)
         {
             return;
         }
@@ -576,7 +576,7 @@ public sealed class ModComponent : MonoBehaviour
         bool menuOpened = false;
         bool messageBoxOpened = false;
 
-        if (_activeGame == Game.GSD1)
+        if (ActiveGame == Game.GSD1)
         {
             var windowManager = GSD1.WindowManager.Instance;
             if (windowManager != null)
@@ -596,7 +596,7 @@ public sealed class ModComponent : MonoBehaviour
                 }
             }
         }
-        else if (_activeGame == Game.GSD2)
+        else if (ActiveGame == Game.GSD2)
         {
             var windowManager = GSD2.WindowManager.Instance;
             if (windowManager != null)

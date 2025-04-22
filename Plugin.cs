@@ -49,6 +49,12 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(DisableVignettePatch));
         }
 
+        if (Config.DisableDepthOfField.Value ||
+            (Config.BloomMultiplier.Value != 1f && Config.BloomMultiplier.Value >= 0))
+        {
+            ApplyPatch(typeof(PostProcessPatch));
+        }
+
         if (Config.ToggleDash.Value || Config.DisableDiagonalMovements.Value)
         {
             ApplyPatch(typeof(InputMovementsPatch));

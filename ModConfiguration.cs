@@ -18,6 +18,8 @@ public sealed class ModConfiguration
     public ConfigEntry<float> ZoneTransitionFactor;
     public ConfigEntry<bool> DisableVignette;
     public ConfigEntry<bool> DisableMaskedVignette;
+    public ConfigEntry<bool> DisableDepthOfField;
+    public ConfigEntry<float> BloomMultiplier;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> DisableFootStepSound;
@@ -152,6 +154,20 @@ public sealed class ModConfiguration
              "DisableMaskedVignette",
              false,
              "Disable the vignette effect (darkened corners) for vignettes with a custom appearance that is displayed in some scenes (in the night time intro scene of Suikoden 2 for example)."
+        );
+
+        DisableDepthOfField = _config.Bind(
+             "Visual",
+             "DisableDepthOfField",
+             false,
+             "Disable the depth of field effect visible in battles."
+        );
+
+        BloomMultiplier = _config.Bind(
+             "Visual",
+             "BloomMultiplier",
+             1f,
+             "Change the intensity of the bloom effects. Set to 0 to disable the bloom effects entirely."
         );
 
         DisableDiagonalMovements = _config.Bind(
