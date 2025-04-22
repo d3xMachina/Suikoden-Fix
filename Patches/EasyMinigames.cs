@@ -17,17 +17,45 @@ public class EasyMinigamesPatch
         public short RecordTime;
     }
 
-    // This function determines the dices combinations
-    [HarmonyPatch(typeof(GSD1.TurugaiFunc_c), nameof(GSD1.TurugaiFunc_c.chinchirofunc50))]
-    [HarmonyPostfix]
-    static void GSD1_DiceMinigame(GSD1.TurugaiFunc_c __instance)
+    [HarmonyPatch(typeof(GSD1.TurugaiFunc_c), nameof(GSD1.TurugaiFunc_c.chinchirorin_func))]
+    [HarmonyPrefix]
+    static void GSD1_DiceMinigame(GSD1.TurugaiFunc_c __instance, out int __state)
     {
-        if (__instance.alc?.dise == null)
+        if (__instance.btc == null)
+        {
+            __state = -1;
+            return;
+        }
+
+        __state = (int)__instance.btc.bstep;
+    }
+
+    [HarmonyPatch(typeof(GSD1.TurugaiFunc_c), nameof(GSD1.TurugaiFunc_c.chinchirorin_func))]
+    [HarmonyPostfix]
+    static void GSD1_DiceMinigamePost(GSD1.TurugaiFunc_c __instance, int __state)
+    {
+        if (__state == -1)
         {
             return;
         }
 
-        /* 0 = Nothing
+        // Transition from step 5 to step 6
+        var step = __instance.btc.bstep;
+        if (__state != (int)GSD1.TurugaiFunc_c.NSTEP.STEP5 || __state == (int)step)
+        {
+            return;
+        }
+
+        var alc = __instance.alc;
+        if (alc?.dise == null ||
+            alc.st_flg == null ||
+            alc.jyun_no >= alc.st_flg.Count)
+        {
+            return;
+        }
+
+        /* Dice combinations :
+         * 0 = Nothing
          * 1-6 = Roll n
          * 8 = Triple 2/3/4/5/6
          * 16 = Triple 1
@@ -35,8 +63,9 @@ public class EasyMinigamesPatch
          * 64 = 1-2-3
          * 128 = Dice out
          */
-        __instance.alc.dise.st_flg = 16;
-        __instance.alc.msgno = 0x10;
+        alc.dise.st_flg = 16;
+        alc.msgno = 0x10;
+        alc.st_flg[alc.jyun_no] = alc.dise.st_flg;
     }
 
     [HarmonyPatch(typeof(GSD1.Ka_main_c), nameof(GSD1.Ka_main_c.ka_coin_loop))]
