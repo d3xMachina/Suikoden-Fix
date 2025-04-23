@@ -22,7 +22,13 @@ public class BetterLeonaPatch
             return true;
         }
 
-        var charaFlags = GSD2.GAME_WORK.Instance?.chara_flag;
+        var gameWork = GSD2.GAME_WORK.Instance;
+        if (gameWork == null)
+        {
+            return true;
+        }
+
+        var charaFlags = gameWork.chara_flag;
         if (charaFlags == null || charaFlags.Count < GSD2.EventOverlayClass.Overlay_partychg.PAMAX_MEM + 1)
         {
             return true;
@@ -41,7 +47,7 @@ public class BetterLeonaPatch
 
             var charaFlag = charaFlags[charaNo]; // Backup the character flag
 
-            if (charaNo == IdMcDohl || // McDohl
+            if ((charaNo == IdMcDohl && gameWork.eventFlgCHK(0x41, 0x10)) || // McDohl
                 (charaNo == IdValeria && (charaFlags[IdKasumi] & FlagRecruited) != 0) || // Valeria
                 (charaNo == IdKasumi && (charaFlags[IdValeria] & FlagRecruited) != 0)) // Kasumi
             {

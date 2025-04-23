@@ -434,7 +434,7 @@ public sealed class ModConfiguration
              "Cheat",
              "BetterLeona",
              false,
-             "(Suikoden 2 only) McDohl will be available in Leona's. If you have recruited Kasumi or Valeria, the other will also be available."
+             "(Suikoden 2 only) McDohl will be available in Leona's if you recruited him. Both Kasumi and Valeria will be available if you recruited one of them."
         );
     }
 }
