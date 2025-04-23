@@ -57,6 +57,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> StallionBoons;
     public ConfigEntry<bool> RareFindsAlwaysInStock;
     public ConfigEntry<bool> EasyMinigames;
+    public ConfigEntry<bool> BetterLeona;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -427,6 +428,13 @@ public sealed class ModConfiguration
              "EasyMinigames",
              false,
              "You will win minigames even if you lose. In the fish minigame, catching will be instant and give a random fish with equal probability."
+        );
+
+        BetterLeona = _config.Bind(
+             "Cheat",
+             "BetterLeona",
+             false,
+             "(Suikoden 2 only) McDohl will be available in Leona's. If you have recruited Kasumi or Valeria, the other will also be available."
         );
     }
 }

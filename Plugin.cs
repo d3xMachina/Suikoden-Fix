@@ -258,6 +258,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(EasyMinigamesPatch));
         }
 
+        if (Config.BetterLeona.Value)
+        {
+            ApplyPatch(typeof(BetterLeonaPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
