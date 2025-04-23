@@ -45,7 +45,7 @@ public class BetterLeonaPatch
                 (charaNo == IdValeria && (charaFlags[IdKasumi] & FlagRecruited) != 0) || // Valeria
                 (charaNo == IdKasumi && (charaFlags[IdValeria] & FlagRecruited) != 0)) // Kasumi
             {
-                charaFlags[charaNo] |= 4; // Recruited
+                charaFlags[charaNo] |= FlagRecruited; // Recruited
             }
             
             bool addCharacter = GSD2.G2_SYS.G2_cha_flag(4, charaNo) == 1 && // Check if character recruited, not dead or on leave, not in party and something else (bit 0x20 of charaFlags).

@@ -480,7 +480,7 @@ public sealed class ModComponent : MonoBehaviour
         {
             const int StallionId = 67;
 
-            return GSD2.G2_SYS.G2_cha_flag(2, StallionId) > 0;
+            return GSD2.G2_SYS.G2_cha_flag(2, StallionId) == 1;
         }
 
         return false;
