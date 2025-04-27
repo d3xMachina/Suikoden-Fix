@@ -623,8 +623,6 @@ public sealed class ModComponent : MonoBehaviour
 
     private bool IsSpeedHackAllowed()
     {
-        // Avoid skipping frames on menus to avoid skipped inputs
-
         if (_chapter == Chapter.Title ||
             _chapter == Chapter.GameOver ||
             (IsMessageBoxOpened && !Plugin.Config.SpeedHackAffectsMessageBoxes.Value) ||
