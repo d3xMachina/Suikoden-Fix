@@ -643,6 +643,6 @@ public sealed class ModComponent : MonoBehaviour
         }
 
         // don't speedup the game timer during battle like the base game
-        GameTimerMultiplier = _chapter == Chapter.Battle ? 1 : factor;
+        GameTimerMultiplier = _chapter == Chapter.Battle || _chapter == Chapter.War ? 1 : factor;
     }
 }
