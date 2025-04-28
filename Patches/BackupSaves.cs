@@ -42,7 +42,7 @@ public class BackupSavesPatch
         }
 
         var backupPrefix = GetBackupPrefix(path);
-        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+        var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
 
         return $"{backupPrefix}{timestamp}_{fileName}";
     }
