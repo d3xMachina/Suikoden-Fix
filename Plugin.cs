@@ -4,6 +4,8 @@ using BepInEx.Unity.IL2CPP;
 using Suikoden_Fix.Patches;
 using HarmonyLib;
 using System;
+using System.Reflection;
+using Suikoden_Fix.Tools.Patch;
 
 namespace Suikoden_Fix;
 
@@ -23,7 +25,18 @@ public partial class Plugin : BasePlugin
         Config.Init();
         if (ModComponent.Inject())
         {
+            if (!Config.DisableBinaryPatches.Value)
+            {
+                // Just in case but it seems it's not needed
+                Log.LogInfo("Il2Cpp Initialization...");
+
+                MemoryPatcher.WaitIl2CppInit();
+                MemoryPatcher.AttachIl2Cpp();
+            }
+
             ApplyPatches();
+
+            // Don't detach Il2Cpp thread otherwise it crashes
         }
     }
 
@@ -284,5 +297,15 @@ public partial class Plugin : BasePlugin
         Log.LogInfo($"Patching {type.Name}...");
 
         Harmony.CreateAndPatchAll(type);
+
+        if (!Config.DisableBinaryPatches.Value)
+        {
+            // Execute the PatchAssembly method if there is one
+            MethodInfo patchMethod = type.GetMethod("PatchAssembly", BindingFlags.NonPublic | BindingFlags.Static);
+            if (patchMethod != null)
+            {
+                patchMethod.Invoke(null, null);
+            }
+        }
     }
 }

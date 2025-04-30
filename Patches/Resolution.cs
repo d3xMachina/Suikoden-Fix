@@ -7,6 +7,7 @@ using Share.UI;
 using Share.UI.Panel;
 using Share.UI.Window;
 using ShareUI.Menu;
+using Suikoden_Fix.Tools.Patch;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -297,5 +298,50 @@ public class ResolutionPatch
         {
             noClip = true;
         }
+    }
+
+    private static void PatchAssembly()
+    {
+        // Remove the boundaries checks to display "off-screen" NPCs
+
+        var address = MemoryPatcher.GetIl2CppMethodPointer(typeof(GSD1.Village_c), "UpdateHumanSprite", [ typeof(bool) ]);
+        MemoryPatcher.PatchMethodNOP(address, 0x316, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x340, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x367, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x391, 6);
+
+        MemoryPatcher.PatchMethodNOP(address, 0x5D5, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x5F0, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x618, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x637, 2);
+
+        address = MemoryPatcher.GetIl2CppMethodPointer(typeof(GSD1.Village_c), "UpdateTatemonoSprite", []);
+        MemoryPatcher.PatchMethodNOP(address, 0x363, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x37E, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x3CF, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x3EA, 6);
+
+        address = MemoryPatcher.GetIl2CppMethodPointer(typeof(GSD1.Village_c), "UpdateKemriSprite", [ typeof(bool) ]);
+        MemoryPatcher.PatchMethodNOP(address, 0x3AF, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x3BF, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x3CF, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x3DF, 2);
+
+        address = MemoryPatcher.GetIl2CppMethodPointer(typeof(GSD1.Village_c), "UpdateHatoSprite", [ typeof(bool) ]);
+        MemoryPatcher.PatchMethodNOP(address, 0x11A, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x12E, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x142, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x156, 6);
+
+        MemoryPatcher.PatchMethodNOP(address, 0x257, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x267, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x277, 2);
+        MemoryPatcher.PatchMethodNOP(address, 0x287, 2);
+
+        address = MemoryPatcher.GetIl2CppMethodPointer(typeof(GSD1.Village_c), "UpdateEventTatemonoSprite", []);
+        MemoryPatcher.PatchMethodNOP(address, 0x212, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x22E, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x259, 6);
+        MemoryPatcher.PatchMethodNOP(address, 0x275, 6);
     }
 }

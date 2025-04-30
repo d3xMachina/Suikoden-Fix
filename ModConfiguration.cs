@@ -59,6 +59,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> RareFindsAlwaysInStock;
     public ConfigEntry<bool> EasyMinigames;
     public ConfigEntry<bool> BetterLeona;
+    public ConfigEntry<bool> DisableBinaryPatches;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -331,6 +332,13 @@ public sealed class ModConfiguration
              "BackupSave",
              0,
              "Keep a backup of the last N saves for each game in the game folder where N is the number you set for this option. File names start with \"_backup\"."
+        );
+
+        DisableBinaryPatches = _config.Bind(
+             "Advanced",
+             "DisableBinaryPatches",
+             false,
+             "Disable the binary patches. Use this if the game was updated but not Suikoden Fix since it could crash otherwise. It will disable some options partially or completly depending on which one."
         );
 
         PlayerDamageMultiplier = _config.Bind(
