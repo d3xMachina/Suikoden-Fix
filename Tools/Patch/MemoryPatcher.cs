@@ -1,7 +1,7 @@
-﻿using Il2CppInterop.Runtime;
+﻿using HarmonyLib;
+using Il2CppInterop.Runtime;
 using System;
 using System.Runtime.InteropServices;
-using UnityEngine.Rendering.PostProcessing;
 
 namespace Suikoden_Fix.Tools.Patch;
 
@@ -105,7 +105,7 @@ partial class MemoryPatcher
         }
     }
 
-    public static IntPtr GetMethod(IntPtr clazz, string methodName, Type[] parameterTypes)
+    public static IntPtr GetMethod(IntPtr clazz, string methodName, Type[] parameters = null, ArgumentType[] variations = null)
     {
         try
         {
@@ -123,37 +123,56 @@ partial class MemoryPatcher
                 }
 
                 int score = 0;
-                for (int i = 0; ; ++i)
+
+                if (parameters != null)
                 {
-                    var paramPtr = IL2CPP.il2cpp_method_get_param(currentMethodPtr, (uint)i);
-                    if (paramPtr == IntPtr.Zero)
+                    for (int i = 0; ; ++i)
                     {
-                        break;
-                    }
+                        var paramPtr = IL2CPP.il2cpp_method_get_param(currentMethodPtr, (uint)i);
+                        if (paramPtr == IntPtr.Zero)
+                        {
+                            break;
+                        }
 
-                    if (i >= parameterTypes.Length)
-                    {
-                        Plugin.Log.LogWarning($"Method {currentMethodName} has more arguments than expected! Skipping...");
-                        score = 0;
-                        break;
-                    }
+                        if (i >= parameters.Length)
+                        {
+                            Plugin.Log.LogWarning($"Method {currentMethodName} has more arguments than expected! Skipping...");
+                            score = 0;
+                            break;
+                        }
 
-                    var typeNamePtr = IL2CPP.il2cpp_type_get_name(paramPtr);
-                    var typeName = Marshal.PtrToStringAnsi(typeNamePtr);
+                        var typeNamePtr = IL2CPP.il2cpp_type_get_name(paramPtr);
+                        var typeName = Marshal.PtrToStringAnsi(typeNamePtr);
+
+                        var variation = "";
+                        
+                        if (variations != null)
+                        {
+                            variation = variations[i] switch
+                            {
+                                ArgumentType.Ref => "&",
+                                ArgumentType.Out => "", // TODO
+                                ArgumentType.Pointer => "", // TODO
+                                _ => ""
+                            };
+                        }
                 
-                    if (typeName != parameterTypes[i].FullName)
-                    {
-                        Plugin.Log.LogWarning($"Argument {i} mismatch in {currentMethodName}!\n" +
-                                              $"Expected: {parameterTypes[i]}\n" +
-                                              $"Actual: {typeName}.\nSkipping...");
-                        score = 0;
-                        break;
-                    }
+                        if (typeName != parameters[i].FullName + variation)
+                        {
+                            Plugin.Log.LogWarning($"Argument {i} mismatch in {currentMethodName}!\n" +
+                                                  $"Expected: {parameters[i]}\n" +
+                                                  $"Actual: {typeName}\n" +
+                                                  $"Skipping...");
+                            score = 0;
+                            break;
+                        }
                     
-                    ++score;
+                        ++score;
+                    }
                 }
 
-                if (score == parameterTypes.Length)
+                if (parameters == null ||
+                    score == parameters.Length)
                 {
                     var imageName = "";
                     var namespaceName = "";
@@ -201,7 +220,7 @@ partial class MemoryPatcher
         }
     }
 
-    public static IntPtr GetIl2CppMethodPointer(Type type, string methodName, Type[] parameters)
+    public static IntPtr GetIl2CppMethodPointer(Type type, string methodName, Type[] parameters = null, ArgumentType[] variations = null)
     {
         try
         {
@@ -224,7 +243,7 @@ partial class MemoryPatcher
                 return IntPtr.Zero;
             }
 
-            return GetMethod(classPtr, methodName, parameters);
+            return GetMethod(classPtr, methodName, parameters, variations);
         }
         catch (Exception ex)
         {
