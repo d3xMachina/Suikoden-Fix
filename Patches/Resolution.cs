@@ -1,4 +1,7 @@
-﻿using DG.Tweening;
+﻿extern alias GSD1;
+extern alias GSD2;
+
+using DG.Tweening;
 using HarmonyLib;
 using Share.UI;
 using Share.UI.Panel;
@@ -283,6 +286,16 @@ public class ResolutionPatch
                 position.y /= scale;
                 imgBg02.localPosition = position;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(GSD2.ANIME), nameof(GSD2.ANIME.AnimeDispFast))]
+    [HarmonyPrefix]
+    static void GSD2_AnimeDispFast(ref bool noClip)
+    {
+        if (_aspectRatio != _defaultAspectRatio)
+        {
+            noClip = true;
         }
     }
 }
