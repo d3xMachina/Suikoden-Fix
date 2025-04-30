@@ -30,6 +30,8 @@ public sealed class ModComponent : MonoBehaviour
         Map,
         Battle,
         War,
+        Duel,
+        Minigame,
         GameOver
     }
 
@@ -39,7 +41,8 @@ public sealed class ModComponent : MonoBehaviour
         SpeedHack,
         BattleSpeed,
         ExitApplication,
-        ResetApplication
+        ResetApplication,
+        PauseGame
     }
 
     public static ModComponent Instance { get; private set; }
@@ -57,7 +60,8 @@ public sealed class ModComponent : MonoBehaviour
                 [ Key.Escape, Key.R],
                 [], true
             )
-        }
+        },
+        { CommandType.PauseGame, new Command([], [], [ GRInputManager.Type.Start ]) }
     };
 
     private bool _speedHackToggle = false;
@@ -66,19 +70,26 @@ public sealed class ModComponent : MonoBehaviour
     private Chapter _chapter = Chapter.None;
     private Chapter _prevChapter = Chapter.None;
 
+    private GUIStyle _guiCenteredStyle;
+    private Texture2D _backgroundTexture;
+
     /******* Values manipulated by patches ******/
 
-    public Game ActiveGame = Game.None;
+    // Read only
+    public Game ActiveGame { get; private set; } = Game.None;
+    public Color? WindowBGColor { get; private set; } = null;
+    public int GameTimerMultiplier { get; private set; } = 1;
+    public int GameSpeed { get; private set; } = 1;
+    public bool IsMenuOpened { get; private set; } = false;
+    public bool IsMessageBoxOpened { get; private set; } = false;
+    public bool ResetOnExit { get; private set; } = false;
+    public bool GamePaused { get; private set; } = false;
+
+    // Read-Write
     public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
     public bool IsInSpecialMenu = false;
-    public Color? WindowBGColor = null;
-    public int GameTimerMultiplier = 1;
-    public int GameSpeed = 1;
-    public bool IsMenuOpened = false;
-    public bool IsMessageBoxOpened = false;
     public bool IsInGameEvent = false;
     public bool IsInDanceMinigame = false;
-    public bool ResetOnExit = false;
 
     /********************************************/
 
@@ -108,7 +119,7 @@ public sealed class ModComponent : MonoBehaviour
         return true;
     }
 
-    public void Awake()
+    private void Awake()
     {
         try
         {
@@ -127,6 +138,22 @@ public sealed class ModComponent : MonoBehaviour
                 }
             }
 
+            _backgroundTexture = new Texture2D(1, 1);
+            _backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
+            _backgroundTexture.SetPixel(0, 0, new Color(0f, 0f, 0f, 0.5f));
+            _backgroundTexture.Apply();
+
+            _guiCenteredStyle = new GUIStyle()
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 48,
+                fontStyle = FontStyle.Normal,
+                normal = new GUIStyleState()
+                {
+                    textColor = Color.white
+                }
+            };
+
             Plugin.Log.LogInfo($"[{nameof(ModComponent)}].{nameof(Awake)}: Processed successfully.");
         }
         catch (Exception e)
@@ -136,7 +163,7 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    public void Update()
+    private void Update()
     {
         try
         {
@@ -155,7 +182,7 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    public void LateUpdate()
+    private void LateUpdate()
     {
         try
         {
@@ -169,6 +196,7 @@ public sealed class ModComponent : MonoBehaviour
             UpdateSaveAnywhere();
             UpdateWindowOpened();
             UpdateGameSpeed();
+            UpdatePauseGame(); // needs to be after UpdateGameSpeed to have the game timer correctly paused
 
             _prevChapter = _chapter;
         }
@@ -176,6 +204,17 @@ public sealed class ModComponent : MonoBehaviour
         {
             _isDisabled = true;
             Plugin.Log.LogError($"[{nameof(ModComponent)}].{nameof(LateUpdate)}(): {e}");
+        }
+    }
+
+    public void OnGUI()
+    {
+        if (GamePaused)
+        {
+            // Display "PAUSED" in the middle of the screen
+            var screenRect = new Rect(0, 0, Screen.width, Screen.height);
+            GUI.DrawTexture(screenRect, _backgroundTexture);
+            GUI.Label(screenRect, "PAUSED", _guiCenteredStyle);
         }
     }
 
@@ -189,11 +228,17 @@ public sealed class ModComponent : MonoBehaviour
         Application.Quit();
     }
 
-    public void UpdateResetApplication()
+    private void UpdateResetApplication()
     {
         if (!Plugin.Config.ResetGame.Value || !_commands[CommandType.ResetApplication].IsOn || _chapter == Chapter.Title)
         {
             return;
+        }
+
+        if (GamePaused)
+        {
+            ResumeGame();
+            GamePaused = false;
         }
 
         if (ActiveGame == Game.GSD1)
@@ -205,6 +250,48 @@ public sealed class ModComponent : MonoBehaviour
         {
             ResetOnExit = true;
             Framework.Chapter.Request<GSD2.ExitChapter>();
+        }
+    }
+
+    private void PauseGame()
+    {
+        SoundManager.PauseBGM(-1, 0f);
+        SoundManager.PauseSE(-1, 0f);
+        Time.timeScale = 0f;
+    }
+
+    private void ResumeGame()
+    {
+        SoundManager.ResumeBGM(-1, 0f);
+        SoundManager.ResumeSE(-1, 0f);
+        //Time.timeScale = 1f; // it's restored in ChapterManager.Update() with the frameSkip value
+    }
+
+    private void UpdatePauseGame()
+    {
+        if (!Plugin.Config.PauseGame.Value || !_commands[CommandType.PauseGame].IsOn || _commands[CommandType.ResetApplication].IsOn)
+        {
+            return;
+        }
+
+        if (_chapter != Chapter.Map &&
+            _chapter != Chapter.Battle &&
+            _chapter != Chapter.War &&
+            _chapter != Chapter.Duel &&
+            _chapter != Chapter.Minigame)
+        {
+            return;
+        }
+
+        GamePaused = !GamePaused;
+
+        if (GamePaused)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
         }
     }
 
@@ -244,6 +331,10 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.War;
                 }
+                else if (chapter.TryCast<GSD1.MinigameChapter>() != null)
+                {
+                    _chapter = Chapter.Minigame;
+                }
                 else if (chapter.TryCast<GSD1.TitleChapter>() != null)
                 {
                     _chapter = Chapter.Title;
@@ -274,6 +365,10 @@ public sealed class ModComponent : MonoBehaviour
                 else if (chapter.TryCast<GSD2.WarChapter>() != null)
                 {
                     _chapter = Chapter.War;
+                }
+                else if (chapter.TryCast<GSD2.IkkiChapter>() != null)
+                {
+                    _chapter = Chapter.Duel;
                 }
                 else if (chapter.TryCast<GSD2.TitleChapter>() != null)
                 {
@@ -497,11 +592,12 @@ public sealed class ModComponent : MonoBehaviour
         if (!speedHackEnabled && !Plugin.Config.RememberBattleSpeed.Value && !Plugin.Config.StallionBoons.Value)
         {
             GameSpeed = GetGameSpeed();
+            SetGameTimerMultiplier(1);
             return;
         }
 
-        bool speedHackChange = _commands[CommandType.SpeedHack].IsOn;
-        bool battleSpeedChange = _commands[CommandType.BattleSpeed].IsOn;
+        bool speedHackChange = _commands[CommandType.SpeedHack].IsOn && !GamePaused;
+        bool battleSpeedChange = _commands[CommandType.BattleSpeed].IsOn && !GamePaused;
 
         int factor = 1;
         var pitchType = SoundManager.PitchType.x1;
@@ -571,7 +667,7 @@ public sealed class ModComponent : MonoBehaviour
         SetGameTimerMultiplier(factor);
     }
 
-    public void UpdateWindowOpened()
+    private void UpdateWindowOpened()
     {
         bool menuOpened = false;
         bool messageBoxOpened = false;
@@ -637,12 +733,21 @@ public sealed class ModComponent : MonoBehaviour
 
     private void SetGameTimerMultiplier(int factor)
     {
-        if (!Plugin.Config.SpeedHackAffectsGameTimer.Value)
+        if (GamePaused)
         {
-            return;
+            GameTimerMultiplier = 0;
         }
-
         // don't speedup the game timer during battle like the base game
-        GameTimerMultiplier = _chapter == Chapter.Battle || _chapter == Chapter.War ? 1 : factor;
+        else if (!Plugin.Config.SpeedHackAffectsGameTimer.Value ||
+                  _chapter == Chapter.Battle ||
+                  _chapter == Chapter.War ||
+                  _chapter == Chapter.Duel)
+        {
+            GameTimerMultiplier = 1;
+        }
+        else
+        {
+            GameTimerMultiplier = factor;
+        }
     }
 }

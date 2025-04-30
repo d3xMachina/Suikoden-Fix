@@ -131,6 +131,14 @@
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.UI.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.IMGUIModule.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>$(GamePath)\BepInEx\interop\Unity.Postprocessing.Runtime.dll</HintPath>
 	  <Private>false</Private>

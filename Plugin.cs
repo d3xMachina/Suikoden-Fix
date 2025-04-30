@@ -33,6 +33,7 @@ public partial class Plugin : BasePlugin
         bool disableBattleSpeedChange = false;
         bool disableSoundEffect = false;
         bool menuDetection = false;
+        bool gameTimer = false;
 
         if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0 || Config.NoFrameSkip.Value)
         {
@@ -103,6 +104,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(SpeedHackPatch));
             disableBattleSpeedChange = true;
             menuDetection = true;
+            gameTimer = true;
         }
 
         if (Config.RememberBattleSpeed.Value)
@@ -151,6 +153,22 @@ public partial class Plugin : BasePlugin
         if (Config.ExitApplication.Value)
         {
             ApplyPatch(typeof(ExitApplicationPatch));
+        }
+
+        if (Config.ResetGame.Value)
+        {
+            ApplyPatch(typeof(ResetGamePatch));
+        }
+
+        if (Config.PauseGame.Value)
+        {
+            ApplyPatch(typeof(PauseGamePatch));
+            gameTimer = true;
+        }
+
+        if (gameTimer)
+        {
+            ApplyPatch(typeof(GameTimerPatch));
         }
         
         if (Config.EditSave.Value)
@@ -241,11 +259,6 @@ public partial class Plugin : BasePlugin
         if (Config.SaveAnywhere.Value)
         {
             ApplyPatch(typeof(SaveAnywherePatch));
-        }
-
-        if (Config.ResetGame.Value)
-        {
-            ApplyPatch(typeof(ResetGamePatch));
         }
 
         if (Config.RareFindsAlwaysInStock.Value)

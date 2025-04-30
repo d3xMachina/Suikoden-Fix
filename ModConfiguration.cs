@@ -39,6 +39,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> ClassicMode;
     public ConfigEntry<bool> ExitApplication;
     public ConfigEntry<bool> ResetGame;
+    public ConfigEntry<bool> PauseGame;
     public ConfigEntry<bool> EditSave;
     public ConfigEntry<int> BackupSave;
     public ConfigEntry<float> PlayerDamageMultiplier;
@@ -302,6 +303,13 @@ public sealed class ModConfiguration
              "ResetGame",
              true,
              "Allow you to go back to the title screen of the game by pressing start + left shoulder + right shoulder on the gamepad or Escape + R on the keyboard."
+        );
+
+        PauseGame = _config.Bind(
+             "Misc",
+             "PauseGame",
+             true,
+             "Pause the game by pressing the start button or the tab key. It pauses everything including the game timers."
         );
         
         FixKeyboardBindings = _config.Bind(
