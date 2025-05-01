@@ -23,6 +23,7 @@ public partial class Plugin : BasePlugin
 
         Config = new ModConfiguration(base.Config);
         Config.Init();
+
         if (ModComponent.Inject())
         {
             if (!Config.DisableBinaryPatches.Value)

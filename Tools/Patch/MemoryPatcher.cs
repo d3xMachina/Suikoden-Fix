@@ -31,10 +31,10 @@ partial class MemoryPatcher
         {
             var targetAddress = address + offset;
 
-            // Change protection to allow reading
+            // Change protection to allow writing
             VirtualProtect(targetAddress, (UIntPtr)code.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect);
             
-            // Read the bytes
+            // Write the bytes
             Marshal.Copy(code, 0, targetAddress, code.Length);
             
             // Restore original protection
