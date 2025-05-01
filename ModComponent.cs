@@ -61,7 +61,7 @@ public sealed class ModComponent : MonoBehaviour
                 [], true
             )
         },
-        { CommandType.PauseGame, new Command([], [], [ GRInputManager.Type.Start ]) }
+        { CommandType.PauseGame, new Command([ GamepadButton.Start ], [ Key.Tab ], []) }
     };
 
     private bool _speedHackToggle = false;
