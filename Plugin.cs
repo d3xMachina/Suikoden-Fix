@@ -79,11 +79,6 @@ public partial class Plugin : BasePlugin
             }
         }
 
-        if (Config.DisableFootStepSound.Value)
-        {
-            ApplyPatch(typeof(DisableFootStepSoundPatch));
-        }
-
         if (Config.ZoneTransitionFactor.Value >= 0f)
         {
             ApplyPatch(typeof(FastZoneTransitionPatch));
@@ -247,11 +242,6 @@ public partial class Plugin : BasePlugin
         if (Config.InstantRichmondInvestigation.Value)
         {
             ApplyPatch(typeof(InstantRichmondInvestigationPatch));
-        }
-
-        if (Config.FixKeyboardBindings.Value)
-        {
-            ApplyPatch(typeof(FixKeyboardBindingsPatch));
         }
 
         if (Config.BackupSave.Value > 0)

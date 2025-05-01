@@ -22,7 +22,6 @@ public sealed class ModConfiguration
     public ConfigEntry<float> BloomMultiplier;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
-    public ConfigEntry<bool> DisableFootStepSound;
     public ConfigEntry<bool> SaveAnywhere;
     public ConfigEntry<int> SpeedHackFactor;
     public ConfigEntry<bool> SpeedHackAffectsGameTimer;
@@ -54,7 +53,6 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> UncapMoney;
     public ConfigEntry<bool> InstantRichmondInvestigation;
     public ConfigEntry<bool> InstantShop;
-    public ConfigEntry<bool> FixKeyboardBindings;
     public ConfigEntry<bool> StallionBoons;
     public ConfigEntry<bool> RareFindsAlwaysInStock;
     public ConfigEntry<bool> EasyMinigames;
@@ -187,13 +185,6 @@ public sealed class ModConfiguration
              "Make the dash command a toggle instead of having to hold it."
         );
 
-        DisableFootStepSound = _config.Bind(
-             "Audio",
-             "DisableFootStepSound",
-             false,
-             "Disable the sound of foot steps."
-        );
-
         SaveAnywhere = _config.Bind(
              "Misc",
              "SaveAnywhere",
@@ -311,13 +302,6 @@ public sealed class ModConfiguration
              "PauseGame",
              true,
              "Pause the game by pressing the start button or the tab key. It pauses everything including the game timers."
-        );
-        
-        FixKeyboardBindings = _config.Bind(
-             "Misc",
-             "FixKeyboardBindings",
-             true,
-             "Bind the key q to the action L1 and the key e to the action R1 which are necessary for the dance minigame."
         );
 
         EditSave = _config.Bind(

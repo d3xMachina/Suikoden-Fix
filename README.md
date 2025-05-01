@@ -24,9 +24,8 @@ All features are optional.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
 - Disable or alter the speed up of the music and sound effects when the battle speed change.
-- Disable the sound when a message window appears, footstep sounds and startled sound effects.
+- Disable the sound when a message window appears and startled sound effects.
 - Change the background color of some windows.
-- Add missing keybinds for the dance minigame.
 - Adjust framerate, vsync and disable frame skipping.
 - Rare finds always in stock and always win minigames.
 
