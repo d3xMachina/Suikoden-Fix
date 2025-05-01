@@ -338,7 +338,7 @@ public sealed class ModConfiguration
              "Advanced",
              "DisableBinaryPatches",
              false,
-             "Disable the binary patches. Use this if the game was updated but not Suikoden Fix since it could crash otherwise. It will disable some options partially or completly depending on which one."
+             "Disable the binary patches. Use this if the game was updated but not Suikoden Fix since it could crash or have unexpected behavior otherwise. It will disable some options partially or completly depending on which one."
         );
 
         PlayerDamageMultiplier = _config.Bind(

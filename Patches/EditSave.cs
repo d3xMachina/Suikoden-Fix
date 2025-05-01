@@ -66,9 +66,9 @@ public class EditSavePatch
         }
     }
 
-    [HarmonyPatch(typeof(SteamService), nameof(SteamService.Load))]
+    [HarmonyPatch(typeof(SystemSave), nameof(SystemSave.Load))]
     [HarmonyPrefix]
-    static bool Load(string path, Il2CppSystem.Action<string> end)
+    static bool Load(string path, Il2CppSystem.Action<string> cb)
     {
         bool saveLoaded = false;
         var fileName = "";
@@ -84,7 +84,15 @@ public class EditSavePatch
                     var json = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
                     json = FormatJson(json, false);
                     var saveData = SystemSave.HEADER + Encrypter.Encrypt(json, SystemSave.ENCRYPT_PASSWORD);
+
+                    var display = new SystemSave.__c__DisplayClass16_0
+                    {
+                        cb = cb
+                    };
+
+                    var end = new Action<string>(display._Load_b__0);
                     end?.Invoke(saveData);
+
                     saveLoaded = true;
 
                     Plugin.Log.LogInfo($"Loaded decrypted save \"{fileName}\".");

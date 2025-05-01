@@ -11,6 +11,7 @@ public class SpedUpSoundPatch
         public bool ok;
         public float bgmPitch;
         public float sePitch;
+        public bool speedUpBattleBGM;
     };
 
     [HarmonyPatch(typeof(SoundManager), nameof(SoundManager.SetPitchType))]
@@ -28,9 +29,17 @@ public class SpedUpSoundPatch
         var soundManager = SoundManager.Instance;
         if (soundManager != null)
         {
-            __state.ok = true;
             __state.bgmPitch = soundManager.bgmPitch;
             __state.sePitch = soundManager.sePitch;
+
+            var config = ShareSaveData.system_config;
+            if (config != null)
+            {
+                __state.speedUpBattleBGM = config.speedUpBattleBGM;
+                __state.ok = true;
+
+                config.speedUpBattleBGM = true;
+            }
         }
     }
 
@@ -40,9 +49,14 @@ public class SpedUpSoundPatch
     {
         _isInSetPitchType = false;
 
+        if (!__state.ok)
+        {
+            return;
+        }
+
         // Restore the pitch values
         var soundManager = SoundManager.Instance;
-        if (soundManager != null && __state.ok)
+        if (soundManager != null)
         {
             if (Plugin.Config.SpedUpMusic.Value == 0)
             {
@@ -53,6 +67,12 @@ public class SpedUpSoundPatch
             {
                 soundManager.sePitch = __state.sePitch;
             }
+        }
+
+        var config = ShareSaveData.system_config;
+        if (config != null)
+        {
+            config.speedUpBattleBGM = __state.speedUpBattleBGM;
         }
     }
 

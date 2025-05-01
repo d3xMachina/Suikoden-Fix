@@ -77,7 +77,7 @@ public class ResolutionPatch
             return;
         }
 
-        var screenSize = UIConfigWindow.c_ScreenSize;
+        var screenSize = DisplayConfig.c_ScreenSize;
         if (screenSize == null || screenSize.Count <= 0 || screenSize[0].Count < 2)
         {
             Plugin.Log.LogWarning("No resolution found!");
