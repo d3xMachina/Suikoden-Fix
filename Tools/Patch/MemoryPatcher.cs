@@ -20,7 +20,7 @@ partial class MemoryPatcher
     [DllImport("kernel32.dll")]
     private static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 
-    public static void PatchMethod(IntPtr address, int offset, byte[] code)
+    public static void Patch(IntPtr address, int offset, byte[] code)
     {
         if (address == IntPtr.Zero)
         {
@@ -46,12 +46,12 @@ partial class MemoryPatcher
         }
     }
 
-    public static void PatchMethodNOP(IntPtr address, int offset, int length)
+    public static void PatchNOP(IntPtr address, int offset, int length)
     {
         var code = new byte[length];
         Array.Fill(code, (byte)0x90);
 
-        PatchMethod(address, offset, code);
+        Patch(address, offset, code);
     }
 
     public static IntPtr GetImage(string image)
@@ -220,7 +220,7 @@ partial class MemoryPatcher
         }
     }
 
-    public static IntPtr GetIl2CppMethodPointer(Type type, string methodName, Type[] parameters = null, ArgumentType[] variations = null)
+    public static IntPtr GetMethodAddress(Type type, string methodName, Type[] parameters = null, ArgumentType[] variations = null)
     {
         try
         {
