@@ -274,7 +274,8 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        if (_chapter != Chapter.Map &&
+        if (!GamePaused && // for safety but shouldn't be needed, allow unpausing in any chapter
+            _chapter != Chapter.Map &&
             _chapter != Chapter.Battle &&
             _chapter != Chapter.War &&
             _chapter != Chapter.Duel &&
@@ -414,7 +415,10 @@ public sealed class ModComponent : MonoBehaviour
     private void UpdateSaveAnywhere()
     {
         // The dance minigame is the only thing that use the select button in the game
-        if (!Plugin.Config.SaveAnywhere.Value || !_commands[CommandType.SaveAnywhere].IsOn || IsInDanceMinigame)
+        if (!Plugin.Config.SaveAnywhere.Value ||
+            !_commands[CommandType.SaveAnywhere].IsOn ||
+            GamePaused ||
+            IsInDanceMinigame)
         {
             return;
         }
