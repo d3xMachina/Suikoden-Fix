@@ -192,15 +192,11 @@ public class FastTransitionPatch
     */
 }
 
-public class FastZoneTransitionPatch
+public class FastZoneTransitionGSD1Patch
 {
     [HarmonyPatch(typeof(GSD1::Fmain_c), nameof(GSD1::Fmain_c.fieldInit))]
-    [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.village01))]
     [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.open_map_main))]
-    [HarmonyPatch(typeof(GSD2::MACHICON), nameof(GSD2::MACHICON.MachiMain))]
-    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.exit_sub99))]
-    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.nige_window))]
-    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.okane_window))]
+    [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.village01))]
     [HarmonyPrefix]
     static void Zone()
     {
@@ -211,6 +207,27 @@ public class FastZoneTransitionPatch
     [HarmonyPatch(typeof(GSD1::Fmain_c), nameof(GSD1::Fmain_c.fieldInit))]
     [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.open_map_main))]
     [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.village01))]
+    [HarmonyPostfix]
+    static void ZonePost()
+    {
+        FastTransitionPatch.Transition = TransitionState.None;
+        //Plugin.Log.LogInfo("Zone Post");
+    }
+}
+
+public class FastZoneTransitionGSD2Patch
+{
+    [HarmonyPatch(typeof(GSD2::MACHICON), nameof(GSD2::MACHICON.MachiMain))]
+    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.exit_sub99))]
+    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.nige_window))]
+    [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.okane_window))]
+    [HarmonyPrefix]
+    static void Zone()
+    {
+        FastTransitionPatch.Transition = TransitionState.Zone;
+        //Plugin.Log.LogInfo("Zone2");
+    }
+
     [HarmonyPatch(typeof(GSD2::MACHICON), nameof(GSD2::MACHICON.MachiMain))]
     [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.exit_sub99))]
     [HarmonyPatch(typeof(GSD2::BattleManager), nameof(GSD2::BattleManager.nige_window))]
@@ -219,7 +236,7 @@ public class FastZoneTransitionPatch
     static void ZonePost()
     {
         FastTransitionPatch.Transition = TransitionState.None;
-        //Plugin.Log.LogInfo("Zone Post");
+        //Plugin.Log.LogInfo("Zone2 Post");
     }
 }
 

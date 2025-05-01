@@ -16,6 +16,7 @@ public sealed class ModConfiguration
     public ConfigEntry<float> LoadingTransitionFactor;
     public ConfigEntry<float> TitleMenuTransitionFactor;
     public ConfigEntry<float> ZoneTransitionFactor;
+    public ConfigEntry<float> ZoneTransitionFactor2;
     public ConfigEntry<bool> DisableVignette;
     public ConfigEntry<bool> DisableMaskedVignette;
     public ConfigEntry<bool> DisableDepthOfField;
@@ -140,7 +141,14 @@ public sealed class ModConfiguration
              "Skip",
              "ZoneTransitionFactor",
              -1f,
-             "(Might cause some events to not trigger in Suikoden 2!!!) Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+             "(Suikoden 1 only) Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
+        );
+
+        ZoneTransitionFactor2 = _config.Bind(
+             "Skip",
+             "ZoneTransitionFactor2",
+             -1f,
+             "(Suikoden 2 only, might cause some events to not trigger!!!) Change the speed of fade in/out when changing zone. Set to 0 for instant transition, a positive value to speed up or -1 for the default behavior."
         );
 
         DisableVignette = _config.Bind(

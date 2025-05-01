@@ -82,7 +82,13 @@ public partial class Plugin : BasePlugin
 
         if (Config.ZoneTransitionFactor.Value >= 0f)
         {
-            ApplyPatch(typeof(FastZoneTransitionPatch));
+            ApplyPatch(typeof(FastZoneTransitionGSD1Patch));
+            fastTransition = true;
+        }
+
+        if (Config.ZoneTransitionFactor2.Value >= 0f)
+        {
+            ApplyPatch(typeof(FastZoneTransitionGSD2Patch));
             fastTransition = true;
         }
 
