@@ -7,7 +7,7 @@ A BepInEx plugin containing a bunch of tweaks for Suikoden I & II HD Remaster.
 All features are optional.
 
 - Ultrawide support.
-- Exit the game or reset the game to its title screen.
+- Exit the game, pause the game or reset the game to its title screen.
 - Disable vignette.
 - Skip splashscreen and intro movies.
 - Fast transitions on zone changes, loading and title menu.
@@ -20,12 +20,14 @@ All features are optional.
 - Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.
 - Run on worldmap and unlock x4 battle speed without Stallion.
+- MchDohl and both Kasumi and Valeria available at Leona's.
 - Instant weapon upgrade, item appraisal and Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
 - Disable or alter the speed up of the music and sound effects when the battle speed change.
 - Disable the sound when a message window appears and startled sound effects.
 - Change the background color of some windows.
+- Adjust bloom and depth of fields effects.
 - Adjust framerate, vsync and disable frame skipping.
 - Rare finds always in stock and always win minigames.
 
