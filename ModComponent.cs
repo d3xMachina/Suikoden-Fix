@@ -86,6 +86,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool GamePaused { get; private set; } = false;
 
     // Read-Write
+    public GSDTitleSelect.State PrevTitleSelectStep = GSDTitleSelect.State.NONE;
     public GSDTitleSelect.State TitleSelectStep = GSDTitleSelect.State.NONE;
     public bool IsInSpecialMenu = false;
     public bool IsInGameEvent = false;
@@ -220,7 +221,9 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateExitApplication()
     {
-        if (!_commands[CommandType.ExitApplication].IsOn || TitleSelectStep != GSDTitleSelect.State.SelectContent)
+        if (!_commands[CommandType.ExitApplication].IsOn ||
+            PrevTitleSelectStep != TitleSelectStep ||
+            TitleSelectStep != GSDTitleSelect.State.SelectContent)
         {
             return;
         }
