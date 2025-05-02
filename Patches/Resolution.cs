@@ -290,16 +290,6 @@ public class ResolutionPatch
         }
     }
 
-    [HarmonyPatch(typeof(GSD2.ANIME), nameof(GSD2.ANIME.AnimeDispFast))]
-    [HarmonyPrefix]
-    static void GSD2_AnimeDispFast(ref bool noClip)
-    {
-        if (_aspectRatio != _defaultAspectRatio)
-        {
-            noClip = true;
-        }
-    }
-
     private static void PatchAssembly()
     {
         // Remove the boundaries checks to display "off-screen" NPCs
@@ -343,5 +333,10 @@ public class ResolutionPatch
         MemoryPatcher.PatchNOP(address, 0x22E, 6);
         MemoryPatcher.PatchNOP(address, 0x259, 6);
         MemoryPatcher.PatchNOP(address, 0x275, 6);
+
+        address = MemoryPatcher.GetMethodAddress(typeof(GSD2.ANIME), "AnimeDispFast", [ typeof(bool), typeof(bool), typeof(bool), typeof(bool) ]);
+        MemoryPatcher.PatchNOP(address, 0x644, 2);
+        MemoryPatcher.PatchNOP(address, 0x655, 2);
+        MemoryPatcher.PatchNOP(address, 0x662, 2);
     }
 }
