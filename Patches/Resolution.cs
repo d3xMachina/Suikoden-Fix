@@ -5,7 +5,6 @@ using DG.Tweening;
 using HarmonyLib;
 using Share.UI;
 using Share.UI.Panel;
-using Share.UI.Window;
 using ShareUI.Menu;
 using Suikoden_Fix.Tools.Patch;
 using UnityEngine;
