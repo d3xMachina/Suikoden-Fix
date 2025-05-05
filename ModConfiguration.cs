@@ -372,7 +372,7 @@ public sealed class ModConfiguration
              "Cheat",
              "LootMultiplier",
              1f,
-             "Multiply the chance to loot an item after a battle. A value of 100 will guarantee the monster will drop its items (if it has items it can drop)."
+             "Multiply the chance to loot an item after a battle. A value of 255 will guarantee the monster will drop its items (if it has items it can drop)."
         );
 
         EncounterRateMultiplier = _config.Bind(
