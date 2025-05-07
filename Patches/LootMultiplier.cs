@@ -110,7 +110,7 @@ public class LootMultiplierPatch
 
     /*
      * Explanation of the way the loot system works :
-     * - Each monster has an item probably table with 3 items. The probability for an item can be 0 and up to 255.
+     * - Each monster has an item probability table with 3 items. The probability for an item can be 0 and up to 255.
      * - The cumulative of all items probability should not exceed 255, which would mean an item is guaranteed to drop.
      * - The game will try to roll an item drop for each dead monster until it drops one, or none if it checked all dead monsters.
      */
