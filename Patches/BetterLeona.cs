@@ -227,4 +227,15 @@ public class BetterLeonaPatch
         var charaFlags = GSD2.GAME_WORK.Instance.chara_flag;
         charaFlags[chano] = (byte)__state;
     }
+
+    [HarmonyPatch(typeof(GSD2.string_h), nameof(GSD2.string_h.SID_MAIN))]
+    [HarmonyPrefix]
+    static void GSD2_SIDMain(ref int x)
+    {
+        // Dialogue when you add Tir to the party
+        if (x == 1497)
+        {
+            x = 1633; // Badeaux "Yeah. Let's go"
+        }
+    }
 }
