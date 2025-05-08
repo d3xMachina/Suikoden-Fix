@@ -185,7 +185,7 @@ public class BetterLeonaPatch
     static void GSD2_CharacterFlag(int chano, out int __state)
     {
         const int FlagRecruited = 4;
-        const int FlagManualRecruit = 70;
+        const int FlagAutoRecruit = 70;
 
         __state = -1;
 
@@ -211,7 +211,7 @@ public class BetterLeonaPatch
             (chano == IdKasumi && (charaFlags[IdValeria] & FlagRecruited) != 0)) // Kasumi
         {
             __state = charaFlags[chano];
-            charaFlags[chano] = FlagManualRecruit;
+            charaFlags[chano] = FlagAutoRecruit;
         }
     }
 
