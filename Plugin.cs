@@ -286,6 +286,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(BetterLeonaPatch));
         }
 
+        if (Config.SmoothSprites.Value)
+        {
+            ApplyPatch(typeof(SmoothSpritesPatch));
+        }
+
         if (Config.EditText.Value > 0)
         {
             TextLogPatch.RemoveLogs();

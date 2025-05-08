@@ -21,6 +21,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableMaskedVignette;
     public ConfigEntry<bool> DisableDepthOfField;
     public ConfigEntry<float> BloomMultiplier;
+    public ConfigEntry<bool> SmoothSprites;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
     public ConfigEntry<bool> SaveAnywhere;
@@ -178,6 +179,13 @@ public sealed class ModConfiguration
              "BloomMultiplier",
              1f,
              "Change the intensity of the bloom effects. Set to 0 to disable the bloom effects entirely."
+        );
+
+        SmoothSprites = _config.Bind(
+             "Visual",
+             "SmoothSprites",
+             false,
+             "Smooth out the sprites using a bilinear filter. It might make the sprites a bit blurry."
         );
 
         DisableDiagonalMovements = _config.Bind(
