@@ -293,13 +293,13 @@ public partial class Plugin : BasePlugin
 
         if (Config.EditText.Value > 0)
         {
-            TextLogPatch.RemoveLogs();
+            LogTextPatch.RemoveLogs();
 
-            ApplyPatch(typeof(TextPatch));
+            ApplyPatch(typeof(EditTextPatch));
 
             if (Config.EditText.Value > 1)
             {
-                ApplyPatch(typeof(TextLogPatch));
+                ApplyPatch(typeof(LogTextPatch));
             }
         }
 

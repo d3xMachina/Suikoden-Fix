@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Suikoden_Fix.Patches;
 
-public class TextPatch
+public class EditTextPatch
 {
     private const int JsonBufferSize = 4;
 
@@ -241,12 +241,12 @@ public class TextPatch
 
         _language = language;
 
-        Plugin.Log.LogInfo($"Language changed: {language}");
+        Plugin.Log.LogInfo($"Language changed: {language}.");
         LoadTexts();
     }
 }
 
-public class TextLogPatch
+public class LogTextPatch
 {
     private const string FilePath = "GameTextsLog.txt";
 
