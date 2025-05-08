@@ -59,6 +59,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> EasyMinigames;
     public ConfigEntry<bool> BetterLeona;
     public ConfigEntry<bool> DisableBinaryPatches;
+    public ConfigEntry<int> EditText;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -317,6 +318,25 @@ public sealed class ModConfiguration
              "EditSave",
              false,
              "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (file names start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
+        );
+
+        EditText = _config.Bind(
+             "Advanced",
+             "EditText",
+             0,
+             "Allow you to edit the game texts. Set to 1 to enable, 2 to enable and log the game texts, and 0 to disable. The game texts are loaded from the GameTexts.json file in the game folder (you need to create one with UTF8 encoding). The logs of the game texts are saved in the GameTextsLog.txt file in the game folder, they are also logged in the console too but with the wrong encoding. The valid languages are : Japanese, English, French, Italian, German, Spanish, ChineseZhHant and ChineseZhHans. Example of a valid GameTexts.json :" +
+@"
+{
+    ""English"": {
+        ""add_message"": {
+            ""1118"": ""LOAD"",
+            ""1398"": ""Backspace∠Confirm""
+        },
+        ""message"" : {
+            ""3278"": ""Master""
+        }
+    }
+}"
         );
 
         BackupSave = _config.Bind(

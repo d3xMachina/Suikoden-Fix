@@ -286,6 +286,18 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(BetterLeonaPatch));
         }
 
+        if (Config.EditText.Value > 0)
+        {
+            TextLogPatch.RemoveLogs();
+
+            ApplyPatch(typeof(TextPatch));
+
+            if (Config.EditText.Value > 1)
+            {
+                ApplyPatch(typeof(TextLogPatch));
+            }
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
