@@ -2,7 +2,6 @@
 extern alias GSD2;
 
 using HarmonyLib;
-using UnityEngine;
 
 namespace Suikoden_Fix.Patches;
 
@@ -23,19 +22,38 @@ public class SkipIntroPatch
         }
     }
 
-    [HarmonyPatch(typeof(SoundManager), nameof(SoundManager.PlayMovie))]
+    [HarmonyPatch(typeof(GSD1::TitleChapter), nameof(GSD1::TitleChapter.TitleMain))]
     [HarmonyPrefix]
-    static bool SkipMovie(string path, Transform parent, Color bgColor)
+    static void GSD1_SkipIntroMovie(GSD1::TitleChapter __instance, int step_level)
     {
-        if (Plugin.Config.SkipMovies.Value &&
-            (path == "GS1_OP_HD_ENG" || path == "GS1_OP_HD_JPN" ||
-            path == "GS2_OP_HD_ENG" || path == "GS2_OP_HD_JPN" ||
-            path == "GS1_OP_CL" || path == "GS2_OP_CL"))
+        var step = GSD1.ChapterManager.GetGameStepSeq(step_level);
+        switch (step)
         {
-            Plugin.Log.LogInfo("Skip movie.");
-            return false;
+            case (int)GSD1.TitleChapter.State.BeforeMovie:
+                GSD1.ChapterManager.SetGameStepSeq(step_level, (int)GSD1.TitleChapter.State.MovieWait);
+                break;
+            case (int)GSD1.TitleChapter.State.MenuSelect:
+                __instance.timer = UnityEngine.Time.time; // Prevent movie start after 20 secs
+                break;
+            default:
+                break;
         }
+    }
 
-        return true;
+    [HarmonyPatch(typeof(GSD2::TitleChapter), nameof(GSD2::TitleChapter.TitleMain))]
+    [HarmonyPrefix]
+    static void GSD2_SkipIntroMovie(GSD2::TitleChapter __instance)
+    {
+        switch (__instance.step)
+        {
+            case (int)GSD2.TitleChapter.State.BeforeMovie:
+                __instance.step = (int)GSD2.TitleChapter.State.MovieWait;
+                break;
+            case (int)GSD2.TitleChapter.State.MenuSelect:
+                __instance.timer = UnityEngine.Time.time; // Prevent movie start after 20 secs
+                break;
+            default:
+                break;
+        }
     }
 }
