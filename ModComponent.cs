@@ -24,7 +24,6 @@ public sealed class ModComponent : MonoBehaviour
 
     private enum Chapter
     {
-        None,
         Unknown,
         Title,
         Map,
@@ -32,7 +31,8 @@ public sealed class ModComponent : MonoBehaviour
         War,
         Duel,
         Minigame,
-        GameOver
+        GameOver,
+        Gallery
     }
 
     public enum CommandType
@@ -69,8 +69,8 @@ public sealed class ModComponent : MonoBehaviour
     private bool _speedHackToggle = false;
     private int _battleSpeed = 0;
 
-    private Chapter _chapter = Chapter.None;
-    private Chapter _prevChapter = Chapter.None;
+    private Chapter _chapter = Chapter.Unknown;
+    private Chapter _prevChapter = Chapter.Unknown;
 
     private GUIStyle _guiCenteredStyle;
     private GUIStyle _guiTopRightStyle;
@@ -213,6 +213,7 @@ public sealed class ModComponent : MonoBehaviour
             UpdateWindowOpened();
             UpdateGameSpeed();
             UpdatePauseGame(); // needs to be after UpdateGameSpeed to have the game timer correctly paused
+            UpdateSkipGallery();
 
             _prevChapter = _chapter;
         }
@@ -257,7 +258,10 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdateResetApplication()
     {
-        if (!Plugin.Config.ResetGame.Value || !_commands[CommandType.ResetApplication].IsOn || _chapter == Chapter.Title)
+        if (!Plugin.Config.ResetGame.Value ||
+            !_commands[CommandType.ResetApplication].IsOn ||
+            _chapter == Chapter.Title ||
+            _chapter == Chapter.Unknown)
         {
             return;
         }
@@ -330,12 +334,8 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        if (!GamePaused && // for safety but shouldn't be needed, allow unpausing in any chapter
-            _chapter != Chapter.Map &&
-            _chapter != Chapter.Battle &&
-            _chapter != Chapter.War &&
-            _chapter != Chapter.Duel &&
-            _chapter != Chapter.Minigame)
+        if (!GamePaused &&
+            (_chapter == Chapter.Title || _chapter == Chapter.Unknown)) // for safety but shouldn't be needed, allow unpausing in any chapter
         {
             return;
         }
@@ -446,6 +446,10 @@ public sealed class ModComponent : MonoBehaviour
                 {
                     _chapter = Chapter.Title;
                 }
+                else if (chapter.TryCast<GSD2.HanModeChapter>() != null)
+                {
+                    _chapter = Chapter.Gallery;
+                }
                 else if (chapter.TryCast<GSD2.GameOverChapter>() != null)
                 {
                     _chapter = Chapter.GameOver;
@@ -458,7 +462,7 @@ public sealed class ModComponent : MonoBehaviour
         }
         else
         {
-            _chapter = Chapter.None;
+            _chapter = Chapter.Unknown;
         }
 
         // Init values
