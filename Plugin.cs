@@ -48,6 +48,7 @@ public partial class Plugin : BasePlugin
         bool disableSoundEffect = false;
         bool menuDetection = false;
         bool gameTimer = false;
+        bool inputConflict = false;
 
         if (Config.FPS.Value >= 0 || Config.Vsync.Value >= 0 || Config.NoFrameSkip.Value)
         {
@@ -179,13 +180,14 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(PauseGamePatch));
             gameTimer = true;
+            inputConflict = true;
         }
 
         if (gameTimer)
         {
             ApplyPatch(typeof(GameTimerPatch));
         }
-        
+
         if (Config.EditSave.Value)
         {
             ApplyPatch(typeof(EditSavePatch));
@@ -269,6 +271,7 @@ public partial class Plugin : BasePlugin
         if (Config.SaveAnywhere.Value)
         {
             ApplyPatch(typeof(SaveAnywherePatch));
+            inputConflict = true;
         }
 
         if (Config.RareFindsAlwaysInStock.Value)
@@ -301,6 +304,11 @@ public partial class Plugin : BasePlugin
             {
                 ApplyPatch(typeof(LogTextPatch));
             }
+        }
+
+        if (inputConflict)
+        {
+            ApplyPatch(typeof(InputConflictPatch));
         }
 
         Log.LogInfo("Patches applied!");

@@ -42,7 +42,8 @@ public sealed class ModComponent : MonoBehaviour
         BattleSpeed,
         ExitApplication,
         ResetApplication,
-        PauseGame
+        PauseGame,
+        SkipGallery
     }
 
     public static ModComponent Instance { get; private set; }
@@ -61,7 +62,8 @@ public sealed class ModComponent : MonoBehaviour
                 [], true
             )
         },
-        { CommandType.PauseGame, new Command([ GamepadButton.Start ], [ Key.Tab ], []) }
+        { CommandType.PauseGame, new Command([ GamepadButton.Start ], [ Key.Tab ], []) },
+        { CommandType.SkipGallery, new Command([ GamepadButton.Select ], [ Key.Escape ], []) }
     };
 
     private bool _speedHackToggle = false;
@@ -71,6 +73,7 @@ public sealed class ModComponent : MonoBehaviour
     private Chapter _prevChapter = Chapter.None;
 
     private GUIStyle _guiCenteredStyle;
+    private GUIStyle _guiTopRightStyle;
     private Texture2D _backgroundTexture;
 
     /******* Values manipulated by patches ******/
@@ -84,6 +87,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsMessageBoxOpened { get; private set; } = false;
     public bool ResetOnExit { get; private set; } = false;
     public bool GamePaused { get; private set; } = false;
+    public bool SkipGallery { get; private set; } = false;
 
     // Read-Write
     public GSDTitleSelect.State PrevTitleSelectStep = GSDTitleSelect.State.NONE;
@@ -155,6 +159,17 @@ public sealed class ModComponent : MonoBehaviour
                 }
             };
 
+            _guiTopRightStyle = new GUIStyle()
+            {
+                alignment = TextAnchor.UpperRight,
+                fontSize = 30,
+                fontStyle = FontStyle.Normal,
+                normal = new GUIStyleState()
+                {
+                    textColor = Color.white
+                }
+            };
+
             Plugin.Log.LogInfo($"[{nameof(ModComponent)}].{nameof(Awake)}: Processed successfully.");
         }
         catch (Exception e)
@@ -216,6 +231,15 @@ public sealed class ModComponent : MonoBehaviour
             var screenRect = new Rect(0, 0, Screen.width, Screen.height);
             GUI.DrawTexture(screenRect, _backgroundTexture);
             GUI.Label(screenRect, "PAUSED", _guiCenteredStyle);
+
+            if (IsGalleryMode())
+            {
+                const int Offset = 10;
+                var marginRect = new Rect(screenRect.x + Offset, screenRect.y + Offset, screenRect.width - Offset * 2, screenRect.height - Offset * 2);
+
+                var input = GRInputManager.LastInputDeviceType == GRInputManager.InputDeviceType.GamePad ? "Select button" : "Escape key";
+                GUI.Label(marginRect, $"{input} : Skip", _guiTopRightStyle);
+            }
         }
     }
 
@@ -241,23 +265,48 @@ public sealed class ModComponent : MonoBehaviour
         if (GamePaused)
         {
             ResumeGame();
-            GamePaused = false;
-        }
+        } 
 
         if (ActiveGame == Game.GSD1)
         {
-            ResetOnExit = true;
-            Framework.Chapter.Request<GSD1.ExitChapter>();
+            if (IsGalleryMode())
+            {
+                Omake.EndEvent<GSD1.ExitChapter>();
+            }
+            else
+            {
+                ResetOnExit = true;
+                Framework.Chapter.Request<GSD1.ExitChapter>();
+            }
         }
         else if (ActiveGame == Game.GSD2)
         {
-            ResetOnExit = true;
-            Framework.Chapter.Request<GSD2.ExitChapter>();
+            if (IsGalleryMode())
+            {
+                Omake.EndEvent<GSD2.ExitChapter>();
+            }
+            else
+            {
+                ResetOnExit = true;
+                Framework.Chapter.Request<GSD2.ExitChapter>();
+            }
         }
+    }
+
+    private bool IsGalleryMode()
+    {
+        var omake = Omake.Instance;
+        if (omake == null)
+        {
+            return false;
+        }
+
+        return omake.g_ending_mode != 0 || omake.g_staff_mode != 0 || omake.g_memory_mode != 0;
     }
 
     private void PauseGame()
     {
+        GamePaused = true;
         SoundManager.PauseBGM(-1, 0f);
         SoundManager.PauseSE(-1, 0f);
         Time.timeScale = 0f;
@@ -265,6 +314,7 @@ public sealed class ModComponent : MonoBehaviour
 
     private void ResumeGame()
     {
+        GamePaused = false;
         SoundManager.ResumeBGM(-1, 0f);
         SoundManager.ResumeSE(-1, 0f);
         //Time.timeScale = 1f; // it's restored in ChapterManager.Update() with the frameSkip value
@@ -272,7 +322,10 @@ public sealed class ModComponent : MonoBehaviour
 
     private void UpdatePauseGame()
     {
-        if (!Plugin.Config.PauseGame.Value || !_commands[CommandType.PauseGame].IsOn || _commands[CommandType.ResetApplication].IsOn)
+        if (!Plugin.Config.PauseGame.Value ||
+            !_commands[CommandType.PauseGame].IsOn ||
+            _commands[CommandType.ResetApplication].IsOn ||
+            IsInDanceMinigame) // start button is used in the dance minigame to skip the practice
         {
             return;
         }
@@ -287,16 +340,31 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        GamePaused = !GamePaused;
-
         if (GamePaused)
-        {
-            PauseGame();
-        }
-        else
         {
             ResumeGame();
         }
+        else
+        {
+            PauseGame();
+        }
+    }
+
+    private void UpdateSkipGallery()
+    {
+        SkipGallery = false;
+
+        if (!_commands[CommandType.SkipGallery].IsOn ||
+            _commands[CommandType.PauseGame].IsOn ||
+            _commands[CommandType.ResetApplication].IsOn ||
+            !GamePaused ||
+            !IsGalleryMode())
+        {
+            return;
+        }
+
+        SkipGallery = true;
+        ResumeGame();
     }
 
     private void UpdateGameState()

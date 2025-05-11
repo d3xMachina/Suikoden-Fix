@@ -8,6 +8,8 @@ namespace Suikoden_Fix.Patches;
 public class PauseGamePatch
 {
     private static double _customUnscaledTime = 0;
+    private static bool _disableSkipButton = false;
+    private static bool _disableChapterUpdate = false;
     
     [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
     [HarmonyPatch(typeof(GSD2.GRChapterManager), nameof(GSD2.GRChapterManager.Update))]
@@ -59,5 +61,102 @@ public class PauseGamePatch
     static bool UpdateUI()
     {
         return !ModComponent.Instance.GamePaused;
+    }
+
+    // Gallery events
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    [HarmonyPatch(typeof(GSD2.MACHICON), nameof(GSD2.MACHICON.MachiMain))]
+
+    // Gallery endings
+    [HarmonyPatch(typeof(GSD1.End_vil_c), nameof(GSD1.End_vil_c.ending_main))]
+    [HarmonyPatch(typeof(GSD2.ending_c), nameof(GSD2.ending_c.EndingMain))]
+
+    // Gallery credits
+    [HarmonyPatch(typeof(GSD1.Stf_vil_c), nameof(GSD1.Stf_vil_c.staff_credits_exit))]
+    [HarmonyPatch(typeof(GSD1.Stf_vil_c), nameof(GSD1.Stf_vil_c.staff_roll))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain00))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain01))]
+
+    [HarmonyPrefix]
+    static void DisableSkipButton()
+    {
+        if (!ModComponent.Instance.IsInDanceMinigame)
+        {
+            _disableSkipButton = true;
+        }
+    }
+
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    [HarmonyPatch(typeof(GSD2.MACHICON), nameof(GSD2.MACHICON.MachiMain))]
+    [HarmonyPatch(typeof(GSD1.End_vil_c), nameof(GSD1.End_vil_c.ending_main))]
+    [HarmonyPatch(typeof(GSD2.ending_c), nameof(GSD2.ending_c.EndingMain))]
+    [HarmonyPatch(typeof(GSD1.Stf_vil_c), nameof(GSD1.Stf_vil_c.staff_credits_exit))]
+    [HarmonyPatch(typeof(GSD1.Stf_vil_c), nameof(GSD1.Stf_vil_c.staff_roll))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain00))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain01))]
+
+    [HarmonyPostfix]
+    static void RestoreSkipButton()
+    {
+        _disableSkipButton = false;
+    }
+
+    [HarmonyPatch(typeof(UITitleMovieInsert), nameof(UITitleMovieInsert.IsOpentedInsert))]
+    [HarmonyPrefix]
+    static bool IsOpentedInsert(ref bool __result)
+    {
+        if (_disableSkipButton)
+        {
+            __result = true;
+            return false;
+        }
+
+        return true;
+    }
+
+    [HarmonyPatch(typeof(UITitleMovieInsert), nameof(UITitleMovieInsert.UpdateInsertText))]
+    [HarmonyPrefix]
+    static bool UpdateInsertText()
+    {
+        return !_disableSkipButton;
+    }
+
+    [HarmonyPatch(typeof(GRInputManager), nameof(GRInputManager.IsOn))]
+    [HarmonyPrefix]
+    static bool GRInputManagerIsOn(GRInputManager.Type t, ref bool __result)
+    {
+        if (_disableSkipButton && t == GRInputManager.Type.MovieSkip)
+        {
+            __result = ModComponent.Instance.SkipGallery;
+            return false;
+        }
+
+        return true;
+    }
+
+    // Fix a game bug when exiting the gallery event in Suikoden 1.
+    // The game will attempt to read a null pointer sometimes when exiting a gallery event.
+    // This is because the ressources are unloaded and there is a fade time before switching to the new chapter.
+    // So the chapter will keep being updated for a little bit with unloaded ressources...
+    // To fix this, we prevent the chapter update during this fade time.
+    [HarmonyPatch(typeof(Framework.Chapter), nameof(Framework.Chapter.Update))]
+    [HarmonyPrefix]
+    static bool FixCrashOnGalleryEventExit()
+    {
+        return !_disableChapterUpdate;
+    }
+
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.ExitMemory))]
+    [HarmonyPrefix]
+    static void GSD1_ExitMemory()
+    {
+        _disableChapterUpdate = true;
+    }
+
+    [HarmonyPatch(typeof(Framework.Chapter), nameof(Framework.Chapter.Request), [ typeof(Il2CppSystem.Type) ])]
+    [HarmonyPrefix]
+    static void ChapterChanged()
+    {
+        _disableChapterUpdate = false;
     }
 }
