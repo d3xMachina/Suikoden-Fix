@@ -290,6 +290,41 @@ public class ResolutionPatch
         }
     }
 
+    // It also fix the aspect ratio of movies from the original Suikoden that should be displayed in 4:3
+    [HarmonyPatch(typeof(SoundManager), nameof(SoundManager.PlayMovieImplementation))]
+    [HarmonyPostfix]
+    static void LetterboxedMovie(SoundManager __instance, string path)
+    {
+        var transform = __instance.criMovie?.target?.rectTransform;
+        if (transform == null)
+        {
+            return;
+        }
+
+        var borderX = 0f;
+        var borderY = 0f;
+
+        var videoAspectRatio = _defaultAspectRatio;
+        if (SoundManager.aspectList.TryGetValue(path, out var aspectRatio))
+        {
+            videoAspectRatio = aspectRatio;
+        }
+
+        if (_aspectRatio != videoAspectRatio)
+        {
+            if (_aspectRatio > videoAspectRatio)
+            {
+                borderX = Screen.width - (Screen.width * videoAspectRatio / _aspectRatio);
+            }
+            else
+            {
+                borderY = Screen.height - (Screen.height * _aspectRatio / videoAspectRatio);
+            }
+        }
+
+        transform.sizeDelta = new Vector2(-borderX, -borderY);
+    }
+
     private static void PatchAssembly()
     {
         // Remove the boundaries checks to display "off-screen" NPCs

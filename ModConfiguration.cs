@@ -101,7 +101,7 @@ public sealed class ModConfiguration
              "Display",
              "Fullscreen",
              -1,
-             "Set to 0 for windowed mode or 1 for fullscreen mode."
+             "Set to 0 for windowed mode or 1 for fullscreen mode. It also correct the aspect ratio for movies from the original Suikoden."
         );
 
         NoFrameSkip = _config.Bind(
