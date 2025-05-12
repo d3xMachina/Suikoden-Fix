@@ -168,7 +168,7 @@ public class ResolutionPatch
 
     [HarmonyPatch(typeof(UIMainMenuTips), nameof(UIMainMenuTips.OpenTips))]
     [HarmonyPostfix]
-    static void ExpandTipsBackground(UIMainMenuTips __instance)
+    static void ExpandMainMenuTipsBackground(UIMainMenuTips __instance)
     {
         if (_aspectRatio < _defaultAspectRatio)
         {
@@ -188,7 +188,8 @@ public class ResolutionPatch
             return;
         }
 
-        if (step == (int)GSDTitleSelect.State.WaitSpriteLoad)
+        if (step == (int)GSDTitleSelect.State.WaitSpriteLoad ||
+            step == (int)GSDTitleSelect.State.GalleryLoad)
         {
             ScaleObject(__instance.BGObject);
             ScaleObject(__instance.gameObject, "UI_Canvas_Root/UI_Com_Footer(Clone)/Img_Bg/Img_Bg");
