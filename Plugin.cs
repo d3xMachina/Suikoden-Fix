@@ -311,6 +311,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InputConflictPatch));
         }
 
+        if (Config.AllItemsInHQ.Value)
+        {
+            ApplyPatch(typeof(AllItemsInHQPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

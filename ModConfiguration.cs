@@ -61,6 +61,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> BetterLeona;
     public ConfigEntry<bool> DisableBinaryPatches;
     public ConfigEntry<int> EditText;
+    public ConfigEntry<bool> AllItemsInHQ;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -471,6 +472,13 @@ public sealed class ModConfiguration
              "BetterLeona",
              false,
              "(Suikoden 2 only) McDohl will be available in Leona's if you recruited him. Both Kasumi and Valeria will be available if you recruited one of them."
+        );
+
+        AllItemsInHQ = _config.Bind(
+             "Cheat",
+             "AllItemsInHQ",
+             false,
+             "Shops in the headquarters (armor, item and rune shops) sell all items in their category."
         );
     }
 }
