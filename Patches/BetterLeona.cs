@@ -233,9 +233,9 @@ public class BetterLeonaPatch
     static void GSD2_SIDMain(ref int x)
     {
         // Dialogue when you add Tir to the party
-        if (x == 1497)
+        if (x == GSD2.string_h.SID_MAIN_HAL_MSG_EV_MSG81) // 1497
         {
-            x = 1633; // Badeaux "Yeah. Let's go"
+            x = GSD2.string_h.SID_MAIN_HAL_MSG_EV_MSG50; // 1633, Badeaux "Yeah. Let's go"
         }
     }
 }
