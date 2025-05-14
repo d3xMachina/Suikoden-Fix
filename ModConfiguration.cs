@@ -61,7 +61,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> BetterLeona;
     public ConfigEntry<bool> DisableBinaryPatches;
     public ConfigEntry<int> EditText;
-    public ConfigEntry<bool> AllItemsInHQ;
+    public ConfigEntry<int> AllItemsInHQ;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -477,6 +477,9 @@ public sealed class ModConfiguration
         AllItemsInHQ = _config.Bind(
              "Cheat",
              "AllItemsInHQ",
+             0,
+             "Shops in the headquarters (armor, item and rune shops) sell all items in their category. Set to 1 to enable, 2 to also have key items and 0 to disable."
+        );
              false,
              "Shops in the headquarters (armor, item and rune shops) sell all items in their category."
         );

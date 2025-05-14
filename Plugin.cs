@@ -311,7 +311,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InputConflictPatch));
         }
 
-        if (Config.AllItemsInHQ.Value)
+        if (Config.AllItemsInHQ.Value > 0)
         {
             ApplyPatch(typeof(AllItemsInHQPatch));
         }
