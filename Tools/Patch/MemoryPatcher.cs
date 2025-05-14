@@ -211,6 +211,7 @@ partial class MemoryPatcher
                 }
             }
         
+            Plugin.Log.LogError($"Method not found: {methodName}.");
             return IntPtr.Zero;
         }
         catch (Exception ex)
