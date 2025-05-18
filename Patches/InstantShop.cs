@@ -76,6 +76,21 @@ public class InstantShopPatch
         }
     }
 
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.hmonsyo), nameof(GSD2.EventOverlayClass.hmonsyo.SMMaidoCom))]
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.hmonsyo), nameof(GSD2.EventOverlayClass.hmonsyo.SMMaidoFuinCom))]
+    [HarmonyPatch(typeof(GSD2.monsyo), nameof(GSD2.monsyo.SMMaidoCom))]
+    [HarmonyPatch(typeof(GSD2.monsyo), nameof(GSD2.monsyo.SMMaidoFuinCom))]
+    [HarmonyPrefix]
+    static void GSD2_SetRuneShopTimer(GSD2.DOUGUCON dcon)
+    {
+        if (dcon == null || (dcon.mstep != 1 && dcon.mstep != 2))
+        {
+            return;
+        }
+
+        dcon.wtim = 1;
+    }
+
     /*
     [HarmonyPatch(typeof(GSD1.P_sound_c), nameof(GSD1.P_sound_c.Qsd_call))]
     [HarmonyPrefix]
