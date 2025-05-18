@@ -62,6 +62,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableBinaryPatches;
     public ConfigEntry<int> EditText;
     public ConfigEntry<int> AllItemsInHQ;
+    public ConfigEntry<bool> MoreTeleportLocations;
 
     public ModConfiguration(ConfigFile config)
     {
@@ -472,6 +473,13 @@ public sealed class ModConfiguration
              "BetterLeona",
              false,
              "(Suikoden 2 only) McDohl will be available in Leona's if you recruited him. Both Kasumi and Valeria will be available if you recruited one of them."
+        );
+
+        MoreTeleportLocations = _config.Bind(
+             "Cheat",
+             "MoreTeleportLocations",
+             false,
+             "(Suikoden 2 only) Add Gregminster and the secret room in Radat Town to the teleport locations. The locations are added at the end of the list, only if you visited them before."
         );
 
         AllItemsInHQ = _config.Bind(

@@ -311,6 +311,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(InputConflictPatch));
         }
 
+        if (Config.MoreTeleportLocations.Value)
+        {
+            ApplyPatch(typeof(MoreTeleportLocationsPatch));
+        }
+
         if (Config.AllItemsInHQ.Value > 0)
         {
             ApplyPatch(typeof(AllItemsInHQPatch));
