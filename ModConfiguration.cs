@@ -488,8 +488,5 @@ public sealed class ModConfiguration
              0,
              "Shops in the headquarters (armor, item and rune shops) sell all items in their category. Set to 1 to enable, 2 to also have key items and 0 to disable."
         );
-             false,
-             "Shops in the headquarters (armor, item and rune shops) sell all items in their category."
-        );
     }
 }
