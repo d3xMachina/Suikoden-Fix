@@ -15,21 +15,24 @@ All features are optional.
 - Dash as a toggle.
 - Disable diagonal movements.
 - Remember the battle speed between battles.
-- Save anywhere in the last save slot. (be careful to not softlock yourself)
+- Save anywhere in the last save slot (be careful to not softlock yourself).
 - Disable autosave notifications.
 - Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.
 - Run on worldmap and unlock x4 battle speed without Stallion.
-- MchDohl and both Kasumi and Valeria available at Leona's.
-- Instant weapon upgrade, item appraisal and Richmond investigations.
+- McDohl and both Kasumi and Valeria available at Leona's.
+- More teleport locations (Gregminster and Radat Town secret room in Suikoden 2).
+- Instant weapon upgrade, item appraisal, rune attachment/removal and Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
 - Edit your saves.
 - Disable or alter the speed up of the music and sound effects when the battle speed change.
 - Disable the sound when a message window appears and startled sound effects.
 - Change the background color of some windows.
 - Adjust bloom and depth of fields effects.
+- Smooth out the sprites.
 - Adjust framerate, vsync and disable frame skipping.
 - Rare finds always in stock and always win minigames.
+- Shops in the headquarters sell all the items in their category.
 
 ## Installation
 
