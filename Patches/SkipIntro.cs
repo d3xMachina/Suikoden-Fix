@@ -11,14 +11,16 @@ public class SkipIntroPatch
     [HarmonyPrefix]
     static void SkipSplashscreens(GSDTitleSelect __instance)
     {
-        if (Plugin.Config.SkipSplashscreens.Value)
+        if (!Plugin.Config.SkipSplashscreens.Value)
         {
-            if (__instance.step >= (int)GSDTitleSelect.State.InitSystemLogo && __instance.step <= (int)GSDTitleSelect.State.ShowSystemLogo)
-            {
-                Plugin.Log.LogInfo("Skip splashscreen.");
+            return;
+        }
 
-                __instance.step = (int)GSDTitleSelect.State.WaitSpriteLoad;
-            }
+        if (__instance.step >= (int)GSDTitleSelect.State.InitSystemLogo && __instance.step <= (int)GSDTitleSelect.State.ShowSystemLogo)
+        {
+            Plugin.Log.LogInfo("Skip splashscreen.");
+
+            __instance.step = (int)GSDTitleSelect.State.WaitSpriteLoad;
         }
     }
 
@@ -26,10 +28,16 @@ public class SkipIntroPatch
     [HarmonyPrefix]
     static void GSD1_SkipIntroMovie(GSD1::TitleChapter __instance, int step_level)
     {
+        if (!Plugin.Config.SkipMovies.Value)
+        {
+            return;
+        }
+
         var step = GSD1.ChapterManager.GetGameStepSeq(step_level);
         switch (step)
         {
             case (int)GSD1.TitleChapter.State.BeforeMovie:
+                Plugin.Log.LogInfo("Skip intro.");
                 GSD1.ChapterManager.SetGameStepSeq(step_level, (int)GSD1.TitleChapter.State.MovieWait);
                 break;
             case (int)GSD1.TitleChapter.State.MenuSelect:
@@ -38,15 +46,21 @@ public class SkipIntroPatch
             default:
                 break;
         }
-    }
+}
 
     [HarmonyPatch(typeof(GSD2::TitleChapter), nameof(GSD2::TitleChapter.TitleMain))]
     [HarmonyPrefix]
     static void GSD2_SkipIntroMovie(GSD2::TitleChapter __instance)
     {
+        if (!Plugin.Config.SkipMovies.Value)
+        {
+            return;
+        }
+
         switch (__instance.step)
         {
             case (int)GSD2.TitleChapter.State.BeforeMovie:
+                Plugin.Log.LogInfo("Skip intro.");
                 __instance.step = (int)GSD2.TitleChapter.State.MovieWait;
                 break;
             case (int)GSD2.TitleChapter.State.MenuSelect:
