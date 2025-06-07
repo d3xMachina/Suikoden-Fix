@@ -43,7 +43,7 @@ public sealed class ModComponent : MonoBehaviour
         ExitApplication,
         ResetApplication,
         PauseGame,
-        SkipGallery
+        SkipMovie
     }
 
     public static ModComponent Instance { get; private set; }
@@ -63,7 +63,7 @@ public sealed class ModComponent : MonoBehaviour
             )
         },
         { CommandType.PauseGame, new Command([ GamepadButton.Start ], [ Key.Tab ], []) },
-        { CommandType.SkipGallery, new Command([ GamepadButton.Select ], [ Key.Escape ], []) }
+        { CommandType.SkipMovie, new Command([ GamepadButton.Select ], [ Key.Escape ], []) }
     };
 
     private bool _speedHackToggle = false;
@@ -87,7 +87,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsMessageBoxOpened { get; private set; } = false;
     public bool ResetOnExit { get; private set; } = false;
     public bool GamePaused { get; private set; } = false;
-    public bool SkipGallery { get; private set; } = false;
+    public bool SkipScene { get; private set; } = false;
 
     // Read-Write
     public GSDTitleSelect.State PrevTitleSelectStep = GSDTitleSelect.State.NONE;
@@ -95,6 +95,7 @@ public sealed class ModComponent : MonoBehaviour
     public bool IsInSpecialMenu = false;
     public bool IsInGameEvent = false;
     public bool IsInDanceMinigame = false;
+    public bool IsInMovieGallery = false;
 
     /********************************************/
 
@@ -213,7 +214,7 @@ public sealed class ModComponent : MonoBehaviour
             UpdateWindowOpened();
             UpdateGameSpeed();
             UpdatePauseGame(); // needs to be after UpdateGameSpeed to have the game timer correctly paused
-            UpdateSkipGallery();
+            UpdateSkipScene();
 
             _prevChapter = _chapter;
         }
@@ -233,7 +234,7 @@ public sealed class ModComponent : MonoBehaviour
             GUI.DrawTexture(screenRect, _backgroundTexture);
             GUI.Label(screenRect, "PAUSED", _guiCenteredStyle);
 
-            if (IsGalleryMode())
+            if (IsSkippableScene())
             {
                 const int Offset = 10;
                 var marginRect = new Rect(screenRect.x + Offset, screenRect.y + Offset, screenRect.width - Offset * 2, screenRect.height - Offset * 2);
@@ -308,11 +309,28 @@ public sealed class ModComponent : MonoBehaviour
         return omake.g_ending_mode != 0 || omake.g_staff_mode != 0 || omake.g_memory_mode != 0;
     }
 
+    private bool IsGalleryMovie()
+    {
+        return IsInMovieGallery && IsMovieShown();
+    }
+
+    private bool IsMovieShown()
+    {
+        return SoundManager.IsCri() != null;
+    }
+
+    private bool IsSkippableScene()
+    {
+        return IsGalleryMode() || IsMovieShown();
+    }
+
     private void PauseGame()
     {
         GamePaused = true;
         SoundManager.PauseBGM(-1, 0f);
         SoundManager.PauseSE(-1, 0f);
+        SoundManager.IsCri()?.Pause(true); // Pause movie
+
         Time.timeScale = 0f;
     }
 
@@ -321,7 +339,13 @@ public sealed class ModComponent : MonoBehaviour
         GamePaused = false;
         SoundManager.ResumeBGM(-1, 0f);
         SoundManager.ResumeSE(-1, 0f);
-        //Time.timeScale = 1f; // it's restored in ChapterManager.Update() with the frameSkip value
+        SoundManager.IsCri()?.Pause(false); // Resume movie
+
+        // It's otherwise restored in ChapterManager.Update() with the frameSkip value
+        if (ActiveGame == Game.None)
+        {
+            Time.timeScale = 1f;
+        }
     }
 
     private void UpdatePauseGame()
@@ -334,8 +358,9 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        if (!GamePaused &&
-            (_chapter == Chapter.Title || _chapter == Chapter.Unknown)) // for safety but shouldn't be needed, allow unpausing in any chapter
+        if (!GamePaused && // for safety but shouldn't be needed, allow unpausing in any chapter
+            (_chapter == Chapter.Title) ||
+            (_chapter == Chapter.Unknown && !IsGalleryMovie())) // allow pause movies in the gallery
         {
             return;
         }
@@ -350,20 +375,20 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private void UpdateSkipGallery()
+    private void UpdateSkipScene()
     {
-        SkipGallery = false;
+        SkipScene = false;
 
-        if (!_commands[CommandType.SkipGallery].IsOn ||
+        if (!_commands[CommandType.SkipMovie].IsOn ||
             _commands[CommandType.PauseGame].IsOn ||
             _commands[CommandType.ResetApplication].IsOn ||
             !GamePaused ||
-            !IsGalleryMode())
+            !IsSkippableScene())
         {
             return;
         }
 
-        SkipGallery = true;
+        SkipScene = true;
         ResumeGame();
     }
 

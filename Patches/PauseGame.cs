@@ -63,8 +63,7 @@ public class PauseGamePatch
         return !ModComponent.Instance.GamePaused;
     }
 
-    // Gallery events
-    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    // Gallery events Suikoden 2
     [HarmonyPatch(typeof(GSD2.MACHICON), nameof(GSD2.MACHICON.MachiMain))]
 
     // Gallery endings
@@ -77,10 +76,24 @@ public class PauseGamePatch
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain00))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain01))]
 
+    // Gallery movies and movies in gallery events
+    [HarmonyPatch(typeof(GSDTitleSelect), nameof(GSDTitleSelect.Main))]
+
     [HarmonyPrefix]
     static void DisableSkipButton()
     {
         if (!ModComponent.Instance.IsInDanceMinigame)
+        {
+            _disableSkipButton = true;
+        }
+    }
+
+    // Gallery events Suikoden 1
+    [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
+    [HarmonyPrefix]
+    static void GSD1_DisableSkipButtonInGalleryEvents()
+    {
+        if (Omake.IsMemoryGalleryMode)
         {
             _disableSkipButton = true;
         }
@@ -94,11 +107,31 @@ public class PauseGamePatch
     [HarmonyPatch(typeof(GSD1.Stf_vil_c), nameof(GSD1.Stf_vil_c.staff_roll))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain00))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_staff), nameof(GSD2.EventOverlayClass.Overlay_staff.StaffMain01))]
-
     [HarmonyPostfix]
     static void RestoreSkipButton()
     {
         _disableSkipButton = false;
+    }
+
+    [HarmonyPatch(typeof(GSDTitleSelect), nameof(GSDTitleSelect.Main))]
+    [HarmonyPostfix]
+    static void RestoreSkipButtonInTitle(GSDTitleSelect __instance)
+    {
+        _disableSkipButton = false;
+        ModComponent.Instance.IsInMovieGallery = __instance.step == (int)GSDTitleSelect.State.GalleryMovie;
+    }
+
+    // In game movies
+    [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_EventMovieInit), nameof(GSD2.EventOverlayClass.Overlay_EventMovieInit.OverlayEventMovieEnd))]
+    [HarmonyPatch(typeof(GSD2.Magic.Shi4), nameof(GSD2.Magic.Shi4.magic_func05))] // ??
+    [HarmonyPatch(typeof(GSD2.Magic.Swo4), nameof(GSD2.Magic.Swo4.magic_func03))] // ??
+    [HarmonyPrefix]
+    static void SkipInGameMovie()
+    {
+        if (ModComponent.Instance.SkipScene)
+        {
+            SoundManager.IsCri()?.Stop();
+        }
     }
 
     [HarmonyPatch(typeof(UITitleMovieInsert), nameof(UITitleMovieInsert.IsOpentedInsert))]
@@ -127,7 +160,7 @@ public class PauseGamePatch
     {
         if (_disableSkipButton && t == GRInputManager.Type.MovieSkip)
         {
-            __result = ModComponent.Instance.SkipGallery;
+            __result = ModComponent.Instance.SkipScene;
             return false;
         }
 
