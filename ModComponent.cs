@@ -43,7 +43,7 @@ public sealed class ModComponent : MonoBehaviour
         ExitApplication,
         ResetApplication,
         PauseGame,
-        SkipMovie
+        SkipScene
     }
 
     public static ModComponent Instance { get; private set; }
@@ -63,7 +63,7 @@ public sealed class ModComponent : MonoBehaviour
             )
         },
         { CommandType.PauseGame, new Command([ GamepadButton.Start ], [ Key.Tab ], []) },
-        { CommandType.SkipMovie, new Command([ GamepadButton.Select ], [ Key.Escape ], []) }
+        { CommandType.SkipScene, new Command([ GamepadButton.Select ], [ Key.Escape ], []) }
     };
 
     private bool _speedHackToggle = false;
@@ -379,7 +379,7 @@ public sealed class ModComponent : MonoBehaviour
     {
         SkipScene = false;
 
-        if (!_commands[CommandType.SkipMovie].IsOn ||
+        if (!_commands[CommandType.SkipScene].IsOn ||
             _commands[CommandType.PauseGame].IsOn ||
             _commands[CommandType.ResetApplication].IsOn ||
             !GamePaused ||
