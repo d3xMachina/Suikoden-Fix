@@ -289,6 +289,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(BetterLeonaPatch));
         }
 
+        if (Config.BetterSanchez.Value)
+        {
+            ApplyPatch(typeof(BetterSanchezPatch));
+        }
+
         if (Config.SmoothSprites.Value)
         {
             ApplyPatch(typeof(SmoothSpritesPatch));

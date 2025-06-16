@@ -59,6 +59,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> RareFindsAlwaysInStock;
     public ConfigEntry<bool> EasyMinigames;
     public ConfigEntry<bool> BetterLeona;
+    public ConfigEntry<bool> BetterSanchez;
     public ConfigEntry<bool> DisableBinaryPatches;
     public ConfigEntry<int> EditText;
     public ConfigEntry<int> AllItemsInHQ;
@@ -472,7 +473,14 @@ public sealed class ModConfiguration
              "Cheat",
              "BetterLeona",
              false,
-             "(Suikoden 2 only) McDohl will be available in Leona's if you recruited him. Both Kasumi and Valeria will be available if you recruited one of them."
+             "(Suikoden 2 only) McDohl will be available in Leona's party menu if you recruited him. Both Kasumi and Valeria will be available if you recruited one of them."
+        );
+
+        BetterSanchez = _config.Bind(
+             "Cheat",
+             "BetterSanchez",
+             false,
+             "(Suikoden 1 only) Ted and Odessa will be available in Sanchez's party menu."
         );
 
         MoreTeleportLocations = _config.Bind(
