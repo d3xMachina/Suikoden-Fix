@@ -46,7 +46,7 @@ public class SkipIntroPatch
             default:
                 break;
         }
-}
+    }
 
     [HarmonyPatch(typeof(GSD2::TitleChapter), nameof(GSD2::TitleChapter.TitleMain))]
     [HarmonyPrefix]

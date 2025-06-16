@@ -10,7 +10,7 @@ public class PauseGamePatch
     private static double _customUnscaledTime = 0;
     private static bool _disableSkipButton = false;
     private static bool _disableChapterUpdate = false;
-    
+
     [HarmonyPatch(typeof(GSD1.ChapterManager), nameof(GSD1.ChapterManager.Update))]
     [HarmonyPatch(typeof(GSD2.GRChapterManager), nameof(GSD2.GRChapterManager.Update))]
     [HarmonyPrefix]
@@ -186,7 +186,7 @@ public class PauseGamePatch
         _disableChapterUpdate = true;
     }
 
-    [HarmonyPatch(typeof(Framework.Chapter), nameof(Framework.Chapter.Request), [ typeof(Il2CppSystem.Type) ])]
+    [HarmonyPatch(typeof(Framework.Chapter), nameof(Framework.Chapter.Request), [typeof(Il2CppSystem.Type)])]
     [HarmonyPrefix]
     static void ChapterChanged()
     {

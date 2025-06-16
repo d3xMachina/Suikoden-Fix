@@ -377,7 +377,7 @@ public sealed class ModConfiguration
              1f,
              "Multiply the damage of enemies in battle. (Damage capped at 9999 before bonus)"
         );
-        
+
         MonsterHealthMultiplier = _config.Bind(
              "Cheat",
              "MonsterHealthMultiplier",

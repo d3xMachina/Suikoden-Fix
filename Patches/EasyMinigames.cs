@@ -133,7 +133,7 @@ public class EasyMinigamesPatch
         {
             __instance.time_cnt = __state.CurrentTime;
         }
-        
+
         if (__state.RecordTime != -1)
         {
             var recordTimes = GSD1.OldSrcBase.game_work?.window_data;
@@ -262,7 +262,7 @@ public class EasyMinigamesPatch
 
         bfi.fight_count = 301; // No need to wait to have a fish biting the bait
         bfi.distance = 0; // Instant catch
-        
+
         // Never fail catching minigame
         //bfi.under_count = 0;
         //bfi.over_count = 0;

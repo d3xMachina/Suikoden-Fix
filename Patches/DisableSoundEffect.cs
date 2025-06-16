@@ -51,7 +51,7 @@ public class DisableMessageWindowSoundPatch
         {
             return false;
         }
-        
+
         return true;
     }
 }

@@ -1,11 +1,10 @@
 ﻿extern alias GSD1;
 extern alias GSD2;
-
-using System;
-using System.Collections.Generic;
 using BepInEx;
 using Il2CppInterop.Runtime.Injection;
 using Suikoden_Fix.Tools.Input;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -55,7 +54,7 @@ public sealed class ModComponent : MonoBehaviour
         { CommandType.SpeedHack, new Command([ GamepadButton.RightTrigger ], [ Key.T ], []) },
         { CommandType.BattleSpeed, new Command([], [], [ GRInputManager.Type.BattleSpeed ]) },
         { CommandType.ExitApplication, new Command([ GamepadButton.Start ], [ Key.Escape ], []) },
-        { 
+        {
             CommandType.ResetApplication, new Command(
                 [ GamepadButton.Start, GamepadButton.LeftShoulder, GamepadButton.RightShoulder ],
                 [ Key.Escape, Key.R],
@@ -270,7 +269,7 @@ public sealed class ModComponent : MonoBehaviour
         if (GamePaused)
         {
             ResumeGame();
-        } 
+        }
 
         if (ActiveGame == Game.GSD1)
         {
@@ -556,7 +555,7 @@ public sealed class ModComponent : MonoBehaviour
                     partyData.y = playerY;
                 }
 
-                success = true; 
+                success = true;
             }
             else if (ActiveGame == Game.GSD2)
             {
@@ -564,7 +563,7 @@ public sealed class ModComponent : MonoBehaviour
                 success = true;
             }
         }
-        
+
         if (success)
         {
             SoundManager.PlaySE("SD_WOP");

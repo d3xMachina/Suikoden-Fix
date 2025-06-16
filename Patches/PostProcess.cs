@@ -72,7 +72,7 @@ public class PostProcessPatch
                 intensityParameter.value = intensity * Plugin.Config.BloomMultiplier.Value;
             }
         }
-        
+
         if (Plugin.Config.DisableDepthOfField.Value)
         {
             GSD2.PostProcessEffectManager.isDepthOfFieldActive = false;

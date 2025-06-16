@@ -56,7 +56,7 @@ public class BackupSavesPatch
         try
         {
             fileName = GetBackupSaveName(path);
-            
+
             if (fileName != "")
             {
                 File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);

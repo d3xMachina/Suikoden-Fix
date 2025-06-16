@@ -70,7 +70,7 @@ public class UncapMoneyPatch
         }
 
         __instance._zkin = LimitMoney(value);
-        
+
         return false;
     }
 
@@ -140,7 +140,7 @@ public class UncapMoneyPatch
         {
             return true;
         }
-        
+
         partyData.mochi_kin = LimitMoney(pocchi);
         return false;
     }
@@ -190,7 +190,7 @@ public class UncapMoneyPatch
         {
             return true;
         }
-        
+
         if (mode == 1)
         {
             partyData.gold = (uint)LimitMoney(partyData.gold + (long)val);
@@ -261,7 +261,7 @@ public class UncapMoneyPatch
         {
             return;
         }
-       
+
         dw.p_money = Math.Min(__state, MaxMoney); // probably unnecessary
         GSD2.G2_SYS.G2_party_gold(2, dw.p_money);
     }
@@ -316,7 +316,7 @@ public class UncapMoneyPatch
         }
 
         dw.cnt2 = __state.cnt2; // restore cnt2
-        
+
         if (__state.moneyBufferEmpty && __result == 0)
         {
             __result = 1;

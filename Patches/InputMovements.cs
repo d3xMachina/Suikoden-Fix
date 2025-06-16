@@ -49,7 +49,7 @@ public class InputMovementsPatch
                     _dashToggle = !_dashToggle;
                 }
             }
-            
+
             _lastDash = dash;
         }
 

@@ -274,7 +274,7 @@ public class LogTextPatch
         {
             Plugin.Log.LogWarning($"Cannot append texts logs : {ex}.");
         }
-        
+
         Plugin.Log.LogInfo(line);
     }
 

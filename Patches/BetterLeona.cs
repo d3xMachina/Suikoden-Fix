@@ -15,16 +15,10 @@ public class BetterLeonaPatch
     private static bool _fakeRecruited = false;
     private static bool _fakeRecruitedLeona = false;
 
-    private struct MemberCheck
+    private struct MemberCheck(byte charaNo)
     {
-        public byte charaNo;
-        public bool check;
-
-        public MemberCheck(byte charaNo)
-        {
-            this.charaNo = charaNo;
-            this.check = true;
-        }
+        public byte charaNo = charaNo;
+        public bool check = true;
     }
 
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.Overlay_partychg), nameof(GSD2.EventOverlayClass.Overlay_partychg.PCpartyAllTblSet))]
@@ -75,7 +69,7 @@ public class BetterLeonaPatch
 
                 bool addCharacter = GSD2.G2_SYS.G2_cha_flag(4, member.charaNo) == 1 && // Check if character recruited, not dead or on leave, not in party and something else (bit 0x20 of charaFlags).
                                     GSD2.G2_SYS.G2_cha_flag(9, member.charaNo) != 1; // Check if character in party. Shouldn't be necessary, looks like mode 4 checks for this already ?
-                
+
                 _fakeRecruitedLeona = false;
 
                 // Conditions not met
@@ -146,7 +140,7 @@ public class BetterLeonaPatch
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.t_phase), nameof(GSD2.EventOverlayClass.t_phase.InitLvWindow))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.t_phase), nameof(GSD2.EventOverlayClass.t_phase.TanteiSecretInit))]
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.t_phase), nameof(GSD2.EventOverlayClass.t_phase.CheckSecretOpenLv4))]
-    
+
     // Shops, warehouse, item transfers...
     [HarmonyPatch(typeof(GSD2.G2_SYS), nameof(GSD2.G2_SYS.G2_eqp_chk))]
     [HarmonyPatch(typeof(GSD2.G2_SYS), nameof(GSD2.G2_SYS.G2_item_num2))]

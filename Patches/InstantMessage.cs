@@ -49,7 +49,7 @@ public class InstantMessagePatch
                 _skipMessage = true;
                 _messagePage = __instance.nowPage;
             }
-        
+
             if (_skipMessage)
             {
                 __instance.isTextAllDisp = true; // same as doing an input in this context

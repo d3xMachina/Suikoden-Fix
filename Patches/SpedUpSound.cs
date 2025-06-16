@@ -84,7 +84,7 @@ public class SpedUpSoundPatch
         {
             return Plugin.Config.SpedUpMusic.Value != 0;
         }
-        
+
         return true;
     }
 

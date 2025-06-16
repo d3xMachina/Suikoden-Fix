@@ -51,7 +51,7 @@ public class EditSavePatch
         try
         {
             fileName = GetDecryptedSaveName(path);
-            
+
             if (fileName != "")
             {
                 json = FormatJson(json, true);

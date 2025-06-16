@@ -57,7 +57,7 @@ public class MenuDetectionPatch
     {
         ModComponent.Instance.IsInSpecialMenu = false;
     }
-    
+
     // To find similar hooks, look for references to Window.WindowDelete and functions with "ShopxxxMain" in their name
     [HarmonyPatch(typeof(GSD2.dougu), nameof(GSD2.dougu.ShopDouguMain))]
     [HarmonyPrefix]
@@ -69,7 +69,7 @@ public class MenuDetectionPatch
             ModComponent.Instance.IsInSpecialMenu = dcon.step != 'c';
         }
     }
-    
+
     [HarmonyPatch(typeof(GSD2.kaji), nameof(GSD2.kaji.ShopKajiMain))]
     [HarmonyPrefix]
     static void GSD2_ShopKajiMain(GSD2.kaji __instance)
@@ -80,7 +80,7 @@ public class MenuDetectionPatch
             ModComponent.Instance.IsInSpecialMenu = dcon.step != 'c';
         }
     }
-    
+
     [HarmonyPatch(typeof(GSD2.kantei), nameof(GSD2.kantei.ShopKanteiMain))]
     [HarmonyPrefix]
     static void GSD2_ShopKanteiMain(GSD2.kantei __instance)
@@ -91,7 +91,7 @@ public class MenuDetectionPatch
             ModComponent.Instance.IsInSpecialMenu = dcon.step != 'c';
         }
     }
-    
+
     [HarmonyPatch(typeof(GSD2.koueki), nameof(GSD2.koueki.ShopKouekiMain))]
     [HarmonyPrefix]
     static void GSD2_ShopKouekiMain()
@@ -102,7 +102,7 @@ public class MenuDetectionPatch
             ModComponent.Instance.IsInSpecialMenu = kcon.step != 'c';
         }
     }
-    
+
     [HarmonyPatch(typeof(GSD2.monsyo), nameof(GSD2.monsyo.ShopMonsyoMain))]
     [HarmonyPrefix]
     static void GSD2_ShopMonsyoMain(GSD2.monsyo __instance)

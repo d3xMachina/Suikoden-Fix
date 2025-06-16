@@ -1,11 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
-using Suikoden_Fix.Patches;
 using HarmonyLib;
+using Suikoden_Fix.Patches;
+using Suikoden_Fix.Tools.Patch;
 using System;
 using System.Reflection;
-using Suikoden_Fix.Tools.Patch;
 
 namespace Suikoden_Fix;
 
@@ -192,32 +192,32 @@ public partial class Plugin : BasePlugin
         {
             ApplyPatch(typeof(EditSavePatch));
         }
-        
+
         if (Config.PlayerDamageMultiplier.Value != 1f || Config.MonsterDamageMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(DamageMultiplierPatch));
         }
-        
+
         if (Config.MonsterHealthMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(HealthMultiplierPatch));
         }
-        
+
         if (Config.ExperienceMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(ExperienceMultiplierPatch));
         }
-        
+
         if (Config.MoneyMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(MoneyMultiplierPatch));
         }
-        
+
         if (Config.LootMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(LootMultiplierPatch));
         }
-        
+
         if (Config.InstantMessage.Value)
         {
             ApplyPatch(typeof(InstantMessagePatch));
@@ -339,10 +339,7 @@ public partial class Plugin : BasePlugin
         {
             // Execute the PatchAssembly method if there is one
             MethodInfo patchMethod = type.GetMethod("PatchAssembly", BindingFlags.NonPublic | BindingFlags.Static);
-            if (patchMethod != null)
-            {
-                patchMethod.Invoke(null, null);
-            }
+            patchMethod?.Invoke(null, null);
         }
     }
 }
