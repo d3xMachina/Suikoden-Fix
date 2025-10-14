@@ -11,7 +11,7 @@ namespace Suikoden_Fix.Patches;
 
 public class EditTextPatch
 {
-    private const int JsonBufferSize = 4;
+    private const int JsonBufferSize = 4096;
 
     private static readonly Dictionary<string, Dictionary<int, string>> _texts = [];
     private static TextMasterData.Lang _language = TextMasterData.Lang.Max;
