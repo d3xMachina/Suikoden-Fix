@@ -14,7 +14,7 @@ namespace Suikoden_Fix.Patches;
 
 public class ResolutionPatch
 {
-    private static float _defaultAspectRatio = 16f / 9f;
+    private static readonly float _defaultAspectRatio = 16f / 9f;
     private static float _aspectRatio = _defaultAspectRatio;
     private static int _prevTitleStep = (int)GSDTitleSelect.State.NONE;
 
@@ -65,7 +65,7 @@ public class ResolutionPatch
     static void SetResolution2(ref int width, ref int height, ref bool fullscreen)
     {
         OnSetResolution(ref width, ref height);
-        OnSetFullscreenMode(ref fullscreen); 
+        OnSetFullscreenMode(ref fullscreen);
     }
 
     // Prevent the config UI from reverting the display mode
@@ -93,7 +93,7 @@ public class ResolutionPatch
     static void SetInitialDisplay()
     {
         // Apply the resolution with the hook
-        Screen.SetResolution(Screen.width, Screen.height, Screen.fullScreenMode);   
+        Screen.SetResolution(Screen.width, Screen.height, Screen.fullScreenMode);
         AddResolutionToConfigUI();
     }
 
@@ -329,7 +329,7 @@ public class ResolutionPatch
     {
         // Remove the boundaries checks to display "off-screen" NPCs
 
-        var address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateHumanSprite", [ typeof(bool) ]);
+        var address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateHumanSprite", [typeof(bool)]);
         MemoryPatcher.PatchNOP(address, 0x316, 6);
         MemoryPatcher.PatchNOP(address, 0x340, 6);
         MemoryPatcher.PatchNOP(address, 0x367, 6);
@@ -346,13 +346,13 @@ public class ResolutionPatch
         MemoryPatcher.PatchNOP(address, 0x3CF, 6);
         MemoryPatcher.PatchNOP(address, 0x3EA, 6);
 
-        address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateKemriSprite", [ typeof(bool) ]);
+        address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateKemriSprite", [typeof(bool)]);
         MemoryPatcher.PatchNOP(address, 0x3AF, 2);
         MemoryPatcher.PatchNOP(address, 0x3BF, 2);
         MemoryPatcher.PatchNOP(address, 0x3CF, 2);
         MemoryPatcher.PatchNOP(address, 0x3DF, 2);
 
-        address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateHatoSprite", [ typeof(bool) ]);
+        address = MemoryPatcher.GetMethodAddress(typeof(GSD1.Village_c), "UpdateHatoSprite", [typeof(bool)]);
         MemoryPatcher.PatchNOP(address, 0x11A, 6);
         MemoryPatcher.PatchNOP(address, 0x12E, 6);
         MemoryPatcher.PatchNOP(address, 0x142, 6);
@@ -369,7 +369,7 @@ public class ResolutionPatch
         MemoryPatcher.PatchNOP(address, 0x259, 6);
         MemoryPatcher.PatchNOP(address, 0x275, 6);
 
-        address = MemoryPatcher.GetMethodAddress(typeof(GSD2.ANIME), "AnimeDispFast", [ typeof(bool), typeof(bool), typeof(bool), typeof(bool) ]);
+        address = MemoryPatcher.GetMethodAddress(typeof(GSD2.ANIME), "AnimeDispFast", [typeof(bool), typeof(bool), typeof(bool), typeof(bool)]);
         MemoryPatcher.PatchNOP(address, 0x644, 2);
         MemoryPatcher.PatchNOP(address, 0x655, 2);
         MemoryPatcher.PatchNOP(address, 0x662, 2);

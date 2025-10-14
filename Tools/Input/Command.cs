@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Suikoden_Fix.Tools.Input;
 
 public class Command
 {
+    private readonly List<Key> _keys;
+    private readonly List<GamepadButton> _buttons;
+    private readonly List<GRInputManager.Type> _gameInputs;
+    private readonly bool _isCombination;
+    private bool _wasPressed;
     public bool IsOn { get; private set; }
 
     public Command(List<GamepadButton> buttons, List<Key> keys, List<GRInputManager.Type> gameInput, bool isCombination = false)
@@ -66,10 +71,4 @@ public class Command
     {
         return _gameInputs.Any(GRInputManager.IsPress);
     }
-
-    private List<Key> _keys;
-    private List<GamepadButton> _buttons;
-    private List<GRInputManager.Type> _gameInputs;
-    private bool _isCombination;
-    private bool _wasPressed;
 }

@@ -33,10 +33,10 @@ partial class MemoryPatcher
 
             // Change protection to allow writing
             VirtualProtect(targetAddress, (UIntPtr)code.Length, PAGE_EXECUTE_READWRITE, out uint oldProtect);
-            
+
             // Write the bytes
             Marshal.Copy(code, 0, targetAddress, code.Length);
-            
+
             // Restore original protection
             VirtualProtect(targetAddress, (UIntPtr)code.Length, oldProtect, out _);
         }
@@ -75,7 +75,7 @@ partial class MemoryPatcher
                     }
                 }
             }
-        
+
             Plugin.Log.LogError($"Failed to get image {image}.");
         }
         catch (Exception ex)
@@ -95,7 +95,7 @@ partial class MemoryPatcher
             {
                 Plugin.Log.LogError($"Failed to get class {clazz}.");
             }
-        
+
             return classPtr;
         }
         catch (Exception ex)
@@ -111,12 +111,12 @@ partial class MemoryPatcher
         {
             var iter = IntPtr.Zero;
             IntPtr currentMethodPtr;
-        
+
             while ((currentMethodPtr = IL2CPP.il2cpp_class_get_methods(clazz, ref iter)) != IntPtr.Zero)
             {
                 var namePtr = IL2CPP.il2cpp_method_get_name(currentMethodPtr);
                 var currentMethodName = Marshal.PtrToStringAnsi(namePtr);
-            
+
                 if (methodName != currentMethodName)
                 {
                     continue;
@@ -145,7 +145,7 @@ partial class MemoryPatcher
                         var typeName = Marshal.PtrToStringAnsi(typeNamePtr);
 
                         var variation = "";
-                        
+
                         if (variations != null)
                         {
                             variation = variations[i] switch
@@ -156,7 +156,7 @@ partial class MemoryPatcher
                                 _ => ""
                             };
                         }
-                
+
                         if (typeName != parameters[i].FullName + variation)
                         {
                             Plugin.Log.LogWarning($"Argument {i} mismatch in {currentMethodName}!\n" +
@@ -166,7 +166,7 @@ partial class MemoryPatcher
                             score = 0;
                             break;
                         }
-                    
+
                         ++score;
                     }
                 }
@@ -203,14 +203,14 @@ partial class MemoryPatcher
 
                     // Get method pointer
                     var methodInfo = Marshal.PtrToStructure<Il2CppMethodInfo>(currentMethodPtr);
-                
+
                     Plugin.Log.LogInfo($"Found method: [{imageName}] {namespaceName}.{className}::{methodName} " +
                                        $"at 0x{methodInfo.methodPointer.ToInt64():X}.");
-                
+
                     return methodInfo.methodPointer;
                 }
             }
-        
+
             Plugin.Log.LogError($"Method not found: {methodName}.");
             return IntPtr.Zero;
         }
@@ -237,7 +237,7 @@ partial class MemoryPatcher
                 return IntPtr.Zero;
             }
 
-            var namespaze = type.Namespace != null ? type.Namespace : "";
+            var namespaze = type.Namespace ?? "";
             var classPtr = GetClass(image, namespaze, type.Name);
             if (classPtr == IntPtr.Zero)
             {

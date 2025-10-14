@@ -13,7 +13,7 @@ public class EditTextPatch
 {
     private const int JsonBufferSize = 4;
 
-    private static readonly Dictionary<string, Dictionary<int, string>> _texts = new();
+    private static readonly Dictionary<string, Dictionary<int, string>> _texts = [];
     private static TextMasterData.Lang _language = TextMasterData.Lang.Max;
 
     private static void LoadTexts()
@@ -55,9 +55,10 @@ public class EditTextPatch
     {
         ReadOnlySpan<byte> utf8Bom = [0xEF, 0xBB, 0xBF];
         var buffer = new byte[utf8Bom.Length];
-        var readBytes = stream.Read(buffer, 0, utf8Bom.Length);
-        var readSpan = new ReadOnlySpan<byte>(buffer);
 
+        stream.Read(buffer, 0, utf8Bom.Length);
+
+        var readSpan = new ReadOnlySpan<byte>(buffer);
         if (!readSpan.StartsWith(utf8Bom))
         {
             // No BOM, seek back
@@ -70,7 +71,7 @@ public class EditTextPatch
     {
         var buffer = new byte[JsonBufferSize];
         var currentLanguage = TextMasterData.Lang.Max;
-        string currentId = null;
+        string currentId;
         int currentIndex = 0;
         Dictionary<int, string> currentIdDict = null;
         int depth = 0;
@@ -140,7 +141,7 @@ public class EditTextPatch
                     if (currentLanguage == _language &&
                         !_texts.TryGetValue(currentId, out currentIdDict))
                     {
-                        currentIdDict = new();
+                        currentIdDict = [];
                         _texts[currentId] = currentIdDict;
                     }
                     break;
