@@ -120,6 +120,7 @@ public class AllItemsInHQPatch
             return;
         }
 
+        int indexRecipeItem = -1;
         dhdat.Clear();
 
         for (int itemIndex = 0; itemIndex < length; ++itemIndex)
@@ -137,6 +138,11 @@ public class AllItemsInHQPatch
                     itemData.name == 1)
                 {
                     continue;
+                }
+
+                if (itemIndex == 56) // Recipe #25
+                {
+                    indexRecipeItem = dhdat.Count;
                 }
             }
             else
@@ -160,9 +166,9 @@ public class AllItemsInHQPatch
             dhdat.Add(shopItem);
         }
 
-        // Add Alex dishes
         if (shopType == 0)
         {
+            // Add Alex dishes
             for (int i = 0; i < alexDishes.Length; ++i)
             {
                 var shopItem = new GSD2.SP_DHDAT
@@ -175,9 +181,34 @@ public class AllItemsInHQPatch
 
                 dhdat.Add(shopItem);
             }
+
+            // Add other recipe items, they are in itemDatas.ex_it_data
+            if (indexRecipeItem != -1)
+            {
+                for (int itemIndex = 66; itemIndex >= 43; --itemIndex)
+                {
+                    var shopItem = new GSD2.SP_DHDAT
+                    {
+                        dhno = (sbyte)itemIndex, // item
+                        mno = 0, // map ?
+                        sno = 5, // item type
+                        kosuu = 0 // quantity, 0 = unlimited
+                    };
+
+                    dhdat.Insert(indexRecipeItem, shopItem);
+                }
+            }
         }
 
-        dcon.dhkaz = (sbyte)dhdat.Count;
+        if (dhdat.Count > sbyte.MaxValue)
+        {
+            Plugin.Log.LogError($"Overflow, item count: {dhdat.Count}");
+            dcon.dhkaz = sbyte.MaxValue;
+        }
+        else
+        {
+            dcon.dhkaz = (sbyte)dhdat.Count;
+        }
     }
 
     [HarmonyPatch(typeof(GSD2.EventOverlayClass.hmonsyo), nameof(GSD2.EventOverlayClass.hmonsyo.SDUrishinaCheck))]
@@ -231,6 +262,15 @@ public class AllItemsInHQPatch
             dhdat.Add(shopItem);
         }
 
-        dcon.dhkaz = (sbyte)dhdat.Count;
+
+        if (dhdat.Count > sbyte.MaxValue)
+        {
+            Plugin.Log.LogError($"Overflow, rune count: {dhdat.Count}");
+            dcon.dhkaz = sbyte.MaxValue;
+        }
+        else
+        {
+            dcon.dhkaz = (sbyte)dhdat.Count;
+        }
     }
 }
