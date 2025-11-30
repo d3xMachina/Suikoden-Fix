@@ -159,6 +159,10 @@
       <HintPath>$(GamePath)\BepInEx\interop\CriMw.CriWare.Runtime.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+	<Reference Include="LitJson">
+      <HintPath>$(GamePath)\BepInEx\interop\LitJson.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

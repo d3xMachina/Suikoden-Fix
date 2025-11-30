@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
+using LitJson;
 using System;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace Suikoden_Fix.Patches;
 
@@ -12,14 +11,15 @@ public class EditSavePatch
     {
         try
         {
-            var jsonObject = JsonNode.Parse(json);
-
-            var options = new JsonSerializerOptions
+            JsonData jsonData = JsonMapper.ToObject(json);
+            var jsonWriter = new JsonWriter
             {
-                WriteIndented = prettify
+                PrettyPrint = prettify,
+                IndentValue = 2
             };
 
-            return jsonObject.ToJsonString(options);
+            JsonMapper.ToJson(jsonData, jsonWriter);
+            return jsonWriter.ToString().Trim();
         }
         catch (Exception ex)
         {
