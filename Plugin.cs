@@ -326,6 +326,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(AllItemsInHQPatch));
         }
 
+        if (!Config.CustomFont.Value.IsNullOrWhiteSpace())
+        {
+            ApplyPatch(typeof(CustomFontPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 

@@ -131,6 +131,10 @@
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.UI.dll</HintPath>
 	  <Private>false</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GamePath)\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
+	  <Private>false</Private>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(GamePath)\BepInEx\interop\UnityEngine.TextRenderingModule.dll</HintPath>
 	  <Private>false</Private>

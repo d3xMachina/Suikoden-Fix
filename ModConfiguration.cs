@@ -35,6 +35,7 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> DisableMessageWindowSound;
     public ConfigEntry<bool> DisableStartledSound;
     public ConfigEntry<string> WindowBGColor;
+    public ConfigEntry<string> CustomFont;
     public ConfigEntry<bool> DisableAutoSaveNotification;
     public ConfigEntry<bool> RememberBattleSpeed;
     public ConfigEntry<bool> ClassicMode;
@@ -280,6 +281,13 @@ public sealed class ModConfiguration
              "WindowBGColor",
              "",
              "Change the background color of most windows instead of the default black. Use the hex format (#000C7A for example)."
+        );
+
+        CustomFont = _config.Bind(
+             "Visual",
+             "CustomFont",
+             "",
+             "Replace the font of the UI with either a system font, or a custom font that you put inside the game folder. Use the font file name (arial.ttf for example)."
         );
 
         DisableAutoSaveNotification = _config.Bind(

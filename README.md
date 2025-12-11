@@ -27,7 +27,7 @@ All features are optional.
 - Edit your saves.
 - Disable or alter the speed up of the music and sound effects when the battle speed change.
 - Disable the sound when a message window appears and startled sound effects.
-- Change the background color of some windows.
+- Change the font and the background color of some windows.
 - Adjust bloom and depth of fields effects.
 - Smooth out the sprites.
 - Adjust framerate, vsync and disable frame skipping.
