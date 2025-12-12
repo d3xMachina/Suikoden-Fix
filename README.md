@@ -47,7 +47,7 @@ All features are optional.
 - Replace `EditSave = false` with `EditSave = true` in the configuration file `(GAME_PATH)\BepInEx\config\d3xMachina.suikoden_fix.cfg`.
 - Backup your saves located in `(GAME_PATH)\Save\(USER_ID)\` on Windows or `(STEAM_LIBRARY_PATH)/steamapps/compatdata/1932640/pfx` on Linux in case you make a mistake.
 - After saving in game, go to your game folder and you will have the save file in the json format. The file name starts with `_decrypted` followed by either `_gsd1` for Suikoden 1 or `_gsd2` for Suikoden 2, then `_Data` and the save slot number.
-- Modify the content of the file with a text editor like notepad. You can refer to [this documentation](https://github.com/asilverthorn/suikoden_ref/blob/main/Suikoden1_Remaster_Save_Editing.md) for Suikoden 1.
+- Modify the content of the file with a text editor like notepad. You can refer to [this documentation](https://github.com/asilverthorn/suikoden_ref/blob/main/Suikoden1_Remaster_Save_Editing.md) for Suikoden 1. You can use [this save editor](https://faospark.github.io/suisaveeditor/) for Suikoden 2.
 - Load your save again.
 - You can save again to have the changes persist and disable the `EditSave` option in the configuration file.
 
