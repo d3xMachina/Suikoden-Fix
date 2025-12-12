@@ -24,7 +24,8 @@ public sealed class ModConfiguration
     public ConfigEntry<bool> SmoothSprites;
     public ConfigEntry<bool> DisableDiagonalMovements;
     public ConfigEntry<bool> ToggleDash;
-    public ConfigEntry<bool> SaveAnywhere;
+    public ConfigEntry<int> SaveAnywhere;
+    public ConfigEntry<int> SaveSlots;
     public ConfigEntry<int> SpeedHackFactor;
     public ConfigEntry<bool> SpeedHackAffectsGameTimer;
     public ConfigEntry<bool> SpeedHackAffectsSpecialMenus;
@@ -209,8 +210,15 @@ public sealed class ModConfiguration
         SaveAnywhere = _config.Bind(
              "Misc",
              "SaveAnywhere",
-             false,
-             "Allows you to save anywhere to the last save slot using the select button or the F1 key. Be careful to not softlock yourself!"
+             -1,
+             "Allows you to save anywhere to the last save slot using the select button or the F1 key. Set 0 to save in the last slot or the slot number."
+        );
+
+        SaveSlots = _config.Bind(
+             "Misc",
+             "SaveSlots",
+             -1,
+             "Set the number of normal save slots (-1 for default, 16 minimum)."
         );
 
         SpeedHackFactor = _config.Bind(

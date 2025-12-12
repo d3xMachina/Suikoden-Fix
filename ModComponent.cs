@@ -170,6 +170,10 @@ public sealed class ModComponent : MonoBehaviour
                 }
             };
 
+            // Increase save slots
+            SystemSave.SAVE_SLOT_MAX = Math.Max(SystemSave.SAVE_SLOT_MAX, Plugin.Config.SaveSlots.Value);
+            GSD1.SaveDataManager.save_data_num = SystemSave.SAVE_SLOT_MAX; // just in case
+
             Plugin.Log.LogInfo($"[{nameof(ModComponent)}].{nameof(Awake)}: Processed successfully.");
         }
         catch (Exception e)
@@ -514,7 +518,7 @@ public sealed class ModComponent : MonoBehaviour
     private void UpdateSaveAnywhere()
     {
         // The dance minigame is the only thing that use the select button in the game
-        if (!Plugin.Config.SaveAnywhere.Value ||
+        if (Plugin.Config.SaveAnywhere.Value < 0 ||
             !_commands[CommandType.SaveAnywhere].IsOn ||
             GamePaused ||
             IsInDanceMinigame)
@@ -522,7 +526,10 @@ public sealed class ModComponent : MonoBehaviour
             return;
         }
 
-        const int slot = 16; // last slot
+        int slot = Plugin.Config.SaveAnywhere.Value == 0
+            ? SystemSave.SAVE_SLOT_MAX
+            : Math.Min(SystemSave.SAVE_SLOT_MAX, Plugin.Config.SaveAnywhere.Value);
+
         var success = false;
 
         if (_chapter == Chapter.Map && !IsInGameEvent)

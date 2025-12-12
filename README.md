@@ -15,7 +15,7 @@ All features are optional.
 - Dash as a toggle.
 - Disable diagonal movements.
 - Remember the battle speed between battles.
-- Save anywhere in the last save slot (be careful to not softlock yourself).
+- Save anywhere and increase the number of save slots.
 - Disable autosave notifications.
 - Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.

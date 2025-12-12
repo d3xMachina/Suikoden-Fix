@@ -268,7 +268,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(StallionBoonsPatch));
         }
 
-        if (Config.SaveAnywhere.Value)
+        if (Config.SaveAnywhere.Value >= 0)
         {
             ApplyPatch(typeof(SaveAnywherePatch));
             inputConflict = true;
