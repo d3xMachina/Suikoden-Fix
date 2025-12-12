@@ -331,6 +331,11 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(CustomFontPatch));
         }
 
+        if (Config.SaveSlots.Value > 0)
+        {
+            ApplyPatch(typeof(SaveSlotsPatch));
+        }
+
         Log.LogInfo("Patches applied!");
     }
 
