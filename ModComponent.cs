@@ -573,12 +573,12 @@ public sealed class ModComponent : MonoBehaviour
 
         if (success)
         {
-            SoundManager.PlaySE("SD_WOP");
+            SoundManager.PlaySE("SD_SYS_SAVE_SUCCESS");
             Plugin.Log.LogInfo("Game saved!");
         }
         else
         {
-            SoundManager.PlaySE("SD_BUZZER");
+            SoundManager.PlaySE("SD_SYS_SAVE_FAIL");
             Plugin.Log.LogWarning("Cannot save here!");
         }
     }
