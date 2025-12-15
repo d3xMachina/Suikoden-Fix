@@ -4,6 +4,37 @@ namespace Suikoden_Fix.Patches;
 
 public class SaveSlotsPatch
 {
+    private static bool _isInCoInit = false;
+
+    private static void ExecuteCoroutineSynchronously(Il2CppSystem.Collections.IEnumerator coroutine)
+    {
+        if (coroutine == null)
+        {
+            return;
+        }
+
+        System.Collections.Stack stack = new();
+        stack.Push(coroutine);
+
+        while (stack.Count > 0)
+        {
+            var current = (Il2CppSystem.Collections.IEnumerator)stack.Pop();
+
+            while (current.MoveNext())
+            {
+                var nested = current.Current?.TryCast<Il2CppSystem.Collections.IEnumerator>();
+                if (nested == null)
+                {
+                    continue;
+                }
+
+                stack.Push(current);
+                stack.Push(nested);
+                break;
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(UISaveLoadBase), nameof(UISaveLoadBase.Exec))]
     [HarmonyPrefix]
     static bool ScrollFast(ref int __result, UISaveLoadBase __instance)
@@ -43,5 +74,36 @@ public class SaveSlotsPatch
         }
 
         return true;
+    }
+
+    [HarmonyPatch(typeof(UISaveLoadBase._CoInit_d__76), nameof(UISaveLoadBase._CoInit_d__76.MoveNext))]
+    [HarmonyPrefix]
+    static void CoInitPre()
+    {
+        _isInCoInit = true;
+    }
+
+    [HarmonyPatch(typeof(UISaveLoadBase._CoInit_d__76), nameof(UISaveLoadBase._CoInit_d__76.MoveNext))]
+    [HarmonyPostfix]
+    static void CoInitPost()
+    {
+        _isInCoInit = false;
+    }
+
+    [HarmonyPatch(typeof(CoroutineList), nameof(CoroutineList.WaitForCoroutine))]
+    [HarmonyPrefix]
+    static void FasterSaveSlotsProcessing(CoroutineList __instance)
+    {
+        if (!_isInCoInit || __instance?.enumerators == null)
+        {
+            return;
+        }
+
+        foreach (var coroutine in __instance.enumerators)
+        {
+            ExecuteCoroutineSynchronously(coroutine);
+        }
+
+        __instance.enumerators.Clear();
     }
 }
