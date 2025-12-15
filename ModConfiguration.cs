@@ -212,7 +212,7 @@ public sealed class ModConfiguration
              "Misc",
              "SaveAnywhere",
              -1,
-             "Allows you to save anywhere to the last save slot using the select button or the F1 key. Set 0 to save in the last slot or the slot number."
+             "Allows you to save anywhere in the slot you specify using the select button or the F1 key. Set 0 to save in the last slot or the slot number."
         );
 
         SaveSlots = _config.Bind(
