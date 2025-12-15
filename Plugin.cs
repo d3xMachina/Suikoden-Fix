@@ -326,7 +326,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(AllItemsInHQPatch));
         }
 
-        if (!Config.CustomFont.Value.IsNullOrWhiteSpace())
+        if (!Config.CustomFontUI.Value.IsNullOrWhiteSpace() || !Config.CustomFontMessage.Value.IsNullOrWhiteSpace())
         {
             ApplyPatch(typeof(CustomFontPatch));
         }
