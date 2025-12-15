@@ -24,45 +24,43 @@ public class CustomFontPatch
                     // Don't retry loading the font if it already failed
                     return true;
                 }
-                else
+
+                _attempt = true;
+
+                var customFontName = Plugin.Config.CustomFont.Value;
+                var customFontPath = Path.GetFullPath(customFontName);
+
+                if (!File.Exists(customFontPath))
                 {
-                    _attempt = true;
+                    //Plugin.Log.LogWarning($"Custom font {customFontName} not found in {customFontPath}.");
+                    customFontPath = "";
 
-                    var customFontName = Plugin.Config.CustomFont.Value;
-                    var customFontPath = Path.GetFullPath(customFontName);
-
-                    if (!File.Exists(customFontPath))
+                    foreach (var fontPath in Font.GetPathsToOSFonts())
                     {
-                        //Plugin.Log.LogWarning($"Custom font {customFontName} not found in {customFontPath}.");
-                        customFontPath = "";
-
-                        foreach (var fontPath in Font.GetPathsToOSFonts())
+                        //Plugin.Log.LogWarning($"Font path: {fontPath}");
+                        var fontName = Path.GetFileName(fontPath);
+                        if (fontName.Equals(customFontName, StringComparison.OrdinalIgnoreCase))
                         {
-                            //Plugin.Log.LogWarning($"Font path: {fontPath}");
-                            var fontName = Path.GetFileName(fontPath);
-                            if (fontName.Equals(customFontName, StringComparison.OrdinalIgnoreCase))
-                            {
-                                customFontPath = fontPath;
-                                break;
-                            }
+                            customFontPath = fontPath;
+                            break;
                         }
                     }
+                }
 
-                    if (customFontPath == "")
-                    {
-                        Plugin.Log.LogWarning($"Custom font {customFontName} not found.");
-                        return true;
-                    }
+                if (customFontPath == "")
+                {
+                    Plugin.Log.LogWarning($"Custom font {customFontName} not found.");
+                    return true;
+                }
 
-                    Plugin.Log.LogInfo($"Loading custom font from {customFontPath}.");
-                    var font = new Font(customFontPath);
-                    _customFont = TMP_FontAsset.CreateFontAsset(font);
+                Plugin.Log.LogInfo($"Loading custom font from {customFontPath}.");
+                var font = new Font(customFontPath);
+                _customFont = TMP_FontAsset.CreateFontAsset(font);
 
-                    if (_customFont == null)
-                    {
-                        Plugin.Log.LogWarning($"Failed to load the custom font.");
-                        return true;
-                    }
+                if (_customFont == null)
+                {
+                    Plugin.Log.LogWarning($"Failed to load the custom font.");
+                    return true;
                 }
             }
 
