@@ -52,7 +52,8 @@ public sealed class ModConfiguration
     public ConfigEntry<float> ExperienceMultiplier;
     public ConfigEntry<float> LootMultiplier;
     public ConfigEntry<float> EncounterRateMultiplier;
-    public ConfigEntry<bool> RecoverAfterBattle;
+    public ConfigEntry<bool> RecoverHpAfterBattle;
+    public ConfigEntry<bool> RecoverMpAfterBattle;
     public ConfigEntry<float> MoneyMultiplier;
     public ConfigEntry<bool> InstantMessage;
     public ConfigEntry<bool> UncapMoney;
@@ -437,11 +438,18 @@ public sealed class ModConfiguration
              "Multiply the chances to get into a battle when walking. A value of 0 will disable encounters and 512 will guarantee you the highest probability. Encounters are checked every few steps mostly."
         );
 
-        RecoverAfterBattle = _config.Bind(
+        RecoverHpAfterBattle = _config.Bind(
              "Cheat",
-             "RecoverAfterBattle",
+             "RecoverHpAfterBattle",
              false,
-             "Your party members recover their HP and MP after a battle."
+             "Your party members recover their HP after a battle."
+        );
+
+        RecoverMpAfterBattle = _config.Bind(
+             "Cheat",
+             "RecoverMpAfterBattle",
+             false,
+             "Your party members recover their MP after a battle."
         );
 
         InstantMessage = _config.Bind(

@@ -233,7 +233,7 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(ResolutionPatch));
         }
 
-        if (Config.RecoverAfterBattle.Value)
+        if (Config.RecoverHpAfterBattle.Value || Config.RecoverMpAfterBattle.Value)
         {
             ApplyPatch(typeof(RecoverAfterBattlePatch));
         }

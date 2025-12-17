@@ -25,8 +25,15 @@ public class RecoverAfterBattlePatch
                 continue;
             }
 
-            playerData.hp = playerData.max_hp;
-            GSD1.G_monsyo_h.calc_magic_point(playerData); // restore mp
+            if (Plugin.Config.RecoverHpAfterBattle.Value)
+            {
+                playerData.hp = playerData.max_hp;
+            }
+
+            if (Plugin.Config.RecoverMpAfterBattle.Value)
+            {
+                GSD1.G_monsyo_h.calc_magic_point(playerData); // restore mp
+            }
         }
     }
 
@@ -47,18 +54,20 @@ public class RecoverAfterBattlePatch
                 continue;
             }
 
-            characterData.now_hp = characterData.max_hp;
-
-            if (characterData.mp == null)
+            if (Plugin.Config.RecoverHpAfterBattle.Value)
             {
-                continue;
+                characterData.now_hp = characterData.max_hp;
             }
 
-            for (int i = 0; i < characterData.mp.Length; ++i)
+            if (Plugin.Config.RecoverMpAfterBattle.Value &&
+                characterData.mp != null)
             {
-                // current MP on 4 MSB and max MP on 4 LSB
-                var maxMp = characterData.mp[i] & 0xF;
-                characterData.mp[i] = (byte)(maxMp | (maxMp << 4));
+                for (int i = 0; i < characterData.mp.Length; ++i)
+                {
+                    // current MP on 4 MSB and max MP on 4 LSB
+                    var maxMp = characterData.mp[i] & 0xF;
+                    characterData.mp[i] = (byte)(maxMp | (maxMp << 4));
+                }
             }
         }
     }
