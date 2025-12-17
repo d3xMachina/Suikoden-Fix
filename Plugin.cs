@@ -12,8 +12,8 @@ namespace Suikoden_Fix;
 [BepInPlugin("d3xMachina.suikoden_fix", "Suikoden Fix", "1.5.1")]
 public partial class Plugin : BasePlugin
 {
-    public static new ManualLogSource Log;
-    public static new ModConfiguration Config;
+    public static new ManualLogSource Log { get; private set; }
+    public static new ModConfiguration Config { get; private set; }
 
     public override void Load()
     {
@@ -41,7 +41,7 @@ public partial class Plugin : BasePlugin
         }
     }
 
-    private void ApplyPatches()
+    private static void ApplyPatches()
     {
         bool fastTransition = false;
         bool disableBattleSpeedChange = false;
@@ -339,7 +339,7 @@ public partial class Plugin : BasePlugin
         Log.LogInfo("Patches applied!");
     }
 
-    private void ApplyPatch(Type type)
+    private static void ApplyPatch(Type type)
     {
         Log.LogInfo($"Patching {type.Name}...");
 

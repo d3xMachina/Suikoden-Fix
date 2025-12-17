@@ -301,7 +301,7 @@ public sealed class ModComponent : MonoBehaviour
         }
     }
 
-    private bool IsGalleryMode()
+    private static bool IsGalleryMode()
     {
         var omake = Omake.Instance;
         if (omake == null)
@@ -317,12 +317,12 @@ public sealed class ModComponent : MonoBehaviour
         return IsInMovieGallery && IsMovieShown();
     }
 
-    private bool IsMovieShown()
+    private static bool IsMovieShown()
     {
         return SoundManager.IsCri() != null;
     }
 
-    private bool IsSkippableScene()
+    private static bool IsSkippableScene()
     {
         return IsGalleryMode() || IsMovieShown();
     }

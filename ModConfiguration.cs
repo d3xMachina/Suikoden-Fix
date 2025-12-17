@@ -4,7 +4,7 @@ namespace Suikoden_Fix;
 
 public sealed class ModConfiguration
 {
-    private ConfigFile _config;
+    private readonly ConfigFile _config;
     public ConfigEntry<int> FPS;
     public ConfigEntry<int> Vsync;
     public ConfigEntry<int> Width;
