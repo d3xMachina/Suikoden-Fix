@@ -29,40 +29,48 @@ public class EditSavePatch
         return json;
     }
 
-    static string GetDecryptedSaveName(string path)
+    static string GetDecryptedPath(string savePath)
     {
-        var fileName = Path.GetFileName(path);
+        var fileName = Path.GetFileName(savePath);
 
         if (fileName.StartsWith("_sharetmpsave"))
         {
             return "";
         }
 
-        var gameName = Directory.GetParent(path).Name;
-        return $"_decrypted_{gameName}_{fileName}.json";
+        var gameName = Directory.GetParent(savePath).Name;
+
+        return $"SuikodenFix/Decrypted/{gameName}/{fileName}.json";
     }
 
     [HarmonyPatch(typeof(SystemSave), nameof(SystemSave.Save))]
     [HarmonyPostfix]
     static void Save(string path, string json)
     {
-        var fileName = "";
+        var decryptedPath = "";
 
         try
         {
-            fileName = GetDecryptedSaveName(path);
+            decryptedPath = GetDecryptedPath(path);
 
-            if (fileName != "")
+            if (decryptedPath != "")
             {
-                json = FormatJson(json, true);
-                File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
+                var decryptedDirectory = Path.GetDirectoryName(decryptedPath);
 
-                Plugin.Log.LogInfo($"Saved decrypted save \"{fileName}\".");
+                if (!Directory.Exists(decryptedDirectory))
+                {
+                    Directory.CreateDirectory(decryptedDirectory);
+                }
+
+                json = FormatJson(json, true);
+                File.WriteAllText(decryptedPath, json, System.Text.Encoding.UTF8);
+
+                Plugin.Log.LogInfo($"Saved decrypted save at \"{decryptedPath}\".");
             }
         }
         catch (Exception ex)
         {
-            Plugin.Log.LogError($"Cannot save decrypted save \"{fileName}\": {ex.Message}.");
+            Plugin.Log.LogError($"Cannot save decrypted save at \"{decryptedPath}\": {ex.Message}.");
         }
     }
 
@@ -71,17 +79,17 @@ public class EditSavePatch
     static bool Load(string path, Il2CppSystem.Action<string> cb)
     {
         bool saveLoaded = false;
-        var fileName = "";
+        var decryptedPath = "";
 
         try
         {
-            fileName = GetDecryptedSaveName(path);
+            decryptedPath = GetDecryptedPath(path);
 
-            if (fileName != "")
+            if (decryptedPath != "")
             {
-                if (File.Exists(fileName))
+                if (File.Exists(decryptedPath))
                 {
-                    var json = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+                    var json = File.ReadAllText(decryptedPath, System.Text.Encoding.UTF8);
                     json = FormatJson(json, false);
                     var saveData = SystemSave.HEADER + Encrypter.Encrypt(json, SystemSave.ENCRYPT_PASSWORD);
 
@@ -95,17 +103,17 @@ public class EditSavePatch
 
                     saveLoaded = true;
 
-                    Plugin.Log.LogInfo($"Loaded decrypted save \"{fileName}\".");
+                    Plugin.Log.LogInfo($"Loaded decrypted save at \"{decryptedPath}\".");
                 }
                 else
                 {
-                    Plugin.Log.LogInfo($"No decrypted save found named \"{fileName}\".");
+                    Plugin.Log.LogInfo($"No decrypted save found at \"{decryptedPath}\".");
                 }
             }
         }
         catch (Exception ex)
         {
-            Plugin.Log.LogError($"Cannot load decrypted save named \"{fileName}\": {ex.Message}. Fallback to steam save.");
+            Plugin.Log.LogError($"Cannot load decrypted save at \"{decryptedPath}\": {ex.Message}. Fallback to steam save.");
         }
 
         return !saveLoaded;

@@ -8,66 +8,64 @@ namespace Suikoden_Fix.Patches;
 
 public class BackupSavesPatch
 {
-    static string GetBackupPrefix(string path)
+    static void RemoveOldestBackups(string backupDirectory)
     {
-        var gameName = Directory.GetParent(path).Name;
-        return $"_backup_{gameName}_";
-    }
-
-    static void RemoveOldestBackups(string path)
-    {
-        var backupPrefix = GetBackupPrefix(path);
-
         Queue<string> existingBackups = new(
-            Directory.GetFiles(".", $"{backupPrefix}*")
-                .Select(Path.GetFileName)
-                .OrderBy(name => name)
+            Directory.GetFiles(backupDirectory, "*")
+                .OrderBy(path => Path.GetFileName(path))
         );
 
         while (existingBackups.Count > Plugin.Config.BackupSave.Value)
         {
             var oldestBackup = existingBackups.Dequeue();
             File.Delete(oldestBackup);
-            Plugin.Log.LogInfo($"Backup {oldestBackup} deleted.");
+            Plugin.Log.LogInfo($"Deleted backup at {oldestBackup}.");
         }
     }
 
-    static string GetBackupSaveName(string path)
+    static string GetBackupPath(string savePath)
     {
-        var fileName = Path.GetFileName(path);
+        var fileName = Path.GetFileName(savePath);
 
         if (fileName.StartsWith("_sharetmpsave"))
         {
             return "";
         }
 
-        var backupPrefix = GetBackupPrefix(path);
+        var gameName = Directory.GetParent(savePath).Name;
         var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
 
-        return $"{backupPrefix}{timestamp}_{fileName}";
+        return $"SuikodenFix/Backup/{gameName}/{timestamp}_{fileName}";
     }
 
     [HarmonyPatch(typeof(SteamService), nameof(SteamService.Save))]
     [HarmonyPostfix]
     static void Save(string path, string json)
     {
-        var fileName = "";
+        var backupPath = "";
 
         try
         {
-            fileName = GetBackupSaveName(path);
+            backupPath = GetBackupPath(path);
 
-            if (fileName != "")
+            if (backupPath != "")
             {
-                File.WriteAllText(fileName, json, System.Text.Encoding.UTF8);
-                RemoveOldestBackups(path);
+                var backupDirectory = Path.GetDirectoryName(backupPath);
 
-                Plugin.Log.LogInfo($"Backup \"{fileName}\" saved.");
+                if (!Directory.Exists(backupDirectory))
+                {
+                    Directory.CreateDirectory(backupDirectory);
+                }
+
+                File.WriteAllText(backupPath, json, System.Text.Encoding.UTF8);
+                RemoveOldestBackups(backupDirectory);
+
+                Plugin.Log.LogInfo($"Saved backup at \"{backupPath}\".");
             }
         }
         catch (Exception ex)
         {
-            Plugin.Log.LogError($"Cannot save backup \"{fileName}\": {ex.Message}.");
+            Plugin.Log.LogError($"Cannot save backup at \"{backupPath}\": {ex.Message}.");
         }
     }
 }

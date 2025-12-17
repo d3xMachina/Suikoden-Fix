@@ -352,7 +352,7 @@ public sealed class ModConfiguration
              "Advanced",
              "EditSave",
              false,
-             "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to your game folder and you will have the save files in the json format (file names start with \"_decrypted\". Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
+             "Allow you to edit your saves. Make sure to backup your saves for safety. After saving, go to \"(GAME_PATH)\\SuikodenFix\\Decrypted\\gsd1\\\" for Suikoden 1 or \"(GAME_PATH)\\SuikodenFix\\Decrypted\\gsd2\\\" for Suikoden 2. You will have the save file in the json format. Modify the content of the file then load your save again. You can save again to have the changes persist and disable this option."
         );
 
         EditText = _config.Bind(
@@ -378,7 +378,7 @@ public sealed class ModConfiguration
              "Advanced",
              "BackupSave",
              0,
-             "Keep a backup of the last N saves for each game in the game folder where N is the number you set for this option. File names start with \"_backup\"."
+             "Keep a backup of the last N saves in \"(GAME_PATH)\\SuikodenFix\\Backup\\gsd1\\\" for Suikoden 1 or \"(GAME_PATH)\\SuikodenFix\\Backup\\gsd2\\\" for Suikoden 2, where N is the number you set for this option."
         );
 
         DisableBinaryPatches = _config.Bind(
