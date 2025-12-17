@@ -35,14 +35,18 @@ public class CustomFontPatch
                 //Plugin.Log.LogWarning($"Custom font {customFontName} not found in {customFontPath}.");
                 customFontPath = "";
 
-                foreach (var fontPath in Font.GetPathsToOSFonts())
+                if (!customFontName.Contains(Path.DirectorySeparatorChar) &&
+                    !customFontName.Contains(Path.AltDirectorySeparatorChar))
                 {
-                    //Plugin.Log.LogWarning($"Font path: {fontPath}");
-                    var fontName = Path.GetFileName(fontPath);
-                    if (fontName.Equals(customFontName, StringComparison.OrdinalIgnoreCase))
+                    foreach (var fontPath in Font.GetPathsToOSFonts())
                     {
-                        customFontPath = fontPath;
-                        break;
+                        //Plugin.Log.LogWarning($"Font path: {fontPath}");
+                        var fontName = Path.GetFileName(fontPath);
+                        if (fontName.Equals(customFontName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            customFontPath = fontPath;
+                            break;
+                        }
                     }
                 }
             }

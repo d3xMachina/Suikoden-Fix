@@ -296,14 +296,14 @@ public sealed class ModConfiguration
              "Visual",
              "CustomFontMessage",
              "",
-             "Replace the font of the messages boxes with either a system font, or a custom font that you put inside the game folder. Use the font file name (arial.ttf for example)."
+             "Replace the font of the messages boxes with either a system font, or a custom font file. Use the font file name for system fonts (arial.ttf for example), or the path for custom fonts (c:\\MyFontsFolder\\myfont.ttf or myfont.ttf if the font is in the game folder for example)."
         );
 
         CustomFontUI = _config.Bind(
              "Visual",
              "CustomFontUI",
              "",
-             "Replace the font of the UI with either a system font, or a custom font that you put inside the game folder. Use the font file name (arial.ttf for example)."
+             "Replace the font of the UI with either a system font, or a custom font file. Use the font file name for system fonts (arial.ttf for example), or the path for custom fonts (c:\\MyFontsFolder\\myfont.ttf or myfont.ttf if the font is in the game folder for example)."
         );
 
         DisableAutoSaveNotification = _config.Bind(
