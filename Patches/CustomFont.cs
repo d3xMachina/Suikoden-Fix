@@ -86,8 +86,9 @@ public class CustomFontPatch
             return;
         }
 
-        if (gameObject.GetComponent<Share.UI.Window.UIMessageWindow>() != null || // dialogues
-            gameObject.GetComponent<UISystemEDChara>() != null) // ending recap
+        if (gameObject.GetComponent<Share.UI.Window.UIMessageWindow>() != null || // messages
+            gameObject.GetComponent<UISystemEDChara>() != null || // ending recap
+            gameObject.GetComponent<Share.UI.Panel.BackLogListItem>() != null) // messages log
         {
             _isInMessage = true;
         }
