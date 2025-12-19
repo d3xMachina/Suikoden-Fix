@@ -188,7 +188,8 @@ public class EasyMinigamesPatch
     static void GSD2_CookingMinigame(GSD2.EventOverlayClass.Overlay_rbattle __instance)
     {
         var work = __instance.rb_work;
-        if (work == null)
+        if (work == null ||
+            work.battle_num == 9) // Winning the first scripted battle against Retso crashes the game
         {
             return;
         }
