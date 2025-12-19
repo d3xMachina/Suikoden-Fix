@@ -61,6 +61,25 @@ public class AllItemsInHQPatch
         }
     }
 
+    static bool GSD2_IsRecipeUnlocked(int recipeNum)
+    {
+        var recipeFlags = GSD2.OldSrcBase.game_work?.game_data?.food_resipi;
+        if (recipeFlags == null)
+        {
+            return false;
+        }
+
+        int flagIndex = (recipeNum - 1) / 8;
+        int flagBit = (recipeNum - 1) % 8;
+
+        if (flagIndex >= recipeFlags.Length)
+        {
+            return false;
+        }
+
+        return (recipeFlags[flagIndex] & (1 << flagBit)) != 0;
+    }
+
     [HarmonyPatch(typeof(GSD1.Event_c), nameof(GSD1.Event_c.shiro_bougu))]
     [HarmonyPostfix]
     static void GSD1_AddAllEquipments()
@@ -125,6 +144,8 @@ public class AllItemsInHQPatch
 
         for (int itemIndex = 0; itemIndex < length; ++itemIndex)
         {
+            sbyte quantity = 0;
+
             if (shopType == 0)
             {
                 if (Plugin.Config.AllItemsInHQ.Value == 1 &&
@@ -140,7 +161,28 @@ public class AllItemsInHQPatch
                     continue;
                 }
 
-                if (itemIndex == 56) // Recipe #25
+                // Only show recipe items not acquired
+                // 56 = Recipe #25, 71 = Recipe #40
+                if (itemIndex >= 56 && itemIndex <= 71)
+                {
+                    var recipeNum = itemIndex - 31;
+                    var isRecipeUnlocked = GSD2_IsRecipeUnlocked(recipeNum);
+                    var itemCount = GSD2.G2_SYS.G2_item_num2(0, shopType, itemIndex); // check inventory
+
+                    if (isRecipeUnlocked || itemCount > 0)
+                    {
+                        continue;
+                    }
+
+                    if (indexRecipeItem == -1)
+                    {
+                        indexRecipeItem = dhdat.Count;
+                    }
+
+                    quantity = 1;
+                }
+                // In case all recipe items of this kind (0) are acquired
+                else if (itemIndex > 71 && indexRecipeItem == -1)
                 {
                     indexRecipeItem = dhdat.Count;
                 }
@@ -160,7 +202,7 @@ public class AllItemsInHQPatch
                 dhno = (sbyte)itemIndex, // item
                 mno = 0, // map ?
                 sno = shopType, // item type
-                kosuu = 0 // quantity, 0 = unlimited
+                kosuu = quantity // quantity, 0 = unlimited
             };
 
             dhdat.Add(shopItem);
@@ -185,14 +227,25 @@ public class AllItemsInHQPatch
             // Add other recipe items, they are in itemDatas.ex_it_data
             if (indexRecipeItem != -1)
             {
+                // 43 = Recipe#1, 66 = Recipe#24
                 for (int itemIndex = 66; itemIndex >= 43; --itemIndex)
                 {
+                    // Only show recipe items not acquired
+                    var recipeNum = itemIndex - 42;
+                    var isRecipeUnlocked = GSD2_IsRecipeUnlocked(recipeNum);
+                    var itemCount = GSD2.G2_SYS.G2_item_num2(0, 5, itemIndex); // check inventory
+
+                    if (isRecipeUnlocked || itemCount > 0)
+                    {
+                        continue;
+                    }
+
                     var shopItem = new GSD2.SP_DHDAT
                     {
                         dhno = (sbyte)itemIndex, // item
                         mno = 0, // map ?
                         sno = 5, // item type
-                        kosuu = 0 // quantity, 0 = unlimited
+                        kosuu = 1 // quantity, 0 = unlimited
                     };
 
                     dhdat.Insert(indexRecipeItem, shopItem);
