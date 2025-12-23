@@ -20,7 +20,7 @@ All features are optional.
 - Raise the money cap to 999,999,999.
 - Damage, health, experience, encounter rate, loot rate and money multipliers.
 - Run on worldmap and unlock x4 battle speed without Stallion.
-- McDohl and both Kasumi and Valeria available at Leona's.
+- McDohl and both Kasumi and Valeria available at Leona. Ted and Odessa available at Sanchez.
 - More teleport locations (Gregminster and Radat Town secret room in Suikoden 2).
 - Instant weapon upgrade, item appraisal, rune attachment/removal and Richmond investigations.
 - Speed up the game. (with setting to affect the game timers)
