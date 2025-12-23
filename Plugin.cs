@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Suikoden_Fix;
 
-[BepInPlugin("d3xMachina.suikoden_fix", "Suikoden Fix", "1.5.1")]
+[BepInPlugin("d3xMachina.suikoden_fix", "Suikoden Fix", "1.5.2")]
 public partial class Plugin : BasePlugin
 {
     public static new ManualLogSource Log { get; private set; }
