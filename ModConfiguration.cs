@@ -220,7 +220,7 @@ public sealed class ModConfiguration
              "Misc",
              "SaveSlots",
              -1,
-             "Set the number of normal save slots (-1 for default, 16 minimum)."
+             "Set the number of normal save slots (-1 for default, 16 minimum). You can use the left and right buttons/keys to navigate multiple save slots at once."
         );
 
         SpeedHackFactor = _config.Bind(
