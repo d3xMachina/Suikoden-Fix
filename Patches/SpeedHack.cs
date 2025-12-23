@@ -97,19 +97,13 @@ public class SpeedHackPatch
     [HarmonyPrefix]
     static bool FixBgmPlayTime(int channel, ref long __result)
     {
-        var soundManager = SoundManager.Instance;
-        if (soundManager == null)
-        {
-            return true;
-        }
-
-        var bgmPlayers = soundManager.bgmPlayer;
+        var bgmPlayers = SoundManager.Instance?.bgmPlayer;
         if (bgmPlayers == null || channel >= bgmPlayers.Count)
         {
             return true;
         }
 
-        var bgmPlayer = soundManager.bgmPlayer[channel];
+        var bgmPlayer = bgmPlayers[channel];
         if (bgmPlayer == null)
         {
             return true;
@@ -122,7 +116,7 @@ public class SpeedHackPatch
         }
 
         __result = (long)Math.Round((double)samples / sampleRate * 1000);
-        //Plugin.Log.LogWarning($"DecOffset={__result} pitch={soundManager.bgmPitch}");
+        //Plugin.Log.LogWarning($"DecOffset={__result} pitch={SoundManager.Instance.bgmPitch}");
 
         return false;
     }
