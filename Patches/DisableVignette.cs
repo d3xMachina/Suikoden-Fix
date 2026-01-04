@@ -19,16 +19,12 @@ public class DisableVignettePatch
 
     [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.EnableVignetteFilter))]
     [HarmonyPostfix]
-    static void DisableCameraVignette(ref bool isEnabled)
+    static void DisableCameraVignette(bool isEnabled)
     {
-        var camera = CameraManager.Instance?.ActiveCamera;
-        if (camera != null)
+        var sc = CameraManager.Instance?.ActiveCamera?.GetComponent<ScreenScript>();
+        if (sc != null)
         {
-            var sc = camera.GetComponent<ScreenScript>();
-            if (sc != null)
-            {
-                DisableVignette(sc);
-            }
+            DisableVignette(sc);
         }
     }
 
