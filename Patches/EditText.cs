@@ -18,7 +18,7 @@ public class EditTextPatch
 
     private static void LoadTexts()
     {
-        const string FilePath = "GameTexts.json";
+        const string FilePath = "SuikodenFix/GameTexts.json";
 
         _texts.Clear();
 
@@ -88,7 +88,7 @@ public class EditTextPatch
 
         var reader = new Utf8JsonReader(buffer, isFinalBlock: false, state: default);
 
-        while (true)
+        do
         {
             while (bytesRead > 0 && !reader.Read())
             {
@@ -165,12 +165,7 @@ public class EditTextPatch
                 default:
                     break;
             }
-
-            if (success)
-            {
-                break;
-            }
-        }
+        } while (!success);
 
         return success;
     }
@@ -249,13 +244,16 @@ public class EditTextPatch
 
 public class LogTextPatch
 {
-    private const string FilePath = "GameTextsLog.txt";
+    private const string FilePath = "SuikodenFix/GameTextsLog.txt";
 
     public static void RemoveLogs()
     {
         try
         {
-            File.Delete(FilePath);
+            if (File.Exists(FilePath))
+            {
+                File.Delete(FilePath);
+            }
         }
         catch (Exception ex)
         {

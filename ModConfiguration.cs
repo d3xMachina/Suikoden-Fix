@@ -360,7 +360,7 @@ public sealed class ModConfiguration
              "Advanced",
              "EditText",
              0,
-             "Allow you to edit the game texts. Set to 1 to enable, 2 to enable and log the game texts, and 0 to disable. The game texts are loaded from the GameTexts.json file in the game folder (you need to create one with UTF8 encoding). The logs of the game texts are saved in the GameTextsLog.txt file in the game folder, they are also logged in the console too but with the wrong encoding. The valid languages are : Japanese, English, French, Italian, German, Spanish, ChineseZhHant and ChineseZhHans. Example of a valid GameTexts.json :" +
+             "Allow you to edit the game texts. Set to 1 to enable, 2 to enable and log the game texts, and 0 to disable. The game texts are loaded from the GameTexts.json file in \"(GAME_PATH)\\SuikodenFix\\\" (you need to create one with UTF8 encoding). The logs of the game texts are saved to the GameTextsLog.txt file in the same folder, they are also logged in the console too but with the wrong encoding. The valid languages are : Japanese, English, French, Italian, German, Spanish, ChineseZhHant and ChineseZhHans. Example of a valid GameTexts.json :" +
 @"
 {
     ""English"": {
