@@ -391,6 +391,8 @@ public class UncapMoneyPatch
         {
             var perCharacterOffset = menuInAnim.endValueV3.x / defaultLength;
             var offset = perCharacterOffset * charactersDiff;
+
+            menuInAnim.tween?.Kill();
             menuInAnim.endValueV3 += new Vector3(offset, 0f, 0f);
             menuInAnim.CreateTween();
         }

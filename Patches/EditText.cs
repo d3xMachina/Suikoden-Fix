@@ -279,7 +279,7 @@ public class LogTextPatch
 
     [HarmonyPatch(typeof(TextMasterData), nameof(TextMasterData.GetSystemText))]
     [HarmonyPostfix]
-    static void GetSystemTextPost(string id, int index, ref string __result)
+    static void GetSystemText(string id, int index, string __result)
     {
         LogText($"[{id}:{index}]", __result);
     }
