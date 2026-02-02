@@ -7,47 +7,28 @@ namespace Suikoden_Fix.Patches;
 
 public class StallionBoonsPatch
 {
-    private static bool _isInFmainInit = false;
     private static bool _isInEventPlayerMove2 = false;
-
-    [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.high_speed_chk))]
-    [HarmonyPrefix]
-    static bool GSD1_HighSpeedCheck(GSD1.Fmain_c __instance, ref bool __result)
-    {
-        if (__instance.field_apx == 0)
-        {
-            __result = true;
-            return false;
-        }
-
-        return true;
-    }
-
-    [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.fmain_init))]
-    [HarmonyPrefix]
-    static void GSD1_FmainInit()
-    {
-        _isInFmainInit = true;
-    }
 
     [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.fmain_init))]
     [HarmonyPostfix]
-    static void GSD1_FmainInitPost()
+    static void GSD1_FmainInit(GSD1.Fmain_c __instance)
     {
-        _isInFmainInit = false;
-    }
-
-    [HarmonyPatch(typeof(GSD1.Fmain_c), nameof(GSD1.Fmain_c.HSS_chk))]
-    [HarmonyPrefix]
-    static bool GSD1_HSSCheck(GSD1.Fmain_c __instance, ref bool __result)
-    {
-        if (_isInFmainInit && __instance.field_apx == 0)
+        var fieldWork = __instance.f_work;
+        if (fieldWork == null)
         {
-            __result = true;
-            return false;
+            return;
         }
 
-        return true;
+        fieldWork.spd = 2;
+
+        if (__instance.field_apx == 1) // in boat
+        {
+            var partyData = GSD1.OldSrcBase.game_work?.party_data;
+            if (partyData != null && partyData.area_no == 10)
+            {
+                fieldWork.spd = 1;
+            }
+        }
     }
 
     [HarmonyPatch(typeof(GSD2.EVENTCON), nameof(GSD2.EVENTCON.EventPlayerMove2))]
@@ -56,7 +37,7 @@ public class StallionBoonsPatch
     {
         _isInEventPlayerMove2 = true;
     }
-    
+
     [HarmonyPatch(typeof(GSD2.EVENTCON), nameof(GSD2.EVENTCON.EventPlayerMove2))]
     [HarmonyPostfix]
     static void GSD2_EventPlayerMove2Post()
