@@ -21,7 +21,6 @@ public class InputMovementsPatch
     private static bool _lastDash = false;
     private static uint _lastPadData = 0;
     private static uint _lastPadDataSanitized = 0;
-    private static bool _ignoreNextDashInput = false;
 
     static uint HandleDash(uint padData)
     {
@@ -33,21 +32,16 @@ public class InputMovementsPatch
         if (dash != _lastDash)
         {
             if (ModComponent.Instance.IsMenuOpened ||
+                // in Suikoden 2, the dash button exit the minimap before the dash check
+                (ModComponent.Instance.WasMenuOpened && ModComponent.Instance.ActiveGame == ModComponent.Game.GSD2) ||
                 ModComponent.Instance.IsMessageBoxOpened ||
                 ModComponent.Instance.IsInSpecialMenu)
             {
-                _ignoreNextDashInput = true;
+                // do nothing
             }
             else if (dash)
             {
-                if (_ignoreNextDashInput)
-                {
-                    _ignoreNextDashInput = false;
-                }
-                else
-                {
-                    _dashToggle = !_dashToggle;
-                }
+                _dashToggle = !_dashToggle;
             }
 
             _lastDash = dash;
@@ -127,7 +121,7 @@ public class InputMovementsPatch
 
     [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.NewPlayerMove))]
     [HarmonyPrefix]
-    static void GSSD1_NewPlayerMovePre(int step_level, out PadData __state)
+    static void GSD1_NewPlayerMovePre(int step_level, out PadData __state)
     {
         var padData = new PadData
         {
@@ -160,7 +154,7 @@ public class InputMovementsPatch
 
     [HarmonyPatch(typeof(GSD1::Village_c), nameof(GSD1::Village_c.NewPlayerMove))]
     [HarmonyPostfix]
-    static void GSSD1_NewPlayerMovePost(int step_level, PadData __state)
+    static void GSD1_NewPlayerMovePost(int step_level, PadData __state)
     {
         if (!__state.ok)
         {
@@ -177,7 +171,7 @@ public class InputMovementsPatch
 
     [HarmonyPatch(typeof(GSD2::EVENTCON), nameof(GSD2::EVENTCON.NewEventPlayerMove))]
     [HarmonyPrefix]
-    static void GSSD2_NewEventPlayerMove(out PadData __state)
+    static void GSD2_NewEventPlayerMove(out PadData __state)
     {
         var padData = new PadData
         {
@@ -220,7 +214,7 @@ public class InputMovementsPatch
 
     [HarmonyPatch(typeof(GSD2::EVENTCON), nameof(GSD2::EVENTCON.NewEventPlayerMove))]
     [HarmonyPostfix]
-    static void GSSD2_NewEventPlayerMovePost(PadData __state)
+    static void GSD2_NewEventPlayerMovePost(PadData __state)
     {
         if (!__state.ok)
         {
@@ -244,7 +238,7 @@ public class InputMovementsPatch
 #if DEBUG_PATCH
     [HarmonyPatch(typeof(GSD1::Pad), nameof(GSD1::Pad.PadUpdate))]
     [HarmonyPostfix]
-    static void GSSD1_PadUpdate(bool isInput, bool isUpdate)
+    static void GSD1_PadUpdate(bool isInput, bool isUpdate)
     {
         if (!isInput || !isUpdate)
         {
@@ -262,7 +256,7 @@ public class InputMovementsPatch
 
     [HarmonyPatch(typeof(GSD2::G2_PAD), nameof(GSD2::G2_PAD.Update))]
     [HarmonyPostfix]
-    static void GSSD2_PadUpdate(bool isUpdate)
+    static void GSD2_PadUpdate(bool isUpdate)
     {
         if (!isUpdate)
         {

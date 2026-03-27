@@ -83,6 +83,7 @@ public sealed class ModComponent : MonoBehaviour
     public int GameTimerMultiplier { get; private set; } = 1;
     public int GameSpeed { get; private set; } = 1;
     public bool IsMenuOpened { get; private set; } = false;
+    public bool WasMenuOpened { get; private set; } = false;
     public bool IsMessageBoxOpened { get; private set; } = false;
     public bool ResetOnExit { get; private set; } = false;
     public bool GamePaused { get; private set; } = false;
@@ -500,6 +501,7 @@ public sealed class ModComponent : MonoBehaviour
             GameTimerMultiplier = 1;
             GameSpeed = 1;
             IsMenuOpened = false;
+            WasMenuOpened = false;
             IsMessageBoxOpened = false;
             IsInGameEvent = false;
             IsInDanceMinigame = false;
@@ -823,6 +825,7 @@ public sealed class ModComponent : MonoBehaviour
             }
         }
 
+        WasMenuOpened = IsMenuOpened;
         IsMenuOpened = menuOpened;
         IsMessageBoxOpened = messageBoxOpened;
     }
