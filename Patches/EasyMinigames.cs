@@ -222,6 +222,21 @@ public class EasyMinigamesPatch
             return;
         }
 
+        // Player dancing
+        if (work.step != 50 && work.step != 6)
+        {
+            return;
+        }
+
+        int endTime = work.level * 480 + 180;
+        byte danceMoves = (byte)(work.level << 3);
+
+        // -1 to skip the last GSD2.EventOverlayClass.Overlay_h_dance.InputQuestion() which can trigger dance_flg just before the achievement check
+        if (work.timer >= endTime - 1)
+        {
+            work.input_num = danceMoves;
+        }
+
         work.dance_flg = 0;
         work.timing_flg = 0;
     }
