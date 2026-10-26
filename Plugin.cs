@@ -203,6 +203,16 @@ public partial class Plugin : BasePlugin
             ApplyPatch(typeof(HealthMultiplierPatch));
         }
 
+        if (Config.MonsterStatMultiplier.Value != (string)Config.MonsterStatMultiplier.DefaultValue)
+        {
+            ApplyPatch(typeof(StatsMultiplierGSD1Patch));
+        }
+
+        if (Config.MonsterStatMultiplier2.Value != (string)Config.MonsterStatMultiplier2.DefaultValue)
+        {
+            ApplyPatch(typeof(StatsMultiplierGSD2Patch));
+        }
+
         if (Config.ExperienceMultiplier.Value != 1f)
         {
             ApplyPatch(typeof(ExperienceMultiplierPatch));
@@ -351,5 +361,8 @@ public partial class Plugin : BasePlugin
             MethodInfo patchMethod = type.GetMethod("PatchAssembly", BindingFlags.NonPublic | BindingFlags.Static);
             patchMethod?.Invoke(null, null);
         }
+
+        MethodInfo initializeMethod = type.GetMethod("Initialize", BindingFlags.NonPublic | BindingFlags.Static);
+        initializeMethod?.Invoke(null, null);
     }
 }

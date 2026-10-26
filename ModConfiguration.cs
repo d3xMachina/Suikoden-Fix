@@ -49,6 +49,8 @@ public sealed class ModConfiguration
     public ConfigEntry<float> PlayerDamageMultiplier;
     public ConfigEntry<float> MonsterDamageMultiplier;
     public ConfigEntry<float> MonsterHealthMultiplier;
+    public ConfigEntry<string> MonsterStatMultiplier;
+    public ConfigEntry<string> MonsterStatMultiplier2;
     public ConfigEntry<float> ExperienceMultiplier;
     public ConfigEntry<float> LootMultiplier;
     public ConfigEntry<float> EncounterRateMultiplier;
@@ -408,6 +410,20 @@ public sealed class ModConfiguration
              "MonsterHealthMultiplier",
              1f,
              "Multiply the HP of enemies in battle. (HP capped at 32767)"
+        );
+
+        MonsterStatMultiplier = _config.Bind(
+             "Cheat",
+             "MonsterStatMultiplier",
+             "1.0,1.0,1.0,1.0,1.0,1.0",
+             "(Suikoden 1 only) Multiply the stats of enemies in battle. List of floating numbers separated by a comma in the following order : Strength, Dexterity, Protection, Speed, Magic, Luck."
+        );
+
+        MonsterStatMultiplier2 = _config.Bind(
+             "Cheat",
+             "MonsterStatMultiplier2",
+             "1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0",
+             "(Suikoden 2 only) Multiply the stats of enemies in battle. List of floating numbers separated by a comma in the following order : Strength, Magic, Protection, Magic Defense, Dexterity, Speed, Luck, Attack. In Suikoden 2, monsters have different attacks with their own power which is here 'Attack'."
         );
 
         ExperienceMultiplier = _config.Bind(
