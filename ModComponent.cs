@@ -1,6 +1,5 @@
 ﻿extern alias GSD1;
 extern alias GSD2;
-using BepInEx;
 using Il2CppInterop.Runtime.Injection;
 using Suikoden_Fix.Tools.Input;
 using System;
@@ -79,7 +78,6 @@ public sealed class ModComponent : MonoBehaviour
 
     // Read only
     public Game ActiveGame { get; private set; } = Game.None;
-    public Color? WindowBGColor { get; private set; } = null;
     public int GameTimerMultiplier { get; private set; } = 1;
     public int GameSpeed { get; private set; } = 1;
     public bool IsMenuOpened { get; private set; } = false;
@@ -130,19 +128,6 @@ public sealed class ModComponent : MonoBehaviour
         try
         {
             Instance = this;
-
-            var colorStr = Plugin.Config.WindowBGColor.Value;
-            if (!colorStr.IsNullOrWhiteSpace())
-            {
-                if (ColorUtility.TryParseHtmlString(colorStr, out var color))
-                {
-                    WindowBGColor = color;
-                }
-                else
-                {
-                    Plugin.Log.LogWarning($"Invalid color for WindowBGColor: {colorStr}");
-                }
-            }
 
             _backgroundTexture = new Texture2D(1, 1);
             _backgroundTexture.hideFlags = HideFlags.HideAndDontSave;
