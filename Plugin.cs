@@ -21,6 +21,8 @@ public partial class Plugin : BasePlugin
 
         Log.LogInfo("Loading...");
 
+        CheckGameVersion();
+
         Config = new ModConfiguration(base.Config);
         Config.Init();
 
@@ -351,5 +353,25 @@ public partial class Plugin : BasePlugin
             MethodInfo patchMethod = type.GetMethod("PatchAssembly", BindingFlags.NonPublic | BindingFlags.Static);
             patchMethod?.Invoke(null, null);
         }
+    }
+
+    private static void CheckGameVersion()
+    {
+        var gameVersion = UnityEngine.Application.version.Trim();
+        if (gameVersion == "1.0.4" || gameVersion == "1.0.3")
+        {
+            Log.LogInfo($"Game version: {gameVersion}");
+            return;
+        }
+
+        if (gameVersion == "")
+        {
+            gameVersion = "unknown";
+        }
+
+        Log.LogWarning(
+            $"The plugin was not tested with this version of the game ({gameVersion}) and might not work correctly!" +
+             " The plugin is compatible with the versions 1.0.4 and 1.0.3."
+        );
     }
 }
